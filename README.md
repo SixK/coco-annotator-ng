@@ -14,8 +14,8 @@ Edit this file and run it again to migrate others users accounts.
 You will have to know all users password to migrate all passwords.  
 You can then use any recent werkzeug version.  
 
-## Features
-**Now we can talk about what this version will provide:  **  
+## Features  
+**Now we can talk about what this version will provide:**  
 - vue 3.2+ style code  
 - upgraded python libraries versions  
 - upgraded javascript packages  
@@ -28,26 +28,26 @@ You can then use any recent werkzeug version.
 - can use detectron2 models to help segment objects  
 - maybe more ...  
 
-**what features you will loose or bugs are introduced:  **  
+**what features you will loose or bugs are introduced:**  
 - watchdog to detect new images has been disabled (this was freezing the application. This feature may be reactivated later)  
 - pinch zoom has been removed (need to find a library to replace and use a tablet to test it)  
 - objects id are not the new ones when switching to next or previous images (need to click on an object to get ids updated)  
 - exported json annotations files seem's ok but are actually not fully tested  
 - hope to not have more bugs and features removed...  
 
-## Build docker images
+## Build docker images  
 There is actually no pre-built docker images.   
 You will have to build docker images by yourself.   
 Note that docker images are actually using around 15Gb disk space.   Make sure to have at least 30Gb disk space to build all images.  
 You can probably have images around 2/3 Gb disk space if removing IA features and tweaking Dockerfiles. (but it may not be that eazy to do)
 
 ### Building docker images:  
-Production images with no IA support :
+Production images with no IA support:
 
 	docker-compose -f ./docker-compose.build.yml build
 	docker-compose -f ./docker-compose.yml up
 
-Dev images with IA support :
+Dev images with IA support:
 
 	docker-compose -f ./docker-compose.dev.yml build
 	docker-compose -f ./docker-compose.dev.yml up
