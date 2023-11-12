@@ -1,0 +1,81 @@
+{
+  "name": "client",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite --port 8080",
+    "build": "vite build",
+    "optimize": "vite optimize",
+    "serve": "vite preview --port 8080",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
+    "test": "vue-cli-service test:unit"
+  },
+  "dependencies": {
+    "@popperjs/core": "^2.11.8",
+    "autoprefixer": "^10.4.16",
+    "axios": "^1.5.1",
+    "bootstrap": "^5.3.2",
+    "floating-vue": "^2.0.0-beta.24",
+    "intersection-observer": "^0.12.2",
+    "nopt": "^7.2.0",
+    "paper": "^0.12.17",
+    "pinia": "^2.1.7",
+    "postcss": "^8.4.31",
+    "postcss-loader": "^7.3.3",
+    "postcss-modules": "^6.0.0",
+    "simplify-js": "^1.2.4",
+    "@unlazy/vue": "^0.10.1",
+    "vue": "^3.3.8",
+    "vue-3-socket.io-ext": "^1.2.1",
+    "vue-loader": "^17.3.0",
+    "vue-loading-overlay": "^6.0.3",
+    "vue-router": "^4.2.5",
+    "vue-toast-notification": "^3.1.1",
+    "vue3-touch-events": "^3.1.1"
+  },
+  "devDependencies": {
+    "@babel/core": "7.23.2",
+    "@babel/eslint-parser": "^7.22.15",
+    "@vitejs/plugin-vue": "^4.4.0",
+    "@vue/eslint-config-prettier": "^8.0.0",
+    "@vue/test-utils": "^2.4.1",
+    "babel-jest": "^29.7.0",
+    "eslint": "^8.53.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "eslint-plugin-vue": "^9.18.1",
+    "prettier": "^3.0.3",
+    "vite": "^4.5.0"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "browser": true,
+      "es6": true,
+      "node": true,
+      "jest": true
+    },
+    "extends": [
+      "plugin:vue/strongly-recommended",
+      "plugin:prettier/recommended",
+      "@vue/prettier",
+      "prettier"
+    ],
+    "parserOptions": {
+      "parser": "@babel/eslint-parser"
+    },
+    "rules": {
+      "vue/multi-word-component-names": 0,
+      "vue/no-v-model-argument": 0
+    }
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
+}

@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2023 SixK
+Copyright (c) 2018 Justin Brooks
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

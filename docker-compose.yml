@@ -1,0 +1,57 @@
+version: "3"
+volumes:
+  mongodb_data:
+    external: false
+
+networks:
+  cocoannotator:
+    external: false
+
+services:
+  webserver:
+    image: annotator_webclient
+    container_name: annotator_webclient
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - SECRET_KEY=RandomSecretKeyHere
+      - FILE_WATCHER=true
+    volumes:
+      - "./datasets:/datasets"
+      - "./models:/models"
+    depends_on:
+      - database
+      - workers
+    networks:
+      - cocoannotator
+  workers:
+    container_name: annotator_workers
+    image: annotator_workers
+    volumes:
+      - "./datasets:/datasets"
+    depends_on:
+      - messageq
+      - database
+    networks:
+      - cocoannotator
+  messageq:
+    image: rabbitmq:3
+    container_name: annotator_message_q
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=password
+    networks:
+      - cocoannotator
+  database:
+    image: mongo:4.0
+    container_name: annotator_mongodb
+    restart: always
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - "mongodb_data:/data/db"
+    command: "mongod --smallfiles --logpath=/dev/null"
+    networks:
+      - cocoannotator
