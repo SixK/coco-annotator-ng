@@ -24,8 +24,10 @@ RUN git clone --depth=1 https://github.com/iamlab-cmu/DEXTR-KerasTensorflow.git 
 RUN git clone https://github.com/SysCV/sam-hq.git && cd sam-hq && pip install -e .
 RUN  pip install timm
 
-RUN python -m pip install detectron2 -f \
-  https://dl.fbaipublicfiles.com/detectron2/wheels/cu113/torch1.10/index.html
+# RUN python -m pip install detectron2 -f \
+#  https://dl.fbaipublicfiles.com/detectron2/wheels/cu113/torch1.10/index.html
+
+RUN python -m pip install 'git+https://github.com/facebookresearch/detectron2.git'
 
 RUN git clone --depth=1 https://github.com/facebookresearch/MaskFormer ./MaskFormer
 
