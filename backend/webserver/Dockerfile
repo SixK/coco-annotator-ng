@@ -27,6 +27,8 @@ RUN  pip install timm
 RUN python -m pip install detectron2 -f \
   https://dl.fbaipublicfiles.com/detectron2/wheels/cu113/torch1.10/index.html
 
+RUN git clone --depth=1 https://github.com/facebookresearch/MaskFormer ./MaskFormer
+
 ENV FLASK_ENV=development
 ENV DEBUG=true
 
