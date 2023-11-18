@@ -26,6 +26,7 @@ You can then use any recent werkzeug version.
 - activate GPU (seem's this was not really activated even when using docker-compose.gpu.yml)  
 - fixed some bugs and javascript errors  
 - can use detectron2 models to help segment objects  
+- moved IA to a dedicated container to make coco-annotator lighter when not using them
 - maybe more ...  
 
 **what features you will loose or bugs are introduced:**  

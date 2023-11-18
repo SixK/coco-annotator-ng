@@ -11,7 +11,6 @@ flask-restx==1.1.0
 flask-mongoengine==1.0.0
 numpy
 cython
-scikit-image
 requests
 git+https://github.com/ScrambledRK/fork-google-images-download.git#egg=google-images-download
 watchdog==3.0.0
@@ -25,7 +24,6 @@ scipy
 scikit-learn
 Pillow==10.1.0
 matplotlib
-h5py
 imgaug
 IPython[all]
 jupyter

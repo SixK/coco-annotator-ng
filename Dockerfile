@@ -3,8 +3,9 @@ FROM node:18 as build-stage
 WORKDIR /workspace/
 COPY ./client /workspace/client
 
-RUN apt update && apt install -y libpango1.0-dev libcairo2-dev libpangocairo-1.0-0
-
+RUN apt update && \
+         apt install -y --no-install-recommends libpango1.0-dev libcairo2-dev libpangocairo-1.0-0  && \
+         apt clean && rm -rf /var/lib/apt/lists/*
 
 RUN npm install -g vite@latest
 # RUN npm install -g SixK/paper.js#develop
@@ -16,7 +17,7 @@ RUN npm install -g vite@latest
 COPY ./client/package* /workspace/
 
 ENV NODE_PATH=/workspace/node_modules
-RUN npm install
+RUN npm install && npm cache clean --force
 
 # COPY ./client/patch_strict/paper-full.min.js  /workspace/node_modules/paper/dist/paper-full.min.js
 # COPY ./client/patch_strict/paper-full.js  /workspace/node_modules/paper/dist/paper-full.js
@@ -29,7 +30,7 @@ COPY ./client/patch_strict/paper-full.min.js  /workspace/node_modules/paper/dist
 COPY ./client/patch_strict/paper-full.js  /workspace/node_modules/paper/dist/paper-full.js
 COPY ./client/patch_strict/paper-full.min.js  /workspace/client/node_modules/paper/dist/paper-full.min.js
 COPY ./client/patch_strict/paper-full.js  /workspace/client/node_modules/paper/dist/paper-full.js
-RUN npm run build
+RUN npm run build && npm cache clean --force
 
 FROM jsbroks/coco-annotator:python-env
 
@@ -40,9 +41,11 @@ RUN python set_path.py
 
 COPY --from=build-stage /workspace/client/dist /workspace/dist
 
-RUN apt update && apt install -y libsm6 libxext6 libxrender1 libgl1
+RUN apt update && \
+          apt install -y --no-install-recommends libsm6 libxext6 libxrender1 libgl1 && \
+          apt clean && rm -rf /var/lib/apt/lists/*
 
-RUN pip install -r ./requirements.txt
+RUN pip install --no-cache-dir -r ./requirements.txt
 
 # RUN git clone https://github.com/SysCV/sam-hq.git && cd sam-hq && pip install -e .
 # RUN pip install timm

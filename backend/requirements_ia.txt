@@ -7,17 +7,13 @@ eventlet==0.33.3
 opencv-python
 flask==3.0.0
 flask-cors==4.0.0
-git+https://github.com/maxcountryman/flask-login.git#egg=Flask-Login
 flask-restx==1.1.0
 flask-mongoengine==1.0.0
 numpy
 cython
 scikit-image
 requests
-git+https://github.com/ScrambledRK/fork-google-images-download.git#egg=google-images-download
 git+https://github.com/SixK/imantics.git
-Flask-SocketIO
-Shapely==2.0.2
 scipy
 scikit-learn
 Pillow==10.1.0

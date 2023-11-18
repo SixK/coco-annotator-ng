@@ -1,6 +1,4 @@
-# FROM jsbroks/coco-annotator:python-env
 FROM pytorch/pytorch:1.13.0-cuda11.6-cudnn8-runtime
-
 
 WORKDIR /workspace/
 
@@ -10,14 +8,13 @@ COPY ./backend/ /workspace/
 # COPY ./backend/requirements.txt /workspace/
 
 
-RUN apt-get update && apt-get install -y libsm6 libxrender1 libfontconfig1 libglib2.0-0 git build-essential libgl1
-# RUN pip install importlib-metadata==4.4.0
-# RUN pip install imantics==0.1.12
+RUN apt-get update && apt-get install --no-install-recommends  -y libsm6 libxrender1 libfontconfig1 libglib2.0-0 git build-essential libgl1 && \
+          apt clean && rm -rf /var/lib/apt/lists/*
 
 # Install python package dependices
-RUN pip install --upgrade pip && \
-    pip install -r requirements_ia.txt && \
-    pip install gunicorn[eventlet]==21.2.0
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements_ia.txt && \
+    pip install --no-cache-dir gunicorn[eventlet]==21.2.0
 
 
 RUN python set_path.py
@@ -44,13 +41,13 @@ RUN git clone --depth=1 https://github.com/iamlab-cmu/DEXTR-KerasTensorflow.git 
             rm -Rf /tmp/dextr2
 
 # RUN pip install segment-anything
-RUN git clone https://github.com/SysCV/sam-hq.git && cd sam-hq && pip install -e .
-RUN  pip install timm
+RUN git clone https://github.com/SysCV/sam-hq.git && cd sam-hq && pip --no-cache-dir install -e .
+RUN  pip --no-cache-dir install timm
 
 # RUN python -m pip install detectron2 -f \
 #  https://dl.fbaipublicfiles.com/detectron2/wheels/cu113/torch1.10/index.html
 
-RUN python -m pip install 'git+https://github.com/facebookresearch/detectron2.git'
+RUN python -m pip --no-cache-dir install 'git+https://github.com/facebookresearch/detectron2.git'
 
 RUN git clone --depth=1 https://github.com/facebookresearch/MaskFormer ./MaskFormer
 
