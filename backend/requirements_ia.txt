@@ -4,6 +4,7 @@ Jinja2==3.1.2
 itsdangerous==2.1.2
 google-auth
 eventlet==0.33.3
+opencv-python
 flask==3.0.0
 flask-cors==4.0.0
 git+https://github.com/maxcountryman/flask-login.git#egg=Flask-Login
@@ -14,17 +15,14 @@ cython
 scikit-image
 requests
 git+https://github.com/ScrambledRK/fork-google-images-download.git#egg=google-images-download
-watchdog==3.0.0
-pytest==7.4.3
-pytest-ordering==0.6
 git+https://github.com/SixK/imantics.git
 Flask-SocketIO
-celery==5.3.4
 Shapely==2.0.2
 scipy
 scikit-learn
 Pillow==10.1.0
 matplotlib
+keras==2.15.0
 h5py
 imgaug
 IPython[all]

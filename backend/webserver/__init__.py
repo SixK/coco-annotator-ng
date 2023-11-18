@@ -17,6 +17,8 @@ from flask_socketio import SocketIO
 # from werkzeug.contrib.fixers import ProxyFix
 from werkzeug.middleware.proxy_fix import ProxyFix
 
+from flask import request, jsonify
+import requests
 
 from celery import Celery
 
@@ -88,3 +90,47 @@ def index(path):
         return requests.get('http://frontend:8080/{}'.format(path)).text
 
     return app.send_static_file('index.html')
+
+# proxy to call AI services
+@app.route('/api/model/<path:path>', methods=['GET', 'POST', 'PUT'])
+def proxy_request(path):
+    json_data=None
+    data=None
+    image=None
+    
+    print('try to proxy', flush=True)
+    target_proxy =  os.getenv('TARGET_PROXY', 'http://annotator_ia:6000')
+
+    # Prepare the URL for the target server using the extracted host, port, and path
+    target_url = f'{target_proxy}/api/model/{path}'
+
+    print('proxy target url:', target_url, request.method, flush=True)
+
+    content_type = request.headers.get('Content-Type')
+    if content_type == 'application/json':
+        # Handle JSON request
+        json_data = request.get_json()
+    elif content_type.startswith('multipart/form-data'):
+        # Handle form data request
+        data = request.form.get('data')
+        image = request.files.get('image')
+    
+    # Forward the request to the target server
+    if request.method == 'GET':
+        print('in GET', flush=True)
+        response = requests.get(target_url)
+    elif request.method == 'POST':
+        print('will call with:', data, flush=True)
+        if data != None and image != None:
+            response = requests.post(target_url, data={'data': data}, files={'image': image})
+        elif json_data != None:
+            response = requests.post(target_url, json=json_data)
+        print('response:', response, flush=True)
+    elif request.method == 'PUT':
+        print('not handled right now', flush=True)
+        response = requests.put(target_url, json=request.get_json())
+
+    print('proxy reply:', response, flush=True)
+    # Return the response from the target server
+    return jsonify(response.json()), response.status_code
+

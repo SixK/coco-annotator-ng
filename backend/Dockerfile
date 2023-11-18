@@ -13,7 +13,8 @@
 # 3.8.8 	1.8.0
 # 3.8.3 	1.7.0
 # FROM pytorch/pytorch:1.11.0-cuda11.3-cudnn8-runtime
-FROM pytorch/pytorch:1.13.0-cuda11.6-cudnn8-runtime
+# FROM pytorch/pytorch:1.13.0-cuda11.6-cudnn8-runtime
+FROM python:3.9
 
 
 # RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A4B469963BF863CC
@@ -33,16 +34,16 @@ RUN pip install --upgrade pip && \
     pip install gunicorn[eventlet]==21.2.0
 
 # Install maskrcnn
-RUN git clone --single-branch --depth 1 https://github.com/matterport/Mask_RCNN.git /tmp/maskrcnn
+# RUN git clone --single-branch --depth 1 https://github.com/matterport/Mask_RCNN.git /tmp/maskrcnn
 #RUN cd /tmp/maskrcnn && pip install -r requirements.txt
-RUN cd /tmp/maskrcnn && python3 setup.py install
+# RUN cd /tmp/maskrcnn && python3 setup.py install
 
 # Install DEXTR
-RUN git clone --single --depth 1 https://github.com/jsbroks/dextr-keras.git /tmp/dextr && \
-    cd /tmp/dextr && \
-    sed -i "s/np.int/int/g" dextr/model.py && \
-    python setup.py install && \
-    rm -Rf /tmp/dextr
+# RUN git clone --single --depth 1 https://github.com/jsbroks/dextr-keras.git /tmp/dextr && \
+#     cd /tmp/dextr && \
+#     sed -i "s/np.int/int/g" dextr/model.py && \
+#     python setup.py install && \
+#     rm -Rf /tmp/dextr
 
 # Install detectron
 # RUN echo "INSTALLING DETECTRON."
