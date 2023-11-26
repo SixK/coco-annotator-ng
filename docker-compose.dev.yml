@@ -51,8 +51,8 @@ services:
       - SAM_MODEL_TYPE=vit_b
       # - DETECTRON2_FILE=/models/quick_schedules/mask_rcnn_R_50_FPN_inference_acc_test.yaml
       # - DETECTRON2_WEIGHTS=detectron2://COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x/137849600/model_final_f10217.pkl
-      - MASK_FORMER_FILE=/models/ade20k-150/maskformer_R50_bs16_160k.yaml
-      - MASK_FORMER_WEIGHTS=https://dl.fbaipublicfiles.com/maskformer/semantic-ade20k/maskformer_R50_bs16_160k/model_final_d8dbeb.pkl
+      # - MASK_FORMER_FILE=/models/ade20k-150/maskformer_R50_bs16_160k.yaml
+      # - MASK_FORMER_WEIGHTS=https://dl.fbaipublicfiles.com/maskformer/semantic-ade20k/maskformer_R50_bs16_160k/model_final_d8dbeb.pkl
       # - MASK_RCNN_FILE=/models/mask_rcnn_coco.h5
       # # Default coco classes (order matters)
       - |
@@ -97,15 +97,6 @@ services:
       - FLASK_ENV=development
       - DEBUG=true
       - DEVICE=cuda
-      # - SAM_MODEL_FILE=/models/sam_vit_b_01ec64.pth
-      # - SAM_MODEL_FILE=/models/sam_hq_vit_b.pth
-      # - SAM_MODEL_TYPE=vit_b
-      # - DETECTRON2_FILE=/models/quick_schedules/mask_rcnn_R_50_FPN_inference_acc_test.yaml
-      # - DETECTRON2_WEIGHTS=detectron2://COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x/137849600/model_final_f10217.pkl
-      # - MASK_FORMER_FILE=/models/ade20k-150/maskformer_R50_bs16_160k.yaml
-      # - MASK_FORMER_WEIGHTS=https://dl.fbaipublicfiles.com/maskformer/semantic-ade20k/maskformer_R50_bs16_160k/model_final_d8dbeb.pkl
-      # - MASK_RCNN_FILE=/models/mask_rcnn_coco.h5
-      # # Default coco classes (order matters)
       - |
         MASK_RCNN_CLASSES=
         BG,person,bicycle,car,motorcycle,airplane,
