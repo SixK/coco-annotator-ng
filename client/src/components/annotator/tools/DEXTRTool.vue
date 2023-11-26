@@ -108,11 +108,26 @@ function checkPoints(newPoints) {
       ]);
     });
 
+    let  canvas = getImageRaster().canvas;
+    let data = new FormData();
+
+    data.append('data', JSON.stringify({ 'points': pointsList,
+            ...settings.value}));
+
+    canvas.toBlob((blob) => {
+        data.append('image', blob);
+/*
         axios
           .post(`/api/model/dextr/${getImageId()}`, {
             points: pointsList,
             ...settings.value,
-          })
+          })*/
+        axios
+              .post(`/api/model/dextr`, data, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
+            })
           .then((response) => {
             let segments = response.data.segmentaiton;
             let center = new paper.Point(width, height);
@@ -134,6 +149,7 @@ function checkPoints(newPoints) {
           })
           .finally(() => points.value = [] );
           // .finally(() => points.value.forEach((point) => point.remove()));
+        });
     }
 };
 
