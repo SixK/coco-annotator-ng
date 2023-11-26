@@ -250,35 +250,35 @@ const hoverText = () => {
         hover.value.annotation.annotation.id !== hover.value.textId ||
         keypoint.value != null
       ) {
-        if (hover.value.text !== null) {
-          hover.value.text.remove();
-          hover.value.box.remove();
-        }
-        
-        if (hover.value.annotation) {
-          hover.value.textId = hover.value.annotation.annotation.id;
-        }
-        let content = generateTitle() + generateStringFromMetadata();
+            if (hover.value.text !== null) {
+              hover.value.text.remove();
+              hover.value.box.remove();
+            }
+            
+            if (hover.value.annotation) {
+              hover.value.textId = hover.value.annotation.annotation.id;
+            }
+            let content = generateTitle() + generateStringFromMetadata();
 
-        hover.value.text = new paper.PointText(position);
-        hover.value.text.justification = "left";
-        hover.value.text.fillColor = "black";
-        hover.value.text.content = content;
-        hover.value.text.indicator = true;
+            hover.value.text = new paper.PointText(position);
+            hover.value.text.justification = "left";
+            hover.value.text.fillColor = "black";
+            hover.value.text.content = content;
+            hover.value.text.indicator = true;
 
-        hover.value.text.fontSize = hover.value.fontSize;
+            hover.value.text.fontSize = hover.value.fontSize;
 
-        hover.value.box = new paper.Path.Rectangle(
-          hover.value.text.bounds,
-          hover.value.rounded
-        );
-        hover.value.box.indicator = true;
-        hover.value.box.fillColor = "white";
-        hover.value.box.strokeColor = "white";
-        hover.value.box.opacity = 0.5;
+            hover.value.box = new paper.Path.Rectangle(
+              hover.value.text.bounds,
+              hover.value.rounded
+            );
+            hover.value.box.indicator = true;
+            hover.value.box.fillColor = "white";
+            hover.value.box.strokeColor = "white";
+            hover.value.box.opacity = 0.5;
 
-        hover.value.box.insertAbove(null);
-        // hover.value.box.insertAbove(rect);
+            hover.value.box.insertAbove(null);
+            // hover.value.box.insertAbove(rect);
       }
 
       hover.value.shift =
@@ -395,9 +395,7 @@ const onMouseDrag = (event) => {
       let isCounterClock =
         segment.value.previous.point.x == segment.value.point.x;
       let prev = isCounterClock ? segment.value.previous : segment.value.next;
-      let next = !isCounterClock
-        ? segment.value.previous
-        : segment.value.next;
+      let next = !isCounterClock ? segment.value.previous : segment.value.next;
       prev.point = new paper.Point(event.point.x, prev.point.y);
       next.point = new paper.Point(next.point.x, event.point.y);
     }

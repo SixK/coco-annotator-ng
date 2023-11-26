@@ -445,17 +445,10 @@ const createCompoundPath = (json = null, segments = null) => {
   let width = annotation.value.width;
   let height = annotation.value.height;
   // Validate json
-  if (json != null) {
-    if (json.length !== 2) {
-      json = null;
-    }
-  }
+  if (json !== null && json.length !== 2) json = null;
   // Validate segments
-  if (segments != null) {
-    if (segments.length === 0) {
-      segments = null;
-    }
-  }
+  if (segments !== null && segments.length === 0) segments = null;
+
   if (compoundPath.value != null) compoundPath.value.remove();
   if (keypoints.value != null) keypoints.value.remove();
   // Create new compoundpath
@@ -673,7 +666,7 @@ const addKeypoint = (point, visibility, label) => {
     radius: scale.value * 6,
     onClick: event => {
       if (!['Select', 'Keypoints'].includes(activeTool.value)) return;
-      let targetkeypoint = event.target.keypoint;
+      const targetkeypoint = event.target.keypoint;
       // Remove if already selected
       if (targetkeypoint == currentKeypoint.value) {
         currentKeypoint.value = null;
@@ -684,10 +677,10 @@ const addKeypoint = (point, visibility, label) => {
       onAnnotationKeypointClick(targetkeypoint.indexLabel - 1);
       
       if (currentKeypoint.value) {
-        let i1 = currentKeypoint.value.indexLabel;
-        let i2 = targetkeypoint.indexLabel;
+        const i1 = currentKeypoint.value.indexLabel;
+        const i2 = targetkeypoint.indexLabel;
         if (keypoints.value && i1 > 0 && i2 > 0) {
-          let edge = [i1, i2];
+          const edge = [i1, i2];
           if (!keypoints.value.getLine(edge)) {
             // $parent.addKeypointEdge(edge);
             addKeypointEdge(edge);
@@ -721,9 +714,9 @@ const addKeypoint = (point, visibility, label) => {
 
   keypoints.value.addKeypoint(newkeypoint);
   isEmpty.value = compoundPath.value.isEmpty() && keypoints.value.isEmpty();
-  let unusedLabels = notUsedKeypointLabels.value;
+  const unusedLabels = notUsedKeypointLabels.value;
   delete unusedLabels[String(label)];
-  let unusedLabelKeys = Object.keys(unusedLabels);
+  const unusedLabelKeys = Object.keys(unusedLabels);
   if (unusedLabelKeys.length > 0) {
     let nextLabel = unusedLabelKeys[0];
     for (let ul in unusedLabels) {
@@ -748,7 +741,7 @@ const unite = (compound, simplify = true, undoable = true, isBBox = false) => {
   if (compoundPath.value == null) {
     createCompoundPath();
   }
-  let newCompound = compoundPath.value.unite(compound);
+  const newCompound = compoundPath.value.unite(compound);
   newCompound.strokeColor = null;
   newCompound.strokeWidth = 0;
   newCompound.onDoubleClick = compoundPath.value.onDoubleClick;
@@ -916,7 +909,7 @@ const isCurrent = computed(() => {
 const keypointListView = computed(() => {
   let listView = [];
   for (let i = 0; i < keypointLabels.value.length; ++i) {
-    let visibility = getKeypointVisibility(i);
+    const visibility = getKeypointVisibility(i);
     let iconColor = "rgb(40, 42, 49)";
 
     if (visibility == 1) {
@@ -947,7 +940,7 @@ const backgroundColor = computed(() => {
 });
 
 const showSideMenu = computed(() => {
-      let localsearch = search.value.toLowerCase();
+      const localsearch = search.value.toLowerCase();
       if (localsearch.length === 0) return true;
       if (localsearch === String(annotation.value.id)) return true;
       if (localsearch === String(index.value + 1)) return true;
@@ -955,10 +948,10 @@ const showSideMenu = computed(() => {
 });
 
 const darkHSL = computed(() => {
-      let tmpcolor = new paper.Color(color.value);
-      let h = Math.round(tmpcolor.hue);
-      let l = Math.round(tmpcolor.lightness * 50);
-      let s = Math.round(tmpcolor.saturation * 100);
+      const tmpcolor = new paper.Color(color.value);
+      const h = Math.round(tmpcolor.hue);
+      const l = Math.round(tmpcolor.lightness * 50);
+      const s = Math.round(tmpcolor.saturation * 100);
       return "hsl(" + h + "," + s + "%," + l + "%)";
 });
 
@@ -1056,7 +1049,6 @@ watch(
     console.log('watch annotation value');
     initAnnotation();
 });
-//},{ flush: 'post'});
 
 watch(
   () => isCurrent.value, 
@@ -1117,7 +1109,7 @@ watch(
 }, { immediate: true });
 
 const onAnnotation = (data) => {
-  let localannotation = data.annotation;
+  const localannotation = data.annotation;
   if (uuid.value === data.uuid) return;
   if (localannotation.id !== annotation.value.id) return;
   if (data.action === 'modify') {

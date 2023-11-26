@@ -735,6 +735,44 @@ const getData = (callback) => {
 const onCategoryClick = (indices) => {
       current.value.annotation = indices.annotation;
       current.value.category = indices.category;
+
+      if (indices.hasOwnProperty('keypoint')) {
+        current.value.keypoint = indices.keypoint;
+        handleLabeledKeypointSelection(indices);
+      } else {
+        currentAnnotationFromList.value.keypoint.next.label = String(indices.keypoint + 1);
+        activeTool.value = keypoint.value;
+        activeTool.value.click();
+      }
+};
+
+function handleLabeledKeypointSelection(indices) {
+      if(indices.keypoint === -1) return
+      
+      // keypoints._labelled seem's only visible on currentAnnotation
+      const annot = currentAnnotationFromList.value
+                                 || currentCategoryFromList.value.category.annotations[current.value.annotation];
+      const keypoints = annot.keypoints;
+
+      if (!keypoints._labelled) return; 
+      const indexLabel = String(indices.keypoint + 1);
+      const label = keypoints._labelled[indexLabel];
+
+      if (label) {
+        label.selected = true;
+        activeTool.value = select.value;
+      } else {
+        currentAnnotationFromList.value.keypoint.next.label = indexLabel;
+        activeTool.value = keypoint.value;
+      }
+      activeTool.value.click();
+}
+
+
+/*
+const onCategoryClick = (indices) => {
+      current.value.annotation = indices.annotation;
+      current.value.category = indices.category;
       if (!indices.hasOwnProperty("keypoint")) {
         indices.keypoint = -1;
       }
@@ -773,6 +811,7 @@ const onCategoryClick = (indices) => {
         }
       }
 };
+*/
 
 const onKeypointsComplete = () => {
        /********* Remove me when this.currentAnnotation will not be empty at start ********/ 
@@ -928,6 +967,20 @@ const decrementCategory = () => {
 };
 
 const incrementAnnotation = () => {
+    if (current.value.annotation === currentCategoryFromList.value.category.annotations.length - 1) {
+        incrementCategory();
+        current.value.annotation = -1;
+    } else {
+        current.value.annotation += 1;
+        current.value.keypoint = -1;
+        if (currentAnnotation.value && currentAnnotation.value.showKeypoints) {
+            currentAnnotation.value.onAnnotationKeypointClick(current.value.keypoint);
+        }
+    }
+};
+
+/*
+const incrementAnnotation = () => {
   let annotationCount = currentCategoryFromList.value.category.annotations.length;
   if (current.value.annotation === annotationCount - 1) {
     incrementCategory();
@@ -945,6 +998,7 @@ const incrementAnnotation = () => {
     }
   }
 };
+*/
 
 const decrementAnnotation = () => {
   let annotationCount = currentCategoryFromList.value.category.annotations.length;
