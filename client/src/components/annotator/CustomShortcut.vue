@@ -35,7 +35,7 @@
 </template>
 
 <script setup>
-import { reactive, ref, computed, onMounted, onUnmounted, toRef, watch } from 'vue';
+import { ref, computed, onMounted, onUnmounted, toRef, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
@@ -47,7 +47,10 @@ const props = defineProps({
   },
 });
 
-const _uid = reactive(`input-${Date.now()}-${Math.random()}`);
+// const _uid = reactive(`input-${Date.now()}-${Math.random()}`);
+// const _uid = reactive(`input-${Date.now()}-${Math.floor(Math.random()*100000)}`);
+
+const _uid = ref(`input-${Date.now()}-${Math.random()}`);
 // const keys = ref(props.shortcut.default);
 const keys = toRef(props.shortcut, 'default');
 
@@ -110,7 +113,8 @@ const onKeydown = ((e) => {
       }
 
       // if (parseInt(e.target.id) === _uid) {
-      if (e.target.id === _uid) {
+      // if (e.target.id === _uid) {
+      if (e.target.id === _uid.value) {
         e.preventDefault();
         keys.value = keysDown.value;
       } else if (route.name === "annotate") {

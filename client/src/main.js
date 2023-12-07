@@ -11,7 +11,7 @@ import router from "./router";
 // import store from "./store";
 // import VueToastr2 from "vue-toastr-2";
 // import {useToast} from 'vue-toast-notification';
-import {VueToast} from 'vue-toast-notification';
+// import ToastPlugin from 'vue-toast-notification';
 import paper from "paper";
 // import VTooltip from "v-tooltip";
 import FloatingVue from 'floating-vue'
@@ -47,10 +47,13 @@ const app = createApp({
 
 app.use(createPinia());
 // app.use(VueToastr2);
-app.use(VueToast, {
+// generate [Vue warn]: A plugin must either be a function or an object with an "install" function.
+/*
+app.use(ToastPlugin, {
     // One of the options
     position: 'top'
 });
+*/
 // app.use(VTooltip);
 app.use(FloatingVue);
 app.use(router);

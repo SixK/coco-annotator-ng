@@ -21,7 +21,8 @@ const infoStore = useInfoStore();
 
 import { nextTick, ref, computed, watch, inject, onMounted, provide } from 'vue'
 
-const getAnnotationFromIndex = inject('getAnnotationFromIndex');
+const getAnnotationFromIndex = inject('getAnnotationFromIndex', () => {});
+// const getAnnotationFromIndex = inject('getAnnotationFromIndex');
 const getCategoryByIndex = inject('getCategoryByIndex');
 const getCategory = inject('getCategory');
 const getHover = inject('getHover');
