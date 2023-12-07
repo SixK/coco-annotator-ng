@@ -269,7 +269,8 @@ const hover = ref(props.hover);
 const index = ref(props.index);
 const current = ref(props.current);
 const allCategories = ref(props.allCategories);
-const categorysearch = ref(props.categorysearch);
+// const categorysearch = ref(props.categorysearch);
+const categorysearch = toRef(props, 'categorysearch');
 
 // const annotation = ref(null);
 const keypoints = ref(null);

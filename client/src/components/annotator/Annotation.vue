@@ -376,7 +376,8 @@ const keypointEdges = ref(props.keypointEdges);
 const keypointLabels = toRef(props, 'keypointLabels');
 const keypointColors = toRef(props, 'keypointColors');
 // const keypointEdges = toRef(props, 'keypointEdges');
-const search = ref(props.search);
+// const search = ref(props.search);
+const search = toRef(props, 'search');
 const scale = ref(props.scale);
 
 const hover = toRef(props, 'hover');
