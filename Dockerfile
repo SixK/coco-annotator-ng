@@ -42,7 +42,7 @@ RUN python set_path.py
 COPY --from=build-stage /workspace/client/dist /workspace/dist
 
 RUN apt update && \
-          apt install -y --no-install-recommends libsm6 libxext6 libxrender1 libgl1 && \
+          apt install -y --no-install-recommends libsm6 libxext6 libxrender1 libgl1 libglib2.0-0 && \
           apt clean && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --no-cache-dir -r ./requirements.txt

@@ -2,7 +2,7 @@ FROM jsbroks/coco-annotator:python-env
 
 WORKDIR /workspace/
 
-RUN apt-get update && apt-get install --no-install-recommends -y libsm6 libxrender1 libfontconfig1 libgl1 && \
+RUN apt-get update && apt-get install --no-install-recommends -y libsm6 libxrender1 libfontconfig1 libgl1  libglib2.0-0 && \
           apt clean && rm -rf /var/lib/apt/lists/*
 
 
