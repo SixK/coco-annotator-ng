@@ -846,7 +846,8 @@ const exportAnnotation = () => {
 const emitModify = () => {
   const uuid = Math.random().toString(36).replace(/[^a-z]+/g, "");
   annotation.value.paper_object = compoundPath.value.exportJSON({ asString: false, precision: 1 });
-  app.__vue_app__.config.globalProperties.$socket.emit("annotation", {
+  // app.__vue_app__.config.globalProperties.$socket.emit("annotation", {
+  socket.io.emit("annotation", {
     uuid: uuid,
     action: "modify",
     annotation: annotation.value
