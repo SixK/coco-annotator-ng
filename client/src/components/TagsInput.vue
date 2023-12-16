@@ -87,7 +87,7 @@
 import { nextTick } from 'vue';
 import { toRaw, toRef, ref, computed, watch, onMounted } from 'vue';
 
-const emit = defineEmits(["update:selectedCategories", "selectedCategories", "initialized", 
+const emit = defineEmits(["update:selectedCategories", "update:selected-categories", "selectedCategories", "initialized", 
 // const emit = defineEmits([ "selectedCategories", "initialized", 
                                                      "tag-added", "tags-updated", "tag-removed"]);
 
@@ -171,7 +171,8 @@ const existingTags = ref(props.existingTags);
 const onlyExistingTags = ref(props.onlyExistingTags);
 const typeaheadMaxResults = ref(props.typeaheadMaxResults);
 const deleteOnBackspace = ref(props.deleteOnBackspace);
-const selectedCategories = ref(props.selectedCategories);
+// const selectedCategories = ref(props.selectedCategories);
+const selectedCategories = toRef(props, 'selectedCategories');
 const taginput = ref(null);
 // const validate = props.validate;
 
@@ -198,8 +199,9 @@ watch(
   tags.value,
   (newVal, oldVal) => {
       hiddenInput.value = newVal.join(",");
-      emit("selectedCategories", newVal);
-      emit("update:selectedCategories", newVal);
+      // emit("selectedCategories", newVal);
+      // emit("update:selectedCategories", newVal);
+      emit("update:selected-categories", newVal);
 });
 
 

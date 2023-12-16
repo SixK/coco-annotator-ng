@@ -1086,7 +1086,8 @@ watch(
     (val) => { 
         console.log('selected categories :', val);
         updatePage();
-    }
+    },
+      {deep: true},
 );
 
 watch(
