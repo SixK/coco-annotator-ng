@@ -40,9 +40,14 @@ You can then use any recent werkzeug version.
 There is actually no pre-built docker images.   
 You will have to build docker images by yourself.   
 Note that docker images are actually using around 15Gb disk space.   Make sure to have at least 30Gb disk space to build all images.  
-You can probably have images around 2/3 Gb disk space if removing IA features and tweaking Dockerfiles. (but it may not be that eazy to do)
 
 ### Building docker images:  
+First build base images:  
+
+        bash ./build_gpu.sh
+
+Then build compnents images depending of your needs.
+
 Production images with no IA support:
 
 	docker-compose -f ./docker-compose.build.yml build
@@ -55,7 +60,7 @@ Dev images with IA support:
 
 Production images with IA support:
 
-	bash ./build_gpu.sh  
+	docker-compose -f /docker-compose.gpu.yml build
 	docker-compose -f /docker-compose.gpu.yml up  
 
 
