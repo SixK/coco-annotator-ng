@@ -1,4 +1,4 @@
-import "intersection-observer";
+// import "intersection-observer";
 
 // import { createApp, h, configureCompat } from "vue";
 import { createApp, h } from "vue";
