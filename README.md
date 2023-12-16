@@ -44,7 +44,7 @@ Note that docker images are actually using around 15Gb disk space.   Make sure t
 ### Building docker images:  
 First build base images:  
 
-        bash ./build_gpu.sh
+        bash ./build_base_image.sh
 
 Then build compnents images depending of your needs.
 
@@ -182,7 +182,7 @@ This version still has some bugs mainly introduced by vue3 new behaviour or vue3
 Most of libraries has been updated to more recent versions.
 
 To use SAM you will need a Cuda capable graphic card (or modify sources to use CPU. Untested). 
-First rebuild a new base image using the following command from build_gpu.sh:  
+First rebuild a new base image using the following command from build_base_image.sh:  
 >    docker build -f ./backend/Dockerfile . -t jsbroks/coco-annotator:python-env
 
 Download SAM model :
