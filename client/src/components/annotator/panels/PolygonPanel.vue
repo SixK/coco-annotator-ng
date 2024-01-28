@@ -51,14 +51,17 @@ import PanelInputString from "@/components/PanelInputString";
 import PanelInputNumber from "@/components/PanelInputNumber";
 import { ref, inject, watchEffect } from 'vue';
 
+const polygon = defineModel('polygon', { type: Object, required: true });
+
+/*
 const props = defineProps({
   polygon: {
     type: Object,
     required: true,
   },
 });
-
 const polygon = ref(props.polygon);
+*/
 const showme = ref('false');
 const getActiveTool = inject('getActiveTool');
 

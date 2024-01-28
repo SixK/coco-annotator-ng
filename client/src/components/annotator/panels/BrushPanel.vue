@@ -20,6 +20,9 @@ import PanelInputString from "@/components/PanelInputString";
 import PanelInputNumber from "@/components/PanelInputNumber";
 import { ref, inject, watchEffect } from 'vue';
 
+const brush = defineModel('brush', { type: Object, required: true });
+
+/*
 const props = defineProps({
   brush: {
     type: Object,
@@ -27,6 +30,7 @@ const props = defineProps({
   },
 });
 const brush = ref(props.brush);
+*/
 const showme = ref('false');
 const getActiveTool = inject('getActiveTool');
 

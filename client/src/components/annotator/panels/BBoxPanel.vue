@@ -26,6 +26,9 @@ import PanelToggle from "@/components/PanelToggle";
 import PanelInputString from "@/components/PanelInputString";
 import { ref, inject, watchEffect } from 'vue';
 
+const bbox = defineModel('bbox', { type: Object, required: true });
+
+/*
 const props = defineProps({
   bbox: {
     type: Object,
@@ -34,6 +37,7 @@ const props = defineProps({
 });
 
 const bbox = ref(props.bbox);
+*/
 const showme = ref('false');
 const getActiveTool = inject('getActiveTool');
 

@@ -25,6 +25,11 @@ import { VisibilityOptions } from '@/libs/keypoints';
 
 const getCurrentAnnotation = inject('getCurrentAnnotation');
 
+
+const keypoint = defineModel('keypoint', { type: Object, required: true });
+const currentAnnotation = defineModel('currentAnnotation', { type: Object,  validator: (prop) => typeof prop === 'object' || prop === undefined});
+
+/*
 const props = defineProps({
   keypoint: {
     type: Object,
@@ -36,10 +41,9 @@ const props = defineProps({
     validator: (prop) => typeof prop === 'object' || prop === undefined,
   },
 });
-
 const currentAnnotation = ref(props.currentAnnotation);
-
 const keypoint = ref(props.keypoint);
+*/
 const showme = ref('false');
 const getActiveTool = inject('getActiveTool');
 

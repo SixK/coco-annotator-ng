@@ -23,6 +23,9 @@
 import PanelInputNumber from '@/components/PanelInputNumber';
 import { ref, inject, watchEffect } from 'vue';
 
+const magicwand = defineModel('magicwand', { type: Object, required: true });
+
+/*
 const props = defineProps({
   magicwand: {
     type: Object,
@@ -31,6 +34,8 @@ const props = defineProps({
 });
 
 const magicwand = ref(props.magicwand);
+*/
+
 const showme = ref('false');
 const getActiveTool = inject('getActiveTool');
 

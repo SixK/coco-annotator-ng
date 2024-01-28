@@ -20,6 +20,8 @@ import PanelInputString from '@/components/PanelInputString';
 import PanelInputNumber from '@/components/PanelInputNumber';
 import { ref, inject, watchEffect } from 'vue';
 
+const eraser = defineModel('eraser', { type: Object, required: true });
+/*
 const props = defineProps({
   eraser: {
     type: Object,
@@ -28,6 +30,7 @@ const props = defineProps({
 });
 
 const eraser = ref(props.eraser);
+*/
 const showme = ref('false');
 const getActiveTool = inject('getActiveTool');
 
