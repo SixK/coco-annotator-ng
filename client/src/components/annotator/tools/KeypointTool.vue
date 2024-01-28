@@ -12,13 +12,6 @@ import { useTools } from "@/composables/toolBar/tools";
 const getCurrentAnnotation = inject('getCurrentAnnotation');
 
 
-// const emits = defineEmits(['update']);
-
-/*
-const emitUpdate = (value) => {
-    emits('update',  value);
-}*/
-
 const {
     click,
     state,

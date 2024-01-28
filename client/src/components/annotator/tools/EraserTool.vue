@@ -10,13 +10,6 @@ import { ref, computed, watch, inject, watchEffect, onMounted, provide } from 'v
 import { useTools } from "@/composables/toolBar/tools";
 import paper from 'paper';
 
-// const emits = defineEmits(['update']);
-
-/*
-const emitUpdate = (value) => {
-    emits('update',  value);
-}
-*/
 
 const props = defineProps({
   scale: {

@@ -8,35 +8,19 @@
 <script setup>
 import paper from "paper";
 import { useTools } from "@/composables/toolBar/tools";
-// import { useStore } from 'vuex';
 
 import { useProcStore } from "@/store/index";
 const procStore = useProcStore();
 import { useAuthStore } from "@/store/user";
 const authStore = useAuthStore();
-/*
-import { useInfoStore } from "@/store/info";
-const infoStore = useInfoStore();
-*/
 
 import { nextTick, ref, computed, watch, inject, onMounted, provide } from 'vue'
 
 const getAnnotationFromIndex = inject('getAnnotationFromIndex', () => {});
-// const getAnnotationFromIndex = inject('getAnnotationFromIndex');
 const getCategoryByIndex = inject('getCategoryByIndex');
 const getCategory = inject('getCategory');
 const getHover = inject('getHover');
 const getPaper = inject('getPaper');
-
-// const store = useStore();
-
-// const emits = defineEmits(['update']);
-
-/*
-const emitUpdate = (value) => {
-    console.log('try to emit:', value);
-    emits('update',  value);
-}*/
 
 const {
     click,
@@ -98,7 +82,6 @@ const hitOptions = ref({
 
 const localHover = ref(getHover());
 const localPaper = ref(getPaper());
-
 
 
 const isDisabled = computed(() => {
@@ -306,13 +289,10 @@ const checkBbox = (paperObject) => {
   if (annotation == null) return false;
   
   return annotation.isbbox;
-  // return annotation.annotation.isbbox;
 };
 
 
-const onMouseDown = (event) => {
-   //let hitResult = this.$parent.paper.project.hitTest(
-   
+const onMouseDown = (event) => {   
   const hitResult = localPaper.value.project.hitTest(
     event.point,
     hitOptions.value

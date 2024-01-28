@@ -14,15 +14,6 @@ const getCurrentAnnotation = inject('getCurrentAnnotation');
 const getImageRaster = inject('getImageRaster');
 const getImageId = inject('getImageId');
 
-/*
-const emits = defineEmits(['update']);
-
-const emitUpdate = (value) => {
-    console.log('try to emit:', value);
-    emits('update',  value);
-}
-*/
-
 const {
     click,
     state,

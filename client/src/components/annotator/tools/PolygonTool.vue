@@ -9,8 +9,6 @@
 import paper from "paper";
 import UndoAction from "@/undo";
 import { invertColor } from "@/libs/colors";
-// import { mapMutations } from "vuex";
-// import { useStore } from 'vuex';
 import { useTools } from "@/composables/toolBar/tools";
 import { ref, computed, watch, inject, onMounted, provide } from 'vue'
 
@@ -18,23 +16,9 @@ const uniteCurrentAnnotation = inject('uniteCurrentAnnotation');
 const save = inject('save');
 const getImageRaster = inject('getImageRaster');
 
-// const store = useStore();
 import { useProcStore } from "@/store/index";
 const procStore = useProcStore();
-/*
-import { useAuthStore } from "@/store/user";
-const authStore = useAuthStore();
-import { useInfoStore } from "@/store/info";
-const infoStore = useInfoStore();
-*/
 
-
-// const emits = defineEmits(['update']);
-
-/*
-const emitUpdate = (value) => {
-    emits('update',  value);
-}*/
 
 const {
     click,
