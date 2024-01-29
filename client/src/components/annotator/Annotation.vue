@@ -294,6 +294,7 @@ const getShowAnnotations = inject('getShowAnnotations');
 
 const emit = defineEmits(['set-color', 'keypointsComplete', 'keypoint-click', 'click', 'deleted']);
 
+/*
 const props = defineProps({
     annotation: {
       type: Object,
@@ -360,40 +361,59 @@ const props = defineProps({
       default: () => []
     }
 });
+*/
 
 const socket = inject('socket');
 
-const showAnnotations = ref(props.showAnnotations);
+const annotation = defineModel('annotation', { type: Object, required: true });
+const showAnnotations = defineModel('showAnnotations', { type: Boolean, required: true });
+const isHoverCategory = defineModel('isHoverCategory', { type: Boolean, required: true });
+const category = defineModel('category', { type: Object, required: true });
+const index = defineModel('index', { type: Number, required: true });
+const current = defineModel('current', { type: Number, required: true });
+const hover = defineModel('hover', { type: Number, required: true });
+const opacity = defineModel('opacity', { type: Number, required: true });
+const scale = defineModel('scale', { type: Number, default: 1 });
+const search = defineModel('search', { type: String, default: "" });
+const simplify = defineModel('simplify', { type: Number, default: 1 });
+const keypointEdges = defineModel('keypointEdges', { type: Array, required: true });
+const keypointLabels = defineModel('keypointLabels', { type: Array, required: true });
+const keypointColors = defineModel('keypointColors', { type: Array, required: true });
+const activeTool = defineModel('activeTool', { type: String, required: true });
+const allCategories = defineModel('allCategories', { type: Array, default: () => [] });
+
+
+// const showAnnotations = ref(props.showAnnotations);
 // don't know why toRef does not synchronize showAnnotations
 // const showAnnotations = toRef(props, 'showAnnotations');
 
-const isHoverCategory = ref(props.isHoverCategory)
-const simplify = ref(props.simplify);
-const activeTool = ref(props.activeTool);
-const keypointEdges = ref(props.keypointEdges);
+// const isHoverCategory = ref(props.isHoverCategory)
+// const simplify = ref(props.simplify);
+// const activeTool = ref(props.activeTool);
+// const keypointEdges = ref(props.keypointEdges);
 // const keypointColors = ref(props.keypointColors);
 // const keypointLabels = ref(props.keypointLabels);
-const keypointLabels = toRef(props, 'keypointLabels');
-const keypointColors = toRef(props, 'keypointColors');
+// const keypointLabels = toRef(props, 'keypointLabels');
+// const keypointColors = toRef(props, 'keypointColors');
 // const keypointEdges = toRef(props, 'keypointEdges');
 // const search = ref(props.search);
-const search = toRef(props, 'search');
-const scale = ref(props.scale);
+// const search = toRef(props, 'search');
+// const scale = ref(props.scale);
 
-const hover = toRef(props, 'hover');
-const current = toRef(props, 'current');
+// const hover = toRef(props, 'hover');
+// const current = toRef(props, 'current');
 
-const annotation = toRef(props, 'annotation');
-const category = toRef(props, 'category');
+// const annotation = toRef(props, 'annotation');
+// const category = toRef(props, 'category');
 // const category = ref(props.category);
 
 
-const index = ref(props.index);
-const opacity = ref(props.opacity);
+// const index = ref(props.index);
+// const opacity = ref(props.opacity);
 // const annotation = ref(props.annotation);
 const isVisible = ref(true);
 const showKeypoints = ref(false);
-const color = ref(props.annotation.color);
+const color = ref(annotation.value.color);
 const compoundPath = ref(null);
 const keypoints = ref(null);
 const metadata = ref([]);
@@ -960,10 +980,10 @@ const darkHSL = computed(() => {
 const notUsedKeypointLabels = computed(() => {
   tagRecomputeCounter;
   const tags = {};
-  for (let i = 0; i < props.keypointLabels.length; i++) {
+  for (let i = 0; i < keypointLabels.value.length; i++) {
     // Include it tags if it is the current keypoint or not in use.
     if (keypoints.value && !keypoints.value._labelled[i + 1]) {
-      tags[i + 1] = props.keypointLabels[i];
+      tags[i + 1] = keypointLabels.value[i];
     }
   }
   return tags;
