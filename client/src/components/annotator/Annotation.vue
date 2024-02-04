@@ -294,8 +294,8 @@ const getShowAnnotations = inject('getShowAnnotations');
 
 const emit = defineEmits(['set-color', 'keypointsComplete', 'keypoint-click', 'click', 'deleted']);
 
-/*
 const props = defineProps({
+/*
     annotation: {
       type: Object,
       required: true
@@ -340,10 +340,12 @@ const props = defineProps({
       type: Number,
       default: 1
     },
+*/
     keypointEdges: {
       type: Array,
       required: true
     },
+/*
     keypointLabels: {
       type: Array,
       required: true
@@ -360,8 +362,8 @@ const props = defineProps({
       type: Array,
       default: () => []
     }
-});
 */
+});
 
 const socket = inject('socket');
 
@@ -376,7 +378,7 @@ const opacity = defineModel('opacity', { type: Number, required: true });
 const scale = defineModel('scale', { type: Number, default: 1 });
 const search = defineModel('search', { type: String, default: "" });
 const simplify = defineModel('simplify', { type: Number, default: 1 });
-const keypointEdges = defineModel('keypointEdges', { type: Array, required: true });
+// const keypointEdges = defineModel('keypointEdges', { type: Array, required: true });
 const keypointLabels = defineModel('keypointLabels', { type: Array, required: true });
 const keypointColors = defineModel('keypointColors', { type: Array, required: true });
 const activeTool = defineModel('activeTool', { type: String, required: true });
@@ -390,7 +392,7 @@ const allCategories = defineModel('allCategories', { type: Array, default: () =>
 // const isHoverCategory = ref(props.isHoverCategory)
 // const simplify = ref(props.simplify);
 // const activeTool = ref(props.activeTool);
-// const keypointEdges = ref(props.keypointEdges);
+const keypointEdges = ref(props.keypointEdges);
 // const keypointColors = ref(props.keypointColors);
 // const keypointLabels = ref(props.keypointLabels);
 // const keypointLabels = toRef(props, 'keypointLabels');
