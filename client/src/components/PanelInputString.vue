@@ -12,6 +12,11 @@
 </template>
 <script setup>
 import { ref, watch, onMounted } from 'vue';
+
+const name = defineModel('name', { type: String, required: true });
+const inputString = defineModel('inputString', { type: String, required: true });
+
+/*
 const props = defineProps({
   name: {
     type: String,
@@ -22,13 +27,15 @@ const props = defineProps({
     required: true,
   },
 });
+*/
+
 // const emit = defineEmits(['update', 'submit']);
 const emit = defineEmits(['update:inputString', 'submit']);
-const localValue = ref(props.value);
+const localValue = ref(inputString.value);
 watch(localValue, () => {
   emit('update:inputString', localValue.value);
 });
-watch(() => props.inputString, (newValue) => {
+watch(() => inputString.value, (newValue) => {
   localValue.value = newValue;
 });
 const submit = () => {
@@ -36,7 +43,7 @@ const submit = () => {
 };
 
 onMounted(() => {
-  localValue.value  = props.inputString;
+  localValue.value  = inputString.value;
 })
 
 </script>

@@ -7,12 +7,14 @@
   </button>
 </template>
 <script setup>
+/*
 const props = defineProps({
   name: {
     type: String,
     required: true,
   },
-});
+});*/
+const name = defineModel('name', { type: String, required: true });
 
 const emit = defineEmits(['click'])
 </script>

@@ -22,7 +22,11 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
 
+const name = defineModel('name', { type: String, required: true });
+const value = defineModel('value', { type: [Number, Array, Object, String], required: true });
+const values = defineModel('values', { type: Object, required: true });
 
+/*
 const props = defineProps({
   name: {
     type: String,
@@ -37,18 +41,18 @@ const props = defineProps({
     required: true,
   },
 });
-
+*/
 
 const emits = defineEmits(['update:value']);
-const localValue = ref(props.value);
+const localValue = ref(value.value);
 
 const options = computed(() => {
- console.log('inputdropdown:', props.values);
+ console.log('inputdropdown:', values.value);
   let array = [];
-  Object.keys(props.values).forEach((k) => {
+  Object.keys(values.value).forEach((k) => {
     array.push({
       key: k,
-      value: props.values[k],
+      value: values.value[k],
       selected: localValue.value == k,
     });
   });
@@ -61,7 +65,7 @@ watch(
     emits('update:value', localValue.value);
 });
 watch(
-  () => props.value, 
+  () => value.value, 
   (newValue) => {
       localValue.value = newValue;
 });

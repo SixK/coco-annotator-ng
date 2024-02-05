@@ -72,6 +72,13 @@
 
 import { ref, watchEffect, onMounted } from 'vue';
 
+const metadata = defineModel('metadata', { type: Object, required: true });
+const title = defineModel('title', { type: String, default: "Metadata" });
+const keyTitle = defineModel('keyTitle', { type: String, default: "Keys" });
+const valueTitle = defineModel('valueTitle', { type: String, default: "Values" });
+const exclude = defineModel('exclude', { type: String, default: "" });
+
+/*
 const props = defineProps({
   metadata: {
     type: Object,
@@ -94,10 +101,11 @@ const props = defineProps({
     default: "",
   },
 });
+*/
 
 const metadataList = ref([]);
 // const metadata = ref([]);
-const metadata = ref(props.metadata);
+// const metadata = ref(props.metadata);
 
 watchEffect(() => {
     loadMetadata();
@@ -133,13 +141,13 @@ const createMetadata = () => {
 };
 
 function loadMetadata() {
-    if (props.metadata != null && props.metadata['metadata'] == null) {
-      for (let key in props.metadata) {
-        if (!Object.prototype.hasOwnProperty.call(props.metadata, key)) {
+    if (metadata.value != null && metadata.value['metadata'] == null) {
+      for (let key in metadata.value) {
+        if (!Object.prototype.hasOwnProperty.call(metadata.value, key)) {
           continue;
         }
-        if (key === props.exclude) continue;
-        let value = props.metadata[key];
+        if (key === exclude.value) continue;
+        let value = metadata.value[key];
         if (value == null) value = '';
         else value = value.toString();
         metadataList.value.push({ key: key, value: value });

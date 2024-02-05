@@ -32,6 +32,7 @@
 <script setup>
 import { ref, computed, watch, onUnmounted, onMounted} from 'vue';
 
+/*
 const props = defineProps({
   pages: {
     type: Number,
@@ -40,6 +41,9 @@ const props = defineProps({
 });
 
 const pages = ref(props.pages);
+*/
+const pages = defineModel('pages', { type: Number, required: true });
+
 const range = ref(11);
 const page = ref(1);
 let timer = null;
@@ -54,8 +58,8 @@ const previousPage = () => {
 
 const nextPage = () => {
   page.value += 1;
-  if (page.value > props.pages) {
-    page.value = props.pages;
+  if (page.value > pages.value) {
+    page.value = pages.value;
   }
 };
 
@@ -66,16 +70,16 @@ watch(page, (newPage, oldPage) => {
 });
 
 const startPage = computed(() => {
-  console.log('rng:', range.value, props.pages);
-  if (range.value > props.pages) {
+  console.log('rng:', range.value, pages.value);
+  if (range.value > pages.value) {
     return 0;
   }
 
   let rangeValue = Math.round(range.value / 2);
   let start = page.value - rangeValue;
   if (start < 0) return 0;
-  if (start > props.pages || start + range.value > props.pages) {
-    return props.pages - range.value;
+  if (start > pages.value || start + range.value > pages.value) {
+    return pages.value - range.value;
   }
   return start;
 });

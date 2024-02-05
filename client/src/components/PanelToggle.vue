@@ -2,7 +2,7 @@
   <button
     class="btn btn-outline-light tool-input-button"
     :class="{ active: showText }"
-    @click="toggleValue"
+    @click="showText =!showText"
   >
     {{ name }}
   </button>
@@ -10,6 +10,7 @@
 
 <script setup>
 
+/*
 const props = defineProps({
   name: {
     type: String,
@@ -19,13 +20,16 @@ const props = defineProps({
     type: Boolean,
     required: true,
   }
-})
+})*/
 
-const emit = defineEmits(['update:showText'])
+const name = defineModel('name', { type: String, required: true });
+const showText = defineModel('showText', { type: Boolean, required: true });
 
+// const emit = defineEmits(['update:showText'])
+/*
 const toggleValue = () => {
-  emit('update:showText', !props.showText);
-}
+    emit('update:showText', !showText.value);
+}*/
 </script>
 
 <style scoped>

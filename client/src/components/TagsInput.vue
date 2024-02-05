@@ -91,6 +91,23 @@ const emit = defineEmits(["update:selectedCategories", "update:selected-categori
 // const emit = defineEmits([ "selectedCategories", "initialized", 
                                                      "tag-added", "tags-updated", "tag-removed"]);
 
+const elementId = defineModel('elementId', { type: String, required: true });
+const existingTags = defineModel('existingTags', { type: Object,      default: () => {return {}} });
+const selectedCategories = defineModel('selectedCategories', { type: [Array, String],      default: () => {return []} });
+const typeahead = defineModel('typeahead', { type: Boolean, default: false });
+const typeaheadStyle = defineModel('typeaheadStyle', { type: String, default: "badges" });
+const typeaheadActivationThreshold = defineModel('typeaheadActivationThreshold', { type: Number, default: 1 });
+const typeaheadMaxResults = defineModel('typeaheadMaxResults', { type: Number, default: 0 });
+const placeholder = defineModel('placeholder', { type: String, default: "Add a category" });
+const limit = defineModel('limit', { type: Number, default: 0 });
+const onlyExistingTags = defineModel('onlyExistingTags', { type: Boolean, default: false });
+const deleteOnBackspace = defineModel('deleteOnBackspace', { type: Boolean, default: true });
+const allowDuplicates = defineModel('allowDuplicates', { type: Boolean, default: false });
+const validate = defineModel('validate', { type: Function, default: () => true });
+const addTagsOnComma = defineModel('addTagsOnComma', { type: Boolean, default: false });
+const wrapperClass = defineModel('wrapperClass', { type: String, default: "tags-input-wrapper-default" });
+
+/*
 const props = defineProps({
       elementId: {
       type: String,
@@ -157,6 +174,7 @@ const props = defineProps({
       default: "tags-input-wrapper-default",
     },
 });
+*/
 
 const badgeId = ref(0);
 const tagBadges = ref([]);
@@ -166,13 +184,13 @@ const oldInput = ref("");
 const hiddenInput = ref("");
 const searchResults = ref([]);
 const searchSelection = ref(0);
-const typeaheadActivationThreshold = ref(props.typeaheadActivationThreshold);
-const existingTags = ref(props.existingTags);
-const onlyExistingTags = ref(props.onlyExistingTags);
-const typeaheadMaxResults = ref(props.typeaheadMaxResults);
-const deleteOnBackspace = ref(props.deleteOnBackspace);
+// const typeaheadActivationThreshold = ref(props.typeaheadActivationThreshold);
+// const existingTags = ref(props.existingTags);
+// const onlyExistingTags = ref(props.onlyExistingTags);
+// const typeaheadMaxResults = ref(props.typeaheadMaxResults);
+// const deleteOnBackspace = ref(props.deleteOnBackspace);
 // const selectedCategories = ref(props.selectedCategories);
-const selectedCategories = toRef(props, 'selectedCategories');
+// const selectedCategories = toRef(props, 'selectedCategories');
 const taginput = ref(null);
 // const validate = props.validate;
 
@@ -216,10 +234,10 @@ const tagFromInput = () => {
         input.value = "";
       } else {
         let text = input.value.trim();
-        if (!props.onlyExistingTags && text.length && props.validate(text)) {
+        if (!onlyExistingTags.value && text.length && validate.value(text)) {
           input.value = "";
           let slug = makeSlug(text);
-          let existingTag = props.existingTags[slug];
+          let existingTag = existingTags.value[slug];
           slug = existingTag ? slug : text;
           text = existingTag ? existingTag : text;
           addTag(slug, text);
@@ -247,7 +265,7 @@ const makeSlug = (value) => {
 };
 
 const addTag = (slug, text) => {
-  if (props.limit > 0 && tags.value.length >= props.limit) {
+  if (limit.value > 0 && tags.value.length >= limit.value) {
     return false;
   }
   if (!tagSelected(slug)) {
@@ -276,7 +294,7 @@ const removeTag = (index) => {
 };
 
 const searchTag = () => {
-    if (props.typeahead === true) {
+    if (typeahead.value === true) {
       if (
         oldInput.value != input.value ||
         (!searchResults.value.length && typeaheadActivationThreshold.value == 0)
@@ -288,15 +306,15 @@ const searchTag = () => {
           (inputValue.length && inputValue.length >= typeaheadActivationThreshold.value) ||
           typeaheadActivationThreshold.value == 0
         ) {
-          for (let slug in props.existingTags) {
-            let text = props.existingTags[slug].toLowerCase();
+          for (let slug in existingTags.value) {
+            let text = existingTags.value[slug].toLowerCase();
             if (
               text.search(escapeRegExp(inputValue.toLowerCase())) > -1 &&
               !tagSelected(slug)
             ) {
               searchResults.value.push({
                 slug,
-                text: props.existingTags[slug],
+                text: existingTags.value[slug],
               });
             }
           }
@@ -354,10 +372,10 @@ const clearTags = () => {
 const tagsFromValue = () => {
     // code execution speed problem, tags are visible only id we output console.log !??
     
-    const rawArray = toRaw(props.selectedCategories);
+    const rawArray = toRaw(selectedCategories.value);
 
       // if (props.selectedCategories && props.selectedCategories.length) {
-      if (selectedCategories.value && props.selectedCategories.length) {
+      if (selectedCategories.value && selectedCategories.value.length) {
         // const newTags = Array.isArray(props.selectedCategories)
         const newTags = Array.isArray(selectedCategories.value)
           ? selectedCategories.value
@@ -381,7 +399,7 @@ const tagsFromValue = () => {
 };
 
 const tagSelected = (slug) => {
-  if (props.allowDuplicates) {
+  if (allowDuplicates.value) {
     return false;
   }
 

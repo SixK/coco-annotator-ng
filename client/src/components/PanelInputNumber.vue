@@ -17,6 +17,13 @@
 <script setup>
 import { ref, watch } from 'vue';
 
+const name = defineModel('name', { type: String, required: true });
+const value = defineModel('value', { type: Number, required: true });
+const max = defineModel('max', { type: String, default: '10' });
+const min = defineModel('min', { type: String, default: '1' });
+const step = defineModel('step', { type: String, default: '1' });
+
+/*
 const props = defineProps({
   name: {
     type: String,
@@ -39,16 +46,17 @@ const props = defineProps({
     default: '1',
   },
 });
+*/
 
 const emit = defineEmits(['update:value']);
-const localValue = ref(props.value);
+const localValue = ref(value.value);
 
 watch( 
   () => localValue.value, 
   () => {
     emit('update:value', localValue.value);
 });
-watch(() => props.value, (newValue) => {
+watch(() => value.value, (newValue) => {
   localValue.value = newValue;
 });
 </script>

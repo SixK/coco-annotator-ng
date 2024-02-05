@@ -141,6 +141,13 @@ const DISTINCT_COLORS = [
 
 const emit = defineEmits(['update:keypoints-def', 'initialized', 'input']);
 
+const keypointsDef = defineModel('keypointsDef', { type: Object, required: true });
+const title = defineModel('title', { type: String, default: "Keypoints" });
+const keyTitle = defineModel('keyTitle', { type: String, default: "Label" });
+const valueTitle = defineModel('valueTitle', { type: String, default: "Connects to" });
+const exclude = defineModel('exclude', { type: String, default: "" });
+
+/*
 const props = defineProps({
   keypointsDef: {
     type: Object,
@@ -163,13 +170,14 @@ const props = defineProps({
     default: "",
   },
 });
+*/
 
 const keypoints = ref([]);
 const hiddenValue = ref({ edges: [], labels: [], colors: [] });
 const isMounted = ref(false);
 const nextDistinct = ref(-1);
 // const keypointsDef = ref(props.keypointsDef);
-const keypointsDef = toRef(props, 'keypointsDef');
+// const keypointsDef = toRef(props, 'keypointsDef');
 
 const valid = computed(() => {
     if (!isMounted.value) {
