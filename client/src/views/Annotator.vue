@@ -750,6 +750,11 @@ function handleLabeledKeypointSelection(indices) {
       if(indices.keypoint === -1) return
       
       // keypoints._labelled seem's only visible on currentAnnotation
+      if ( !(currentAnnotationFromList.value || currentCategoryFromList.value)) {
+          console.log('something is wrong in annotation');
+          return
+      }
+      
       const annot = currentAnnotationFromList.value
                                  || currentCategoryFromList.value.category.annotations[current.value.annotation];
       const keypoints = annot.keypoints;
