@@ -17,14 +17,16 @@ const getImageRaster = inject('getImageRaster');
 
 const { iconColor, click } = useButton();
 
+const annotateUrl = defineModel('annotateUrl', { type: [String, Number], required: true });
 
+/*
 const props = defineProps({
   annotateUrl: {
     required: true,
     type: [String, Number],
   },
 })
-
+*/
 
 const cursor = ref("copy");
 const icon = ref('fa-cloud-download')
@@ -39,8 +41,8 @@ const name = computed(() => {
 
 
 const validUrl = computed(() => {
-  if (typeof props.annotateUrl === 'number') return false
-  return props.annotateUrl.length > 2
+  if (typeof annotateUrl.value === 'number') return false
+  return annotateUrl.value.length > 2
 });
 
 watch(
@@ -63,7 +65,7 @@ const execute = () => {
         data.append('image', blob);
         loading.value = true;
         axios
-          .post(props.annotateUrl, data, {
+          .post(annotateUrl.value, data, {
             headers: {
               'Content-Type': 'multipart/form-data',
             },

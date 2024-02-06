@@ -12,6 +12,13 @@ import { useTools } from "@/composables/toolBar/tools";
 
 const getCurrentAnnotation = inject('getCurrentAnnotation');
 
+const width = defineModel('width', { type: null, required: true });
+const height = defineModel('height', { type: null, required: true });
+const imageData = defineModel('imageData', { required: true, 
+                                                                           validator: prop => typeof prop === "object" || prop === null });
+
+
+/*
 const props = defineProps({
     width: {
       type: null,
@@ -26,7 +33,7 @@ const props = defineProps({
       validator: prop => typeof prop === "object" || prop === null
     }
 });
-
+*/
 
 const {
     click,
@@ -48,12 +55,15 @@ const wand = ref({
   blur: 40,
 });
 
+/*
 const width = ref(props.width);
 const height = ref(props.height);
 const imageData = ref(props.imageData);
+*/
 
 const localCurrentAnnotation=ref(null);
 
+/*
 watch(
   () => props.width,
   (value) => {
@@ -74,7 +84,7 @@ watch(
       imageData.value = value;
   }
 );
-
+*/
 
 watch(
   () => getCurrentAnnotation(),
@@ -141,7 +151,7 @@ const flood = (x, y, thr, rad) => {
 };
 
 const onMouseDown = (event) => {
-    console.log('width:', width, props.width);
+    console.log('width:', width, width.value);
       let x = Math.round(width.value / 2 + event.point.x);
       let y = Math.round(height.value / 2 + event.point.y);
 

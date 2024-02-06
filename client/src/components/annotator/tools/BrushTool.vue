@@ -9,13 +9,16 @@ import { ref, computed, watch, inject, onMounted, provide} from 'vue'
 import { useTools } from "@/composables/toolBar/tools";
 import paper from 'paper';
 
+const scale = defineModel('scale', { type: Number, default: 1 });
 
+/*
 const props = defineProps({
   scale: {
       type: Number,
       default: 1,
    }
 });
+*/
 
 const uniteCurrentAnnotation = inject('uniteCurrentAnnotation');
 
@@ -30,7 +33,7 @@ const {
 
 name.value = "Brush";
 cursor.value = "none";
-const scale = ref(props.scale);
+// const scale = ref(props.scale);
 const icon = ref("fa-paint-brush");
 const scaleFactor = 3;
 
@@ -82,7 +85,7 @@ watch(
 
 
 watch(
-  () => props.scale,
+  () => scale.value,
   (newScale) => {
     brush.value.pathOptions.strokeWidth = newScale * scaleFactor;    
     if (brush.value.path != null)

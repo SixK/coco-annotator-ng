@@ -35,6 +35,10 @@
 <script setup>
 import { ref, computed, toRef } from 'vue';
 
+const category = defineModel('category', { type: Object, required: true });
+const categoryIds = defineModel('categoryIds', { type: Array, required: true });
+const search = defineModel('search', { type: String, required: true });
+
 const props = defineProps({
   category: {
     type: Object,
@@ -51,9 +55,11 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['update']);
+/*
 const search = toRef(props, 'search');
 const category = toRef(props, 'category');
 const categoryIds = toRef(props, 'categoryIds');
+*/
 
 const show = computed(() => {
   let searchLower = search.value.toLowerCase();

@@ -33,6 +33,11 @@ import { ref, onMounted, inject } from 'vue';
 import { useRouter } from 'vue-router';
 import { nextTick } from 'vue';
 
+const filename = defineModel('filename', { type: String, required: true });
+const previousimage = defineModel('previousimage', { type: Number, default: null });
+const nextimage = defineModel('nextimage', { type: Number, default: null });
+
+/*
 const props = defineProps({
   filename: {
     type: String,
@@ -47,6 +52,7 @@ const props = defineProps({
     default: null,
   },
 });
+*/
 
 // Provide/Inject mechanism
 const save = inject('save');

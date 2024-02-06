@@ -13,18 +13,22 @@ const { iconColor, click } = useButton();
 
 const save = inject('save');
 
+const image = defineModel('image', { type: Object, required: true });
+
+/*
 const props = defineProps({
   image: {
       type: Object,
       required: true,
     },
 });
+*/
 
 const name =  ref("Delete Image");
 const icon = ref("fa-trash-o");
 
 const execute = () => {
-    axios.delete("/api/image/" + props.image.id).then(() => {});
+    axios.delete("/api/image/" + image.value.id).then(() => {});
 }
 
 </script>

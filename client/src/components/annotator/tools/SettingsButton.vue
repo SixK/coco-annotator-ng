@@ -64,7 +64,7 @@
 
             <MetaData
               ref="metadata"
-              :metadata="props.metadata"
+              :metadata="metadata.value"
             />
 
             <p style="margin: 30px 0 0 0">
@@ -118,6 +118,10 @@ import MetaData from "@/components/MetaData.vue";
 import CustomShortcut from "@/components/annotator/CustomShortcut.vue";
 import { onMounted, onUnmounted, toRef, ref, reactive } from 'vue';
 
+const metadata = defineModel('metadata', { type: Object, required: true });
+const commands = defineModel('commands', { type: Array, required: true });
+
+/*
 const props= defineProps({
     metadata: {
       type: Object,
@@ -127,13 +131,13 @@ const props= defineProps({
       type: Array,
       required: true,
     },
-});
+});*/
 
-const metadata = ref(props.metadata);
+// const metadata = ref(props.metadata);
 const name = ref("Image Settings");
 const shortcuts = ref(null); 
 // const commands = ref(props.commands);
-const commands = toRef(props, 'commands');
+// const commands = toRef(props, 'commands');
 
 let settingsModal = null;
 

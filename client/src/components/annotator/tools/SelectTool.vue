@@ -31,17 +31,18 @@ const {
     cursor
   }= useTools();
 
-
+const scale = defineModel('scale', { type: Number, default: 1 });
+/*
 const props = defineProps({
   scale: {
     type: Number,
     default: 1,
   },
-});
+});*/
 
 name.value = "Select";
 name.cursor = "pointer";
-const scale = ref(props.scale);
+// const scale = ref(props.scale);
 const icon = ref("fa-hand-pointer-o");
 // const movePath = ref(false);
 const point = ref(null);
@@ -103,7 +104,7 @@ watch(
 );
 
 watch(
-  () => props.scale, 
+  () => scale.value, 
   (newScale) => {
       console.log('scaling');
       hover.value.rounded = newScale * 5;

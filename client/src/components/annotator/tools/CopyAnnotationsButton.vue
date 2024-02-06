@@ -140,6 +140,12 @@ const resetUndo = () => procStore.resetUndo();
 const injectedSave = inject('save')
 const injectedGetData = inject('getData')
 
+const imageId = defineModel('imageId', { type: Number, required: true });
+const next = defineModel('next', { type: Number, default: null });
+const previous = defineModel('previous', { type: Number, default: null });
+const categories = defineModel('categories', { type: Array, required: true });
+
+/*
 const props = defineProps({
   imageId: {
     type: Number,
@@ -159,6 +165,7 @@ const props = defineProps({
   },
   
 });
+*/
 
 const name = 'Copy Annotations';
 const fromId = ref('');
@@ -166,7 +173,7 @@ const selectedCategories = ref([]);
 const visible = ref(false);
 const isVisible = ref(false);
 
-const imageId = ref(props.imageId);
+// const imageId = ref(props.imageId);
 const localCategories = ref([]);
 
 let modal = ref(null);
@@ -220,7 +227,7 @@ const categoryTags = computed(() => {
 
 // dunno if there is a better way to get Array toward props ?
 watchEffect(() => {
-    props.categories.forEach((category) => {
+    categories.value.forEach((category) => {
           localCategories.value.push(category);
       });
 });

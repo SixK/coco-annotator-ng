@@ -13,13 +13,16 @@ const { iconColor, click } = useButton();
 
 const save = inject('save');
 
+const image = defineModel('image', { type: Object, required: true });
+
+/*
 const props = defineProps({
   image: {
       type: Object,
       required: true,
     },
 });
-
+*/
 
 const name =  ref("Download COCO");
 const icon = ref("fa-download");
@@ -27,7 +30,7 @@ const include = {
         image: true,
         coco: true,
       };
-const image=ref(props.image);
+// const image=ref(props.image);
 
 const  downloadURI = (uri, exportName) => {
   let link = document.createElement('a');

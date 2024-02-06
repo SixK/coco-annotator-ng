@@ -12,20 +12,25 @@ const { iconColor, click } = useButton();
 
 const emit = defineEmits(["update:mode"]);
 
+
+const mode = defineModel('mode', { type: null, required: true });
+
+/*
 const props = defineProps({
   mode: {
     type: String,
     required: true,
   },
 });
+*/
 
-const mode = ref(props.mode);
+// const mode = ref(props.mode);
 
-const name = ref("Mode: "+props.mode);
+const name = ref("Mode: "+mode.value);
 
 const icon = computed(() => {
-  if (props.mode === 'segment') return 'fa-pencil-square-o';
-  if (props.mode === 'label') return 'fa-tags';
+  if (mode.value === 'segment') return 'fa-pencil-square-o';
+  if (mode.value === 'label') return 'fa-tags';
   return '';
 });
 
@@ -38,7 +43,7 @@ const toggleMode = () => {
 */
 
 watch(
-   () => props.mode, 
+   () => mode.value, 
    (newVal) => {
        console.log('mode: ', newVal);
         name.value = "Mode: " + newVal;
