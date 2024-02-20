@@ -25,6 +25,7 @@ WORKDIR /workspace/
 # Copy backend
 COPY ./backend/requirements.txt /workspace/
 COPY ./backend/requirements_common.txt /workspace/
+COPY ./backend/requirements_bug.txt /workspace/
 
 # Install python package dependices
 RUN pip install --no-cache-dir --upgrade pip && \

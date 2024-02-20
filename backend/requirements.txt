@@ -1,4 +1,5 @@
 -r ./requirements_common.txt
+-r ./requirements_bug.txt
 git+https://github.com/maxcountryman/flask-login.git#egg=Flask-Login
 git+https://github.com/ScrambledRK/fork-google-images-download.git#egg=google-images-download
 watchdog==3.0.0
