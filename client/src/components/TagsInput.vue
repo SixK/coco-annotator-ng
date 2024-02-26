@@ -87,9 +87,8 @@
 import { nextTick } from 'vue';
 import { toRaw, toRef, ref, computed, watch, onMounted } from 'vue';
 
-const emit = defineEmits(["update:selectedCategories", "update:selected-categories", "selectedCategories", "initialized", 
-// const emit = defineEmits([ "selectedCategories", "initialized", 
-                                                     "tag-added", "tags-updated", "tag-removed"]);
+// const emit = defineEmits(["update:selectedCategories", "update:selected-categories", "selectedCategories", "initialized", 
+const emit = defineEmits(["initialized", "tag-added", "tags-updated", "tag-removed"]);
 
 const elementId = defineModel('elementId', { type: String, required: true });
 const existingTags = defineModel('existingTags', { type: Object,      default: () => {return {}} });
@@ -219,7 +218,9 @@ watch(
       hiddenInput.value = newVal.join(",");
       // emit("selectedCategories", newVal);
       // emit("update:selectedCategories", newVal);
-      emit("update:selected-categories", newVal);
+      // don't have to emit thank's to defineModel, we simply attribute new value
+      // emit("update:selected-categories", newVal);
+      selectedCategories.value = newVal;
 });
 
 

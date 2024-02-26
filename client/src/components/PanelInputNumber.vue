@@ -4,7 +4,7 @@
       <span class="input-group-text tool-option-font">{{ name }}</span>
     </div>
     <input
-      v-model.number="localValue"
+      v-model.number="value"
       type="number"
       :min="min"
       :max="max"
@@ -48,6 +48,7 @@ const props = defineProps({
 });
 */
 
+/*
 const emit = defineEmits(['update:value']);
 const localValue = ref(value.value);
 
@@ -59,6 +60,7 @@ watch(
 watch(() => value.value, (newValue) => {
   localValue.value = newValue;
 });
+*/
 </script>
 
 <style scoped>

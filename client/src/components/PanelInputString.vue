@@ -4,7 +4,7 @@
       <span class="input-group-text tool-option-font">{{ name }}</span>
     </div>
     <input
-      v-model="localValue"
+      v-model="inputString"
       class="form-control tool-option-input"
       @keyup.enter="submit"
     >
@@ -30,21 +30,28 @@ const props = defineProps({
 */
 
 // const emit = defineEmits(['update', 'submit']);
-const emit = defineEmits(['update:inputString', 'submit']);
-const localValue = ref(inputString.value);
+// const emit = defineEmits(['update:inputString', 'submit']);
+const emit = defineEmits(['submit']);
+
+// const localValue = ref(inputString.value);
+/*
 watch(localValue, () => {
-  emit('update:inputString', localValue.value);
+  // emit('update:inputString', localValue.value);
+  inputString.value = localValue.value;
 });
-watch(() => inputString.value, (newValue) => {
+watch(() => inputString.value, 
+  (newValue) => {
   localValue.value = newValue;
 });
+*/
 const submit = () => {
   emit('submit');
 };
 
+/*
 onMounted(() => {
   localValue.value  = inputString.value;
-})
+})*/
 
 </script>
 

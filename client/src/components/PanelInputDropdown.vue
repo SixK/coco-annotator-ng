@@ -4,7 +4,7 @@
       <span class="input-group-text tool-option-font">{{ name }}</span>
     </div>
     <select
-      v-model="localValue"
+      v-model="value"
       class="form-control tool-option-input"
     >
       <option
@@ -43,8 +43,10 @@ const props = defineProps({
 });
 */
 
+/*
 const emits = defineEmits(['update:value']);
 const localValue = ref(value.value);
+*/
 
 const options = computed(() => {
  console.log('inputdropdown:', values.value);
@@ -53,11 +55,12 @@ const options = computed(() => {
     array.push({
       key: k,
       value: values.value[k],
-      selected: localValue.value == k,
+      selected: value.value == k,
     });
   });
   return array;
 });
+/*
 watch(
   () => localValue.value, 
   () => {
@@ -68,7 +71,7 @@ watch(
   () => value.value, 
   (newValue) => {
       localValue.value = newValue;
-});
+});*/
 </script>
 
 <style scoped>
