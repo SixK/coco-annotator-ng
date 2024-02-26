@@ -1,11 +1,11 @@
 -r ./requirements_common.txt
--r ./requirements_bug.txt
+# -r ./requirements_bug.txt
 git+https://github.com/maxcountryman/flask-login.git#egg=Flask-Login
 git+https://github.com/ScrambledRK/fork-google-images-download.git#egg=google-images-download
-watchdog==3.0.0
-pytest==7.4.4
+watchdog==4.0.0
+pytest==8.0.1
 pytest-ordering==0.6
 Flask-SocketIO
 celery==5.3.6
-Shapely==2.0.2
+Shapely==2.0.3
 

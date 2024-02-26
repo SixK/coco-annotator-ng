@@ -1,3 +1,0 @@
-# seem's this libraries are causing trouble with more recent versions
-dnspython==2.5.0
-jupyterlab==4.0.12

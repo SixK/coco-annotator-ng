@@ -1,6 +1,6 @@
 -r ./requirements_common.txt
 opencv-python
 scikit-image
-keras==2.15.0
+keras==3.0.0
 h5py
 
