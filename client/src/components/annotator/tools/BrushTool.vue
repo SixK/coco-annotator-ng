@@ -11,15 +11,6 @@ import paper from 'paper';
 
 const scale = defineModel('scale', { type: Number, default: 1 });
 
-/*
-const props = defineProps({
-  scale: {
-      type: Number,
-      default: 1,
-   }
-});
-*/
-
 const uniteCurrentAnnotation = inject('uniteCurrentAnnotation');
 
 const {
@@ -33,7 +24,6 @@ const {
 
 name.value = "Brush";
 cursor.value = "none";
-// const scale = ref(props.scale);
 const icon = ref("fa-paint-brush");
 const scaleFactor = 3;
 

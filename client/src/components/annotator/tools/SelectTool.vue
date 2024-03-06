@@ -32,17 +32,9 @@ const {
   }= useTools();
 
 const scale = defineModel('scale', { type: Number, default: 1 });
-/*
-const props = defineProps({
-  scale: {
-    type: Number,
-    default: 1,
-  },
-});*/
 
 name.value = "Select";
 name.cursor = "pointer";
-// const scale = ref(props.scale);
 const icon = ref("fa-hand-pointer-o");
 // const movePath = ref(false);
 const point = ref(null);

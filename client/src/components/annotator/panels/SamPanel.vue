@@ -25,16 +25,6 @@ import { ref, inject, watchEffect } from 'vue';
 
 const sam = defineModel('sam', { type: Object, required: true });
 
-/*
-const props = defineProps({
-  sam: {
-    type: Object,
-    required: true,
-  },
-});
-
-const sam = ref(props.sam);
-*/
 const showme = ref('false');
 const getActiveTool = inject('getActiveTool');
 

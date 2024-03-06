@@ -991,6 +991,7 @@ const notUsedKeypointLabels = computed(() => {
   return tags;
 });
 
+/*
 watch(
     () => activeTool.value,
     (tool) => {
@@ -1024,6 +1025,48 @@ watch(
       }
     }
 );
+*/
+
+watch(
+  () => activeTool.value,
+  (tool) => {
+    if (!isCurrent.value) return;
+
+    session.value.tools.push(tool);
+
+    if (tool === "Keypoints") {
+      handleKeypointsTool(tool);
+    }
+  }
+);
+
+function handleKeypointsTool(tool) {
+  if (!showKeypoints.value) {
+    showKeypoints.value = true;
+  }
+
+  const labelIndex = findLabelIndex();
+  if (labelIndex > -1) {
+    keypoint.value.tag = [String(labelIndex +  1)];
+    currentKeypoint.value = keypoints.value._labelled[keypoint.value.tag];
+    emit("keypoint-click", labelIndex);
+  }
+}
+
+function findLabelIndex() {
+  let labelIndex = -1;
+  for (let i =  0; i < keypointLabels.value.length; ++i) {
+    if (isKeypointLabeled(i)) {
+      if (labelIndex <  0) {
+        labelIndex = i;
+      }
+    } else {
+      labelIndex = i;
+      break;
+    }
+  }
+  return labelIndex;
+}
 
 
 watch(

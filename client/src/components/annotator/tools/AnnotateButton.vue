@@ -19,15 +19,6 @@ const { iconColor, click } = useButton();
 
 const annotateUrl = defineModel('annotateUrl', { type: [String, Number], required: true });
 
-/*
-const props = defineProps({
-  annotateUrl: {
-    required: true,
-    type: [String, Number],
-  },
-})
-*/
-
 const cursor = ref("copy");
 const icon = ref('fa-cloud-download')
 const disabled = ref(true);

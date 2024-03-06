@@ -15,15 +15,6 @@ const save = inject('save');
 
 const image = defineModel('image', { type: Object, required: true });
 
-/*
-const props = defineProps({
-  image: {
-      type: Object,
-      required: true,
-    },
-});
-*/
-
 const name =  ref("Delete Image");
 const icon = ref("fa-trash-o");
 

@@ -12,19 +12,7 @@ const { iconColor, click } = useButton();
 
 const emit = defineEmits(["update:mode"]);
 
-
 const mode = defineModel('mode', { type: null, required: true });
-
-/*
-const props = defineProps({
-  mode: {
-    type: String,
-    required: true,
-  },
-});
-*/
-
-// const mode = ref(props.mode);
 
 const name = ref("Mode: "+mode.value);
 
@@ -34,13 +22,6 @@ const icon = computed(() => {
   return '';
 });
 
-/*
-const toggleMode = () => {
-  const newMode = props.mode === 'segment' ? 'label' : 'segment';
-  // Emit the update event to sync with the parent component
-  emit('update', newMode);
-};
-*/
 
 watch(
    () => mode.value, 

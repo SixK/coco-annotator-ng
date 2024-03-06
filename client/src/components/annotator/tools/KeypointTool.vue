@@ -30,23 +30,9 @@ const isActive = computed(() => {
 });
 
 const scale = defineModel('scale', { type: Number, default: 1 });
-// const settings = defineModel('settings', { type: [Object, null], default: null });
-
-/*
-const props = defineProps({
-  scale: {
-    type: Number,
-    default: 1,
-  },
-  settings: {
-    type: [Object, null],
-    default: null,
-  },
-});*/
 
 name.value = "Keypoints";
 cursor.value = "cell";
-// const scale = ref(props.scale);
 const icon = ref("fa-map-marker");
 const localCurrentAnnotation=ref('');
 

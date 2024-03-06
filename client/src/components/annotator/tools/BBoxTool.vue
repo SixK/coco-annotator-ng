@@ -34,22 +34,8 @@ const getImageRaster = inject('getImageRaster');
 const scale = defineModel('scale', { type: Number, default: 1 });
 const settings = defineModel('settings', { type: [Object, null], default: null });
 
-/*
-const props = defineProps({
-  scale: {
-    type: Number,
-    default: 1,
-  },
-  settings: {
-    type: [Object, null],
-    default: null,
-  },
-});
-*/
-
 name.value = "BBox";
 cursor.value = "copy";
-// const scale = ref(props.scale);
 const icon = ref("fa-object-group");
 const scaleFactor = 3;
 const bbox = ref(null);

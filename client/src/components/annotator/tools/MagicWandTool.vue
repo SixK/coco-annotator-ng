@@ -18,23 +18,6 @@ const imageData = defineModel('imageData', { required: true,
                                                                            validator: prop => typeof prop === "object" || prop === null });
 
 
-/*
-const props = defineProps({
-    width: {
-      type: null,
-      required: true
-    },
-    height: {
-      type: null,
-      required: true
-    },
-    imageData: {
-      required: true,
-      validator: prop => typeof prop === "object" || prop === null
-    }
-});
-*/
-
 const {
     click,
     state,
@@ -55,36 +38,9 @@ const wand = ref({
   blur: 40,
 });
 
-/*
-const width = ref(props.width);
-const height = ref(props.height);
-const imageData = ref(props.imageData);
-*/
 
 const localCurrentAnnotation=ref(null);
 
-/*
-watch(
-  () => props.width,
-  (value) => {
-      width.value = value;
-  }
-);
-
-watch(
-  () => props.height,
-  (value) => {
-      height.value = value;
-  }
-);
-
-watch(
-  () => props.imageData,
-  (value) => {
-      imageData.value = value;
-  }
-);
-*/
 
 watch(
   () => getCurrentAnnotation(),

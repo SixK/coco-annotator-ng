@@ -22,15 +22,6 @@ import { ref, inject, watchEffect } from 'vue';
 
 const brush = defineModel('brush', { type: Object, required: true });
 
-/*
-const props = defineProps({
-  brush: {
-    type: Object,
-    required: true,
-  },
-});
-const brush = ref(props.brush);
-*/
 const showme = ref('false');
 const getActiveTool = inject('getActiveTool');
 

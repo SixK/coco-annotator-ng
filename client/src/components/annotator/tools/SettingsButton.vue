@@ -121,23 +121,8 @@ import { onMounted, onUnmounted, toRef, ref, reactive } from 'vue';
 const metadata = defineModel('metadata', { type: Object, required: true });
 const commands = defineModel('commands', { type: Array, required: true });
 
-/*
-const props= defineProps({
-    metadata: {
-      type: Object,
-      required: true,
-    },
-    commands: {
-      type: Array,
-      required: true,
-    },
-});*/
-
-// const metadata = ref(props.metadata);
 const name = ref("Image Settings");
 const shortcuts = ref(null); 
-// const commands = ref(props.commands);
-// const commands = toRef(props, 'commands');
 
 let settingsModal = null;
 

@@ -6,7 +6,6 @@
 
 <script setup>
 import { computed, ref, watch } from "vue";
-// import { useStore } from "vuex";
 import { useButton } from "@/composables/toolBar/button";
 
 import { useAuthStore } from "@/store/user";
@@ -16,8 +15,6 @@ const procStore = useProcStore();
 import { useInfoStore } from "@/store/info";
 const infoStore = useInfoStore();
 
-// const store = useStore();
-// const { iconColor, click, color } = useButton();
 const { iconColor, click } = useButton();
 
 const icon = ref("fa-undo");

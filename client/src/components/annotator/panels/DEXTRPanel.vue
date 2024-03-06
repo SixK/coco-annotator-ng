@@ -25,16 +25,6 @@ import { ref, inject, watchEffect } from 'vue';
 
 const dextr = defineModel('dextr', { type: Object, required: true });
 
-/*
-const props = defineProps({
-  dextr: {
-    type: Object,
-    required: true,
-  },
-});
-
-const dextr = ref(props.dextr);
-*/
 const showme = ref('false');
 const getActiveTool = inject('getActiveTool');
 

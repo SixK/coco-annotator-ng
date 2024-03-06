@@ -11,13 +11,6 @@ import { useTools } from "@/composables/toolBar/tools";
 import paper from 'paper';
 
 const scale = defineModel('scale', { type: Number, default: 1 });
-/*
-const props = defineProps({
-  scale: {
-      type: Number,
-      default: 1,
-   }
-});*/
 
 const getCurrentAnnotation = inject('getCurrentAnnotation');
 
@@ -32,7 +25,6 @@ const {
 
 name.value = "Eraser";
 cursor.value = "none";
-// const scale = ref(props.scale);
 const icon = ref("fa-eraser");
 const scaleFactor = 3;
 const localCurrentAnnotation=ref('');
