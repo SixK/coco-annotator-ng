@@ -238,8 +238,6 @@ import TagsInput from "@/components/TagsInput";
 
 import { ref, computed, inject, watch, onMounted, onBeforeMount } from "vue";
 import { useRouter } from 'vue-router';
-//import { useStore } from 'vuex';
-//const store = useStore();
 
 import { useAuthStore } from "@/store/user";
 const authStore = useAuthStore();
@@ -255,9 +253,6 @@ const getUsers = inject('getUsers');
 
 const addProcess = (process) => procStore.addProcess(process);
 const removeProcess = (process) => procStore.removeProcess(process);
-
-// const addProcess = (process) => store.commit('addProcess', {process});
-// const removeProcess = (process) => store.commit('removeProcess', {process});
 
 const props = defineProps({
   dataset: {

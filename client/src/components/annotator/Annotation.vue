@@ -265,19 +265,11 @@ import simplifyjs from "simplify-js";
 import { Modal } from "bootstrap";
 
 import { Keypoint, Keypoints, VisibilityOptions } from "@/libs/keypoints";
-// import { useStore } from 'vuex';
 import UndoAction from "@/undo";
 
 import { useProcStore } from "@/store/index";
 const procStore = useProcStore();
-/*
-import { useAuthStore } from "@/store/user";
-const authStore = useAuthStore();
-import { useInfoStore } from "@/store/info";
-const infoStore = useInfoStore();
-*/
 
-// import TagsInput from "@/components/TagsInput";
 import MetaData from "@/components/MetaData";
 
 import { nextTick, getCurrentInstance, watchEffect, inject, watch, reactive, ref, computed, onMounted, onUnmounted, toRef } from 'vue';
@@ -290,79 +282,13 @@ const getCategoryIndex = inject('getCategoryIndex');
 const resetCategorySettings = inject('resetCategorySettings');
 const getShowAnnotations = inject('getShowAnnotations');
 
-// const store = useStore();
-
 const emit = defineEmits(['set-color', 'keypointsComplete', 'keypoint-click', 'click', 'deleted']);
 
 const props = defineProps({
-/*
-    annotation: {
-      type: Object,
-      required: true
-    },
-    showAnnotations: {
-      type: Boolean,
-      required: true
-    },
-    isHoverCategory: {
-      type: Boolean,
-      required: true
-    },
-    category: {
-      type: Object,
-      required: true
-    },
-    index: {
-      type: Number,
-      required: true
-    },
-    current: {
-      type: Number,
-      required: true
-    },
-    hover: {
-      type: Number,
-      required: true
-    },
-    opacity: {
-      type: Number,
-      required: true
-    },
-    scale: {
-      type: Number,
-      default: 1
-    },
-    search: {
-      type: String,
-      default: ""
-    },
-    simplify: {
-      type: Number,
-      default: 1
-    },
-*/
     keypointEdges: {
       type: Array,
       required: true
     },
-/*
-    keypointLabels: {
-      type: Array,
-      required: true
-    },
-    keypointColors: {
-      type: Array,
-      required: true
-    },
-    activeTool: {
-      type: String,
-      required: true
-    },
-    allCategories: {
-      type: Array,
-      default: () => []
-    }
-*/
 });
 
 const socket = inject('socket');
@@ -384,35 +310,8 @@ const keypointColors = defineModel('keypointColors', { type: Array, required: tr
 const activeTool = defineModel('activeTool', { type: String, required: true });
 const allCategories = defineModel('allCategories', { type: Array, default: () => [] });
 
-
-// const showAnnotations = ref(props.showAnnotations);
-// don't know why toRef does not synchronize showAnnotations
-// const showAnnotations = toRef(props, 'showAnnotations');
-
-// const isHoverCategory = ref(props.isHoverCategory)
-// const simplify = ref(props.simplify);
-// const activeTool = ref(props.activeTool);
 const keypointEdges = ref(props.keypointEdges);
-// const keypointColors = ref(props.keypointColors);
-// const keypointLabels = ref(props.keypointLabels);
-// const keypointLabels = toRef(props, 'keypointLabels');
-// const keypointColors = toRef(props, 'keypointColors');
-// const keypointEdges = toRef(props, 'keypointEdges');
-// const search = ref(props.search);
-// const search = toRef(props, 'search');
-// const scale = ref(props.scale);
 
-// const hover = toRef(props, 'hover');
-// const current = toRef(props, 'current');
-
-// const annotation = toRef(props, 'annotation');
-// const category = toRef(props, 'category');
-// const category = ref(props.category);
-
-
-// const index = ref(props.index);
-// const opacity = ref(props.opacity);
-// const annotation = ref(props.annotation);
 const isVisible = ref(true);
 const showKeypoints = ref(false);
 const color = ref(annotation.value.color);

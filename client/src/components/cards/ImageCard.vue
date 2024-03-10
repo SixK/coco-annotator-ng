@@ -107,7 +107,6 @@
 
 <script setup>
 import axios from "axios";
-// import VLazyImage from "v-lazy-image";
 import { ref, computed} from "vue";
 import { useRouter } from 'vue-router';
 

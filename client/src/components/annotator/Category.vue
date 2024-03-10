@@ -195,61 +195,14 @@ import { nextTick } from 'vue';
 import { getCurrentInstance, provide, inject, watch, reactive, 
                  ref, computed, onMounted, onUnmounted, onUpdated,toRef, onBeforeUpdate } from 'vue';
 
-/*
-const props = defineProps({
-    category: {
-      type: Object,
-      required: true
-    },
-    index: {
-      type: Number,
-      required: true
-    },
-    current: {
-      type: Object,
-      required: true
-    },
-    hover: {
-      type: Object,
-      required: true
-    },
-    opacity: {
-      type: Number,
-      required: true
-    },
-    scale: {
-      type: Number,
-      default: 1
-    },
-    categorysearch: {
-      type: String,
-      required: true
-    },
-    simplify: {
-      type: Number,
-      default: 1
-    },
-    activeTool: {
-      type: String,
-      required: true
-    },
-    allCategories: {
-      type: Array,
-      required: true
-    }
-});
-*/
-
 const socket = inject('socket');
 
 const emit = defineEmits(['click', 'keypointsComplete']);
 
-// const getCategory = inject('getCategory');
 const getImageId = inject('getImageId');
 const scrollElement = inject('scrollElement');
 const selectLastEditorTool = inject('selectLastEditorTool');
 
-// const category = toRef(props, 'category');
 const category = defineModel('category', { type: Object, required: true });
 const index = defineModel('index', { type: Number, required: true });
 const current = defineModel('current', { type: Object, required: true });
@@ -266,10 +219,6 @@ const group = ref(null);
 const supercategory = ref(category.value.supercategory);
 const color = ref(category.value.color);
 
-/*
-const supercategory = ref(props.category.supercategory);
-const color = ref(props.category.color);
-*/
 const keypoint = ref({
       labels: [...category.value.keypoint_labels],
       edges: [...category.value.keypoint_edges],
@@ -281,17 +230,7 @@ const showAnnotations = ref(false);
 const isVisible = ref(false);
 const search = ref("");
 const isMounted = ref(false);
-// const activeTool = ref(props.activeTool);
-// const opacity = ref(props.opacity);
 
-// const hover = ref(props.hover);
-// const index = ref(props.index);
-// const current = ref(props.current);
-// const allCategories = ref(props.allCategories);
-// const categorysearch = ref(props.categorysearch);
-// const categorysearch = toRef(props, 'categorysearch');
-
-// const annotation = ref(null);
 const keypoints = ref(null);
 let categorySettingsModal = null;
 
