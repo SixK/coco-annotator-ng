@@ -75,10 +75,6 @@ import { ref, watch, computed } from "vue";
 import { useAuthStore } from "@/store/user";
 const authStore = useAuthStore();
 
-/*
-import { useStore } from 'vuex';
-const store = useStore();
-*/
 
 const changePassword = ref({
         password: "",
@@ -123,20 +119,11 @@ const user = computed(() => {
     return authStore.user;
     });
 
-// const user = computed(() => authStore.state.user.user);
-
 const displayName = computed(() => {
   if (!user.value) return '';
   if (user.value.name.length === 0) return user.value.username;
   return user.value.name;
 });
-
-/*
-watch(
-  () => limit,
-  () => updatePage()
-);
-*/
 
 
 </script>

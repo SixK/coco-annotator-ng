@@ -208,7 +208,6 @@
 
 <script setup>
 import AdminPanel from "@/models/admin";
-// import { useStore } from 'vuex';
 import useAxiosRequest from "@/composables/axiosRequest";
 import { ref, computed, watch, inject, onMounted, provide } from 'vue';
 
@@ -220,7 +219,6 @@ import { useInfoStore } from "@/store/info";
 const infoStore = useInfoStore();
 
 const {axiosReqestError, axiosReqestSuccess} = useAxiosRequest();
-// const store = useStore();
 
 const users = ref([]);
 const limit = ref(50);
@@ -234,7 +232,6 @@ const create = ref({
 
 const updatePage = () => {
   let process = "Loading users";
-  // store.commit('addProcess', process);
   procStore.addProcess(process);
 
   AdminPanel.getUsers(limit.value)
@@ -243,7 +240,6 @@ const updatePage = () => {
       total.value = response.data.total;
     })
      .finally(() => procStore.removeProcess(process));
-   //  .finally(() => store.commit('removeProcess', process));
 };
 
 const createUser = (event) => {

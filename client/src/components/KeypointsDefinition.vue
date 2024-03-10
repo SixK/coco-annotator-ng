@@ -147,48 +147,18 @@ const keyTitle = defineModel('keyTitle', { type: String, default: "Label" });
 const valueTitle = defineModel('valueTitle', { type: String, default: "Connects to" });
 const exclude = defineModel('exclude', { type: String, default: "" });
 
-/*
-const props = defineProps({
-  keypointsDef: {
-    type: Object,
-    required: true
-  },
-  title: {
-    type: String,
-    default: "Keypoints"
-  },
-  keyTitle: {
-    type: String,
-    default: "Label"
-  },
-  valueTitle: {
-    type: String,
-    default: "Connects to"
-  },
-  exclude: {
-    type: String,
-    default: "",
-  },
-});
-*/
 
 const keypoints = ref([]);
 const hiddenValue = ref({ edges: [], labels: [], colors: [] });
 const isMounted = ref(false);
 const nextDistinct = ref(-1);
-// const keypointsDef = ref(props.keypointsDef);
-// const keypointsDef = toRef(props, 'keypointsDef');
+
 
 const valid = computed(() => {
-    if (!isMounted.value) {
-      return false;
-    }
-    for (let i = 0; i < keypoints.value.length; ++i) {
-      if (keypoints.value[i].label_error.length !== 0) {
-        return false;
-      }
-    }
-    return true;
+  if (!isMounted.value) {
+    return false;
+  }  
+  return keypoints.value.every(({ label_error }) => label_error.length === 0);
 });
 
 watch(

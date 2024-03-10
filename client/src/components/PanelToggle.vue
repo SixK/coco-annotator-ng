@@ -10,26 +10,9 @@
 
 <script setup>
 
-/*
-const props = defineProps({
-  name: {
-    type: String,
-    required: true,
-  },
-  showText: {
-    type: Boolean,
-    required: true,
-  }
-})*/
-
 const name = defineModel('name', { type: String, required: true });
 const showText = defineModel('showText', { type: Boolean, required: true });
 
-// const emit = defineEmits(['update:showText'])
-/*
-const toggleValue = () => {
-    emit('update:showText', !showText.value);
-}*/
 </script>
 
 <style scoped>

@@ -37,14 +37,7 @@ import { useAuthStore } from "@/store/user";
 const authStore = useAuthStore();
 import { useProcStore } from "@/store/index";
 const procStore = useProcStore();
-/*
-import { useInfoStore } from "@/store/info";
-const infoStore = useInfoStore();
-*/
 
-// import { useStore } from 'vuex';
-
-// const store = useStore();
 const route = useRoute();
 
 const total = ref(0);
@@ -52,7 +45,6 @@ const tasks = ref([]);
 
 const updatePage = () => {
   let process = "Loading tasks";
-  // store.commit('addProcess', process);
   procStore.addProcess(process);
 
   Tasks.all().then(response => {
@@ -61,7 +53,6 @@ const updatePage = () => {
           showTask(taskToShow.value);
         }
   }).finally (() => {
-      // store.commit('removeProcess', process);
       procStore.removeProcess(process);
   });
 };
@@ -80,7 +71,6 @@ const taskToShow = computed(() => {
 });
 
 const user = computed(() => {
-      // return store.state.user.user;
       return authStore.user;
 });
 

@@ -125,7 +125,6 @@
 
 <script setup>
 import { computed, watch, ref } from 'vue';
-// import { useStore } from 'vuex';
 
 import User from '@/components/User';
 import Status from '@/components/Status';
@@ -137,7 +136,6 @@ const authStore = useAuthStore();
 import { useInfoStore } from "@/store/info";
 const infoStore = useInfoStore();
 
-// const store = useStore();
 const color = ref('white');
 const backendStatus = ref('Connection unknown');
 
@@ -152,17 +150,6 @@ const dataset = computed(() => {
 });
 
 
-/*
-const version = computed(() => store.state.info.version);
-const loginEnabled = computed(() => store.state.info.loginEnabled);
-const name = computed(() => store.state.info.name);
-const socket = computed(() => store.state.info.socket);
-const dataset = computed(() => {
-  let dataset = store.state.dataset;
-  if (dataset == null) return { name: '', id: '' };
-  return dataset;
-});
-*/
 watch(socket, (connected) => {
   if (connected == null) {
     color.value = 'white';

@@ -328,11 +328,6 @@ const infoStore = useInfoStore();
 
 const socket = inject('socket')
 
-/*
-import { useStore } from 'vuex';
-const store = useStore();
-*/
-
 
 import { toRaw, onBeforeUpdate, onUpdated, nextTick, markRaw, toRef, ref, computed, watch, inject, onMounted, provide } from 'vue';
 
@@ -454,8 +449,6 @@ const getPaper = () => {
   
 const save = (callback) => {
       let process = "Saving";
-      // this.addProcess(process);
-      // store.commit('addProcess', process);
       procStore.addProcess(process);
       
       
@@ -511,7 +504,6 @@ const save = (callback) => {
           if (callback != null) callback();
         })
         .finally(() => {
-            // store.commit('removeProcess', process);
             procStore.removeProcess(process);
         });
 };
@@ -599,10 +591,7 @@ const changeZoom = (delta, p) => {
 
 const initCanvas = () => {
       let process = "Initializing canvas";
-      // this.addProcess(process);
-      // store.commit('addProcess', process);
       procStore.addProcess(process);
-      
 
       loading.value.image = true;
 
@@ -624,8 +613,7 @@ const initCanvas = () => {
         image.value.raster.sendToBack();
         fit();
         image.value.ratio = (width * height) / 1000000;
-        // this.removeProcess(process);
-        // store.commit('removeProcess', process);
+
         procStore.removeProcess(process);
 
         let tempCtx = document.createElement("canvas").getContext("2d");
@@ -676,8 +664,7 @@ const updateCurrentAnnotation = (value) => {
 
 const getData = (callback) => {
       let process = "Loading annotation data";
-      // this.addProcess(process);
-       // store.commit('addProcess', process);
+
        procStore.addProcess(process);
 
       loading.value.data = true;
@@ -701,8 +688,6 @@ const getData = (callback) => {
           categories.value = data.categories;
 
           // Update status
-          // setDataset(dataset.value);
-          // store.commit('setDataset', dataset.value);
           procStore.setDataset(dataset.value);
 
 
@@ -728,7 +713,6 @@ const getData = (callback) => {
         })
         .finally(() => {
             procStore.removeProcess(process);
-            // store.commit('removeProcess', process);
         });
 };
 
@@ -1309,7 +1293,6 @@ const currentKeypointLength = computed(() => {
 
 
 const user = computed(() => {
-  // return store.getters['user/user'];
   return authStore.user;
 });
 
@@ -1431,9 +1414,6 @@ onMounted(() => {
     image.value.id = parseInt(props.identifier);
     image.value.url = "/api/image/" + image.value.id;
 
-
-    // setDataset(null);
-    // store.commit('setDataset', null);
     procStore.setDataset(null);
 
     initCanvas();

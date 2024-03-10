@@ -26,27 +26,6 @@ const name = defineModel('name', { type: String, required: true });
 const value = defineModel('value', { type: [Number, Array, Object, String], required: true });
 const values = defineModel('values', { type: Object, required: true });
 
-/*
-const props = defineProps({
-  name: {
-    type: String,
-    required: true,
-  },
-  value: {
-    type: [Number, Array, Object, String],
-    required: true,
-  },
-  values: {
-    type: Object,
-    required: true,
-  },
-});
-*/
-
-/*
-const emits = defineEmits(['update:value']);
-const localValue = ref(value.value);
-*/
 
 const options = computed(() => {
  console.log('inputdropdown:', values.value);
@@ -60,18 +39,7 @@ const options = computed(() => {
   });
   return array;
 });
-/*
-watch(
-  () => localValue.value, 
-  () => {
-    console.log('localValue changed:',  localValue.value);
-    emits('update:value', localValue.value);
-});
-watch(
-  () => value.value, 
-  (newValue) => {
-      localValue.value = newValue;
-});*/
+
 </script>
 
 <style scoped>

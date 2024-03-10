@@ -58,7 +58,6 @@
 
 <script setup>
 import { computed } from "vue";
-// import { useStore } from "vuex";
 import { useRouter, useRoute } from 'vue-router';
 
 import { useAuthStore } from "@/store/user";
@@ -66,12 +65,10 @@ const authStore = useAuthStore();
 import { useInfoStore } from "@/store/info";
 const infoStore = useInfoStore();
 
-    // const store = useStore();
     const router = useRouter();
     const route = useRoute();
     
     const logout = () => {
-      // store.dispatch("user/logout");
       authStore.logout()
     };
     
@@ -85,7 +82,6 @@ const infoStore = useInfoStore();
       logout();
     };
     const user = computed(() => {
-      // return store.state.user.user;
       return authStore.user;
     });
     const display = computed(() => {
@@ -96,13 +92,6 @@ const infoStore = useInfoStore();
     });
     
     defineExpose({logoutButton, user, display});
-    /*
-    return {
-      logoutButton,
-      user,
-      display,
-    };
-  },*/
 
 </script>
 
