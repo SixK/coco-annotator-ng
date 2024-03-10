@@ -16,42 +16,11 @@ import { ref, watch, onMounted } from 'vue';
 const name = defineModel('name', { type: String, required: true });
 const inputString = defineModel('inputString', { type: String, required: true });
 
-/*
-const props = defineProps({
-  name: {
-    type: String,
-    required: true,
-  },
-  inputString: {
-    type: String,
-    required: true,
-  },
-});
-*/
-
-// const emit = defineEmits(['update', 'submit']);
-// const emit = defineEmits(['update:inputString', 'submit']);
 const emit = defineEmits(['submit']);
 
-// const localValue = ref(inputString.value);
-/*
-watch(localValue, () => {
-  // emit('update:inputString', localValue.value);
-  inputString.value = localValue.value;
-});
-watch(() => inputString.value, 
-  (newValue) => {
-  localValue.value = newValue;
-});
-*/
 const submit = () => {
   emit('submit');
 };
-
-/*
-onMounted(() => {
-  localValue.value  = inputString.value;
-})*/
 
 </script>
 

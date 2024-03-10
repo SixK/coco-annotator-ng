@@ -6,13 +6,7 @@
 <script setup>
 
 const name = defineModel('name', { type: String, required: true });
-/*
-const props = defineProps({
-  name: {
-    type: String,
-    required: true,
-  },
-});*/
+
 </script>
 
 <style scoped>

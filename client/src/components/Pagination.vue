@@ -32,16 +32,6 @@
 <script setup>
 import { ref, computed, watch, onUnmounted, onMounted} from 'vue';
 
-/*
-const props = defineProps({
-  pages: {
-    type: Number,
-    required: true
-  }
-});
-
-const pages = ref(props.pages);
-*/
 const pages = defineModel('pages', { type: Number, required: true });
 
 const range = ref(11);

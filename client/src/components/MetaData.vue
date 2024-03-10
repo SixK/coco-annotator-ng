@@ -78,34 +78,9 @@ const keyTitle = defineModel('keyTitle', { type: String, default: "Keys" });
 const valueTitle = defineModel('valueTitle', { type: String, default: "Values" });
 const exclude = defineModel('exclude', { type: String, default: "" });
 
-/*
-const props = defineProps({
-  metadata: {
-    type: Object,
-    required: true,
-  },
-  title: {
-    type: String,
-    default: "Metadata",
-  },
-  keyTitle: {
-    type: String,
-    default: "Keys",
-  },
-  valueTitle: {
-    type: String,
-    default: "Values",
-  },
-  exclude: {
-    type: String,
-    default: "",
-  },
-});
-*/
 
 const metadataList = ref([]);
-// const metadata = ref([]);
-// const metadata = ref(props.metadata);
+
 
 watchEffect(() => {
     loadMetadata();

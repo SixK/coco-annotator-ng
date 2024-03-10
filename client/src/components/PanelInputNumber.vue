@@ -23,44 +23,6 @@ const max = defineModel('max', { type: String, default: '10' });
 const min = defineModel('min', { type: String, default: '1' });
 const step = defineModel('step', { type: String, default: '1' });
 
-/*
-const props = defineProps({
-  name: {
-    type: String,
-    required: true,
-  },
-  value: {
-    type: Number,
-    required: true,
-  },
-  max: {
-    type: String,
-    default: '10',
-  },
-  min: {
-    type: String,
-    default: '1',
-  },
-  step: {
-    type: String,
-    default: '1',
-  },
-});
-*/
-
-/*
-const emit = defineEmits(['update:value']);
-const localValue = ref(value.value);
-
-watch( 
-  () => localValue.value, 
-  () => {
-    emit('update:value', localValue.value);
-});
-watch(() => value.value, (newValue) => {
-  localValue.value = newValue;
-});
-*/
 </script>
 
 <style scoped>

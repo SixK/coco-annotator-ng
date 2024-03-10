@@ -24,8 +24,6 @@
 
 <script setup>
 import { ref, computed, watchEffect } from 'vue';
-// import { useStore } from 'vuex';
-// const store = useStore();
 
 import { useProcStore } from "@/store/index";
 const procStore = useProcStore();
@@ -33,15 +31,10 @@ const procStore = useProcStore();
 const lastProcess = ref('');
 
 const buttonType = computed(() => {
-  // return store.state.process.length === 0 ? 'btn-outline-success' : 'btn-outline-danger';
   return procStore.process.length === 0 ? 'btn-outline-success' : 'btn-outline-danger';
 });
 
 const process = computed(() => { 
-    /*
-            console.log(store.state.process.length);
-            return store.state.process;});
-    */
             console.log(procStore.process.length);
             return procStore.process;});
 

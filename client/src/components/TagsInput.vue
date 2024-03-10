@@ -87,7 +87,6 @@
 import { nextTick } from 'vue';
 import { toRaw, toRef, ref, computed, watch, onMounted } from 'vue';
 
-// const emit = defineEmits(["update:selectedCategories", "update:selected-categories", "selectedCategories", "initialized", 
 const emit = defineEmits(["initialized", "tag-added", "tags-updated", "tag-removed"]);
 
 const elementId = defineModel('elementId', { type: String, required: true });
@@ -106,75 +105,6 @@ const validate = defineModel('validate', { type: Function, default: () => true }
 const addTagsOnComma = defineModel('addTagsOnComma', { type: Boolean, default: false });
 const wrapperClass = defineModel('wrapperClass', { type: String, default: "tags-input-wrapper-default" });
 
-/*
-const props = defineProps({
-      elementId: {
-      type: String,
-      required: true,
-    },
-    existingTags: {
-      type: Object,
-      default: () => {
-        return {};
-      },
-    },
-    selectedCategories: {
-      type: [Array, String],
-      default: () => {
-        return [];
-      },
-    },
-    typeahead: {
-      type: Boolean,
-      default: false,
-    },
-    typeaheadStyle: {
-      type: String,
-      default: "badges",
-    },
-    typeaheadActivationThreshold: {
-      type: Number,
-      default: 1,
-    },
-    typeaheadMaxResults: {
-      type: Number,
-      default: 0,
-    },
-    placeholder: {
-      type: String,
-      default: "Add a category",
-    },
-    limit: {
-      type: Number,
-      default: 0,
-    },
-    onlyExistingTags: {
-      type: Boolean,
-      default: false,
-    },
-    deleteOnBackspace: {
-      type: Boolean,
-      default: true,
-    },
-    allowDuplicates: {
-      type: Boolean,
-      default: false,
-    },
-    validate: {
-      type: Function,
-      default: () => true,
-    },
-    addTagsOnComma: {
-      type: Boolean,
-      default: false,
-    },
-    wrapperClass: {
-      type: String,
-      default: "tags-input-wrapper-default",
-    },
-});
-*/
-
 const badgeId = ref(0);
 const tagBadges = ref([]);
 const tags = ref([]);
@@ -183,21 +113,11 @@ const oldInput = ref("");
 const hiddenInput = ref("");
 const searchResults = ref([]);
 const searchSelection = ref(0);
-// const typeaheadActivationThreshold = ref(props.typeaheadActivationThreshold);
-// const existingTags = ref(props.existingTags);
-// const onlyExistingTags = ref(props.onlyExistingTags);
-// const typeaheadMaxResults = ref(props.typeaheadMaxResults);
-// const deleteOnBackspace = ref(props.deleteOnBackspace);
-// const selectedCategories = ref(props.selectedCategories);
-// const selectedCategories = toRef(props, 'selectedCategories');
 const taginput = ref(null);
-// const validate = props.validate;
 
 
 const showPlaceholder = computed(() => {
-
   if (onlyExistingTags.value) {
-    // console.log('ppppp - showPlaceHolder:', selectedCategories.value.length, Object.keys(existingTags.value).length);
     if (selectedCategories.value.length === Object.keys(existingTags.value).length) {
       return false;
     }
@@ -216,8 +136,6 @@ watch(
   tags.value,
   (newVal, oldVal) => {
       hiddenInput.value = newVal.join(",");
-      // emit("selectedCategories", newVal);
-      // emit("update:selectedCategories", newVal);
       // don't have to emit thank's to defineModel, we simply attribute new value
       // emit("update:selected-categories", newVal);
       selectedCategories.value = newVal;
