@@ -64,7 +64,7 @@
 
             <MetaData
               ref="metadata"
-              :metadata="metadata.value"
+              :metadata="metadata"
             />
 
             <p style="margin: 30px 0 0 0">
