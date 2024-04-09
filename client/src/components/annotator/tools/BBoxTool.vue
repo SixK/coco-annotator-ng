@@ -158,7 +158,7 @@ const checkAnnotationExist = computed(() => {
 
 
 const onMouseDown = (event) => {
-  if (polygon.value.path === null && checkAnnotationExist) {
+  if (polygon.value.path === null && checkAnnotationExist.value) {
     localCurrentCategory.value.createAnnotation();
     // $parent.currentCategory.createAnnotation();
   }
