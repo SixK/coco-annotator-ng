@@ -54,14 +54,6 @@ watch(
   }
 );
 
-const isDisabled = computed(() => {
-  return state.isDisabled;
-})
-
-const isActive = computed(() => {
-  return state.isActive;
-});
-
 function createPoint(point) {
       let paperPoint = new paper.Path.Circle(point, 5);
       paperPoint.fillColor = localCurrentAnnotation.value.color;

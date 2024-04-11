@@ -39,10 +39,6 @@ const eraser = ref({
   },
 });
 
-const isDisabled = computed(() => {
-  return state.isDisabled;
-})
-
 watch(
   () => getCurrentAnnotation(),
   (value) => {

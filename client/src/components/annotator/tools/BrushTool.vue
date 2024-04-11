@@ -37,14 +37,6 @@ const brush = ref({
 });
 const selection = ref(null);
 
-const isDisabled = computed(() => {
-  return state.isDisabled;
-})
-
-const isActive = computed(() => {
-  return state.isActive;
-});
-
 watch(
   () => brush.value.pathOptions.radius,
   () => {
