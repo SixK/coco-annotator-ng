@@ -8,7 +8,7 @@
         </a>
       </li>
       <li
-        v-for="pageIndex in range"
+        v-for="pageIndex in pageRange"
         :key="pageIndex"
         :class="{ 'page-item': true, active: pageIndex + startPage == page }"
       >
@@ -34,7 +34,7 @@ import { ref, computed, watch, onUnmounted, onMounted} from 'vue';
 
 const pages = defineModel('pages', { type: Number, required: true });
 
-const range = ref(11);
+const pageRange = ref(11);
 const page = ref(1);
 let timer = null;
 const emit  = defineEmits(['pagechange']);
@@ -55,28 +55,31 @@ const nextPage = () => {
 
 watch(page, (newPage, oldPage) => {
   if (newPage === oldPage) return
+  /*
   clearTimeout(timer)
   timer = setTimeout(() => emit('pagechange', page.value), 0)
+  */
+  emit('pagechange', page.value);
 });
 
 const startPage = computed(() => {
-  console.log('rng:', range.value, pages.value);
-  if (range.value > pages.value) {
+  console.log('rng:', pageRange.value, pages.value);
+  if (pageRange.value > pages.value) {
     return 0;
   }
 
-  let rangeValue = Math.round(range.value / 2);
-  let start = page.value - rangeValue;
+  let pageRangeValue = Math.round(pageRange.value / 2);
+  let start = page.value - pageRangeValue;
   if (start < 0) return 0;
-  if (start > pages.value || start + range.value > pages.value) {
-    return pages.value - range.value;
+  if (start > pages.value || start + pageRange.value > pages.value) {
+    return pages.value - pageRange.value;
   }
   return start;
 });
 
 onMounted(() => {
-      if (range.value > pages.value) {
-        range.value = pages.value;
+      if (pageRange.value > pages.value) {
+        pageRange.value = pages.value;
       }
 });
 

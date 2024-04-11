@@ -167,8 +167,6 @@ const tagFromInput = () => {
 
 const tagFromSearchOnClick = (tag) => {
       tagFromSearch(tag);
-      
-      // this.$refs["taginput"].blur();
       taginput.value.blur();
 };
 
@@ -212,6 +210,94 @@ const removeTag = (index) => {
   emit("tags-updated");
 };
 
+/*
+const searchTag = () => {
+    if (typeahead.value !== true) return;
+    
+      // Check if the new input value is different from the old one or if there are no search results and 
+      // the typeahead activation threshold is 0
+      if (
+        oldInput.value != input.value ||
+         (searchResults.value.length == 0 && typeaheadActivationThreshold.value === 0)
+       ) {
+        searchResults.value = []; // Reset the search results array
+        searchSelection.value = 0; // Reset the selected search result index
+
+        let inputValue = input.value.trim(); // Remove leading and trailing spaces from the input value
+        if (
+          (inputValue.length && 
+           inputValue.length >= typeaheadActivationThreshold.value) || 
+          typeaheadActivationThreshold.value === 0
+         ) {
+          for (let slug in existingTags.value) {
+            let text = existingTags.value[slug].toLowerCase(); // Convert the tag text to lowercase
+            if (
+              text.includes(inputValue.toLowerCase()) && 
+              !tagSelected(slug)
+             ) {
+              searchResults.value.push({
+                slug,
+                text: existingTags.value[slug],
+               });
+             }
+           }
+
+           // Sort the search results array alphabetically
+           searchResults.value.sort((a, b) => {
+            if (a.text < b.text) return -1;
+            if (a.text > b.text) return 1;
+            return 0;
+           });
+
+           // Limit the number of search results based on the typeahead max results value
+           if (typeaheadMaxResults.value > 0) {
+            searchResults.value = searchResults.value.slice(
+              0,
+              typeaheadMaxResults.value
+             );
+           }
+         }
+
+        oldInput.value = input.value; // Update the old input value
+       }
+};
+*/
+
+const searchTag = () => {
+  if (typeahead.value !== true) return;
+
+  const inputValue = input.value.trim().toLowerCase();
+  const shouldSearch =
+    inputValue !== oldInput.value ||
+    (searchResults.value.length === 0 && typeaheadActivationThreshold.value === 0);
+
+  if (shouldSearch) {
+    searchResults.value = [];
+    searchSelection.value = 0;
+
+    if (
+      inputValue.length >= typeaheadActivationThreshold.value ||
+      typeaheadActivationThreshold.value === 0
+    ) {
+      searchResults.value = Object.entries(existingTags.value)
+        .filter(([slug, text]) => {
+          return text.toLowerCase().includes(inputValue) && !tagSelected(slug);
+        })
+        .map(([slug, text]) => ({ slug, text }));
+
+      searchResults.value.sort((a, b) => a.text.localeCompare(b.text));
+
+      if (typeaheadMaxResults.value > 0) {
+        searchResults.value = searchResults.value.slice(0, typeaheadMaxResults.value);
+      }
+    }
+
+    oldInput.value = inputValue;
+  }
+};
+
+
+/*
 const searchTag = () => {
     if (typeahead.value === true) {
       if (
@@ -253,6 +339,7 @@ const searchTag = () => {
       }
     }
 };
+*/
 
 const onFocus = () => {
       searchTag();
@@ -289,13 +376,9 @@ const clearTags = () => {
 }
 
 const tagsFromValue = () => {
-    // code execution speed problem, tags are visible only id we output console.log !??
-    
     const rawArray = toRaw(selectedCategories.value);
 
-      // if (props.selectedCategories && props.selectedCategories.length) {
       if (selectedCategories.value && selectedCategories.value.length) {
-        // const newTags = Array.isArray(props.selectedCategories)
         const newTags = Array.isArray(selectedCategories.value)
           ? selectedCategories.value
           : selectedCategories.value.split(',');
@@ -304,7 +387,6 @@ const tagsFromValue = () => {
         }
         clearTags();
         newTags.forEach((slug) => {
-          // const existingTag = props.existingTags[slug];
           const existingTag = existingTags.value[slug];
           const text = existingTag ? existingTag : slug;
           addTag(slug, text);
@@ -318,11 +400,16 @@ const tagsFromValue = () => {
 };
 
 const tagSelected = (slug) => {
-  if (allowDuplicates.value) {
+  if (allowDuplicates.value || !slug) {
     return false;
   }
+  const searchSlug = makeSlug(slug);
+  return tags.value.includes(searchSlug);
+};
 
-  if (!slug) {
+/*
+const tagSelected = (slug) => {
+  if (allowDuplicates.value || !slug) {
     return false;
   }
   let searchSlug = makeSlug(slug);
@@ -330,7 +417,7 @@ const tagSelected = (slug) => {
     return searchSlug == makeSlug(value);
   });
   return !!found;
-}
+}*/
 
 const onKeyDown = (e) => {
   // Insert a new tag on comma keydown if the option is enabled

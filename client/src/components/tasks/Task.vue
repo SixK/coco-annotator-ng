@@ -70,14 +70,18 @@ import { getCurrentInstance, toRef, ref, computed, watch, inject, onMounted, onU
 
 const tasksUpdatePage = inject('tasksUpdatePage');
 
+const task = defineModel('task', { type: Object, required: true });
+
+/*
 const props = defineProps({
   task: {
     type: Object,
     required: true,
   },
 });
-
 const task = toRef(props, 'task');
+*/
+
 const logs = ref(["Loading logs"]);
 const showLogs = ref(false);
 const highlight = ref(false);
@@ -137,7 +141,6 @@ const textColor = (text) => {
 
 const deleteTask = () => {
   Tasks.delete(task.value.id).finally(() => {
-    // $parent.$parent.updatePage();
     tasksUpdatePage();
   });
 };
@@ -168,9 +171,7 @@ onMounted( () => {
         if (show) {
           setTimeout(() => {
             highlight.value = true;
-            // let el = document.querySelector('.task');
             let el = document.querySelector('#task-' + task.value.id);
-            // console.log('element:', el);
             if (el) {
                 el.scrollIntoView({
                   behavior: 'smooth',

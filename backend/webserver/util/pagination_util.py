@@ -14,13 +14,8 @@ class Pagination:
 
     def calculate_start_end(self, current_page):
 
-        self.current_page = current_page
-
-        if current_page > self.pages:
-            self.current_page = self.pages
-
-        if current_page < 1:
-            current_page = 1
+        # 1 <= current_page <= nb pages
+        self.current_page = min(max(1, current_page), self.pages)
 
         self.start = (current_page - 1) * self.limit
         self.end = self.start + self.limit

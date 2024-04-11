@@ -33,6 +33,10 @@
 import AppTask from "@/components/tasks/Task";
 import { toRef, ref, computed } from 'vue'
 
+const tasks = defineModel('tasks', { type: Array, required: true });
+const name = defineModel('name', { type: String, required: true });
+
+/*
 const props = defineProps({
   tasks: {
     type: Array,
@@ -43,10 +47,11 @@ const props = defineProps({
     required: true,
   },
 });
-
-const showTasks = ref(true)
 const tasks = toRef(props, 'tasks');
 const name = toRef(props, 'name');
+*/
+
+const showTasks = ref(true)
 
 const runningTasks = computed(() => {
   return tasks.value.filter((t) => t.progress < 100);

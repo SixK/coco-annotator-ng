@@ -244,18 +244,15 @@ const keypointsFromProp = () => {
 
 const getEdge = (index) => {
     return keypointsDef.value.edges[index];
-    // return keypoints.value[index].color;
 }
 
 const getColor = (index) => {
     return keypointsDef.value.colors[index];
-    // return keypoints.value[index].color;
 }
 
 const  colorUpdated = (index, color) => {
         keypoints.value[index].color = color;
         hiddenValue.value = propFomKeypoints();  
-        // emit('input', hiddenValue.value);
         emit('update:keypoints-def', hiddenValue.value);
 };
 
@@ -296,7 +293,6 @@ const keypointLabelUpdated = (index, label) => {
           }
         }
         hiddenValue.value = propFomKeypoints();
-        // emit('input', hiddenValue.value);
         emit('update:keypoints-def', hiddenValue.value);
       } else if (label !== "") {
         for (let i = 0; i < keypoints.value.length; ++i) {
@@ -345,16 +341,13 @@ const propFomKeypoints = () => {
   let edge_labels = {};
   let labels = [];
   let colors = [];
-  // for (const kp of keypoints.value) {
   keypoints.value.forEach (kp => {
     if (kp.label.length > 0) {
       labels.push(kp.label);
       colors.push(kp.color);
     }
   });
-  // for (const kp of keypoints.value) {
   keypoints.value.forEach (kp => {
-    // for (const edge of kp.edges) {
     kp.edges.forEach( edge => {
       if (edge in edge_labels) {
         edge_labels[edge].add(kp.label);
@@ -366,13 +359,11 @@ const propFomKeypoints = () => {
   });
   let edges = [];
   for (const label in edge_labels) {
-  // edge_labels.forEach( label => {
     let label_index = labels.indexOf(label) + 1;
     edge_labels[label].forEach((edge) => {
       let edge_index = labels.indexOf(edge) + 1;
       edges.push([label_index, edge_index]);
     });
-//  });
   }
   return { labels, edges, colors };
 };
