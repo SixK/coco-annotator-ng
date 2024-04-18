@@ -6,7 +6,7 @@
         :key="index"
         class="tags-input-badge tags-input-badge-pill tags-input-badge-selected-default"
       >
-        <span v-html="badge" />
+        <span>{{ badge }}</span>
 
         <i
           href="#"
@@ -210,59 +210,6 @@ const removeTag = (index) => {
   emit("tags-updated");
 };
 
-/*
-const searchTag = () => {
-    if (typeahead.value !== true) return;
-    
-      // Check if the new input value is different from the old one or if there are no search results and 
-      // the typeahead activation threshold is 0
-      if (
-        oldInput.value != input.value ||
-         (searchResults.value.length == 0 && typeaheadActivationThreshold.value === 0)
-       ) {
-        searchResults.value = []; // Reset the search results array
-        searchSelection.value = 0; // Reset the selected search result index
-
-        let inputValue = input.value.trim(); // Remove leading and trailing spaces from the input value
-        if (
-          (inputValue.length && 
-           inputValue.length >= typeaheadActivationThreshold.value) || 
-          typeaheadActivationThreshold.value === 0
-         ) {
-          for (let slug in existingTags.value) {
-            let text = existingTags.value[slug].toLowerCase(); // Convert the tag text to lowercase
-            if (
-              text.includes(inputValue.toLowerCase()) && 
-              !tagSelected(slug)
-             ) {
-              searchResults.value.push({
-                slug,
-                text: existingTags.value[slug],
-               });
-             }
-           }
-
-           // Sort the search results array alphabetically
-           searchResults.value.sort((a, b) => {
-            if (a.text < b.text) return -1;
-            if (a.text > b.text) return 1;
-            return 0;
-           });
-
-           // Limit the number of search results based on the typeahead max results value
-           if (typeaheadMaxResults.value > 0) {
-            searchResults.value = searchResults.value.slice(
-              0,
-              typeaheadMaxResults.value
-             );
-           }
-         }
-
-        oldInput.value = input.value; // Update the old input value
-       }
-};
-*/
-
 const searchTag = () => {
   if (typeahead.value !== true) return;
 
@@ -295,51 +242,6 @@ const searchTag = () => {
     oldInput.value = inputValue;
   }
 };
-
-
-/*
-const searchTag = () => {
-    if (typeahead.value === true) {
-      if (
-        oldInput.value != input.value ||
-        (!searchResults.value.length && typeaheadActivationThreshold.value == 0)
-      ) {
-        searchResults.value = [];
-        searchSelection.value = 0;
-        let inputValue = input.value.trim();
-        if (
-          (inputValue.length && inputValue.length >= typeaheadActivationThreshold.value) ||
-          typeaheadActivationThreshold.value == 0
-        ) {
-          for (let slug in existingTags.value) {
-            let text = existingTags.value[slug].toLowerCase();
-            if (
-              text.search(escapeRegExp(inputValue.toLowerCase())) > -1 &&
-              !tagSelected(slug)
-            ) {
-              searchResults.value.push({
-                slug,
-                text: existingTags.value[slug],
-              });
-            }
-          }
-          searchResults.value.sort((a, b) => {
-            if (a.text < b.text) return -1;
-            if (a.text > b.text) return 1;
-            return 0;
-          });
-          if (typeaheadMaxResults.value > 0) {
-            searchResults.value = searchResults.value.slice(
-              0,
-              typeaheadMaxResults.value
-            );
-          }
-        }
-        oldInput.value = input.value;
-      }
-    }
-};
-*/
 
 const onFocus = () => {
       searchTag();
@@ -407,22 +309,10 @@ const tagSelected = (slug) => {
   return tags.value.includes(searchSlug);
 };
 
-/*
-const tagSelected = (slug) => {
-  if (allowDuplicates.value || !slug) {
-    return false;
-  }
-  let searchSlug = makeSlug(slug);
-  let found = tags.value.find((value) => {
-    return searchSlug == makeSlug(value);
-  });
-  return !!found;
-}*/
-
 const onKeyDown = (e) => {
   // Insert a new tag on comma keydown if the option is enabled
   if (e.key === ",") {
-    if (addTagsOnComma) {
+    if (addTagsOnComma.value) {
       // The comma shouldn't actually be inserted
       e.preventDefault();
       // Add the inputed tag

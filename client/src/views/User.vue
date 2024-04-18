@@ -10,10 +10,10 @@
           Hello, {{ displayName }}
         </h2>
 
-        <br />
+        <br>
         <div style="text-align: left">
           <h4>Change Password</h4>
-          <br />
+          <br>
           <form>
             <div class="form-group">
               <label>Current Password</label>

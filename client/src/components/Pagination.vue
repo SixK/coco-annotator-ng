@@ -38,21 +38,6 @@ const pageRange = ref(11);
 const page = ref(1);
 let timer = null;
 const emit  = defineEmits(['pagechange']);
-/*
-const previousPage = () => {
-  page.value -= 1;
-  if (page.value < 1) {
-    page.value = 1;
-  }
-};
-
-const nextPage = () => {
-  page.value += 1;
-  if (page.value > pages.value) {
-    page.value = pages.value;
-  }
-};
-*/
 
 const previousPage = () => {
   if (page.value > 1) {

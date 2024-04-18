@@ -141,13 +141,13 @@
         >
           <Category
             v-for="(category, index) in categories"
+            :ref="setCategoryRef"
             :key="category.id + '-category-'+image.id"
             :simplify="simplify"
             :categorysearch="search"
             :category="category"
             :all-categories="categories"
             :opacity="shapeOpacity"
-            :ref="setCategoryRef"
             :hover="hover"
             :index="index"
             :current="current"
@@ -231,20 +231,20 @@
         @pinch="onpinch"
         @pinchstart="onpinchstart"
       > -->
-        <div
-          id="frame"
-          class="frame"
-          @wheel="onWheel"
-        >
-          <canvas
-            ref="refcanvas"
-            id="editor"
-            :image="image"
-            class="canvas"
-            resize
-          />
-        </div>
-     <!-- </v-touch> -->
+      <div
+        id="frame"
+        class="frame"
+        @wheel="onWheel"
+      >
+        <canvas
+          id="editor"
+          ref="refcanvas"
+          :image="image"
+          class="canvas"
+          resize
+        />
+      </div>
+    <!-- </v-touch> -->
     </div>
 
     <div
@@ -416,8 +416,8 @@ const pinching = ref({
       old_zoom: 1
 });
 
-const category = ref(null)
-const categorylist = ref([])
+const category = ref(null);
+const categorylist = ref([]);
 
 const setCategoryRef = el => {
       if (el) {
