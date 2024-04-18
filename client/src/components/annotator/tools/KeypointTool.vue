@@ -21,9 +21,6 @@ const {
     cursor
   }= useTools();
 
-const isDisabled = computed(() => {
-  return state.isDisabled;
-});
 
 const isActive = computed(() => {
   return state.isActive;

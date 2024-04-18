@@ -223,15 +223,6 @@ const removeLastPoint = () => {
     polygon.value.path.removeSegment(polygon.value.path.segments.length - 1);
 };
 
-
-const isDisabled = computed(() => {
-  return state.isDisabled;
-});
-
-const isActive = computed(() => {
-  return state.isActive;
-});
-
 // need to understand why this scale is not triggered !?
 watch(
    () => scale.value, 
