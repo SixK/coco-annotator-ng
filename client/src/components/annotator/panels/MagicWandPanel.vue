@@ -6,7 +6,7 @@
       min="0"
       max="1000"
       step="5"
-      @update="magicwand.wand.threshold"
+      @update="magicwand.wand.threshold = $event"
     />
     <PanelInputNumber
       v-model:value="magicwand.wand.blur"
@@ -14,7 +14,7 @@
       min="0"
       max="1000"
       step="5"
-      @update="magicwand.wand.blur"
+      @update="magicwand.wand.blur = $event"
     />
   </div>
 </template>
