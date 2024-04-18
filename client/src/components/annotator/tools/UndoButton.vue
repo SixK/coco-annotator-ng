@@ -1,7 +1,8 @@
 <template>
-<div>
-      <i v-tooltip.right="name" class="fa fa-x" :class="icon" :style="{ color: iconColor }" @click="click(execute, disabled)"></i><br>
-</div>
+  <div>
+    <i v-tooltip.right="name" class="fa fa-x" :class="icon" :style="{ color: iconColor }" @click="click(execute, disabled)" />
+    <br>
+  </div>
 </template>
 
 <script setup>

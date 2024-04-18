@@ -1,6 +1,6 @@
 <template>
   <div>
-    <i v-tooltip.right="tooltip" class='fa fa-x' :class="icon" :style="{ color: iconColor }" @click="click"></i>
+    <i v-tooltip.right="tooltip" class="fa fa-x" :class="icon" :style="{ color: iconColor }" @click="click" />
     <br>
   </div>
 </template>
