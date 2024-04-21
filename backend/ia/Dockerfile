@@ -1,4 +1,4 @@
-FROM pytorch/pytorch:1.13.0-cuda11.6-cudnn8-runtime
+FROM pytorch/pytorch:1.13.1-cuda11.6-cudnn8-runtime
 
 ENV MASKRCNN="0"
 ENV DEXTR="1"
@@ -35,25 +35,13 @@ RUN if [ "$MASKRCNN" = "1" ]; then \
 
 # Install DEXTR
 RUN if [ "$DEXTR" = "1" ]; then \
-        git clone --single --depth 1 https://github.com/jsbroks/dextr-keras.git /tmp/dextr && \
-        cd /tmp/dextr && \
-        sed -i "s/np.int/int/g" dextr/model.py && \
-        python setup.py install && \
-        rm -Rf /tmp/dextr; \
+       git clone --single --depth 1 https://github.com/SixK/DEXTR-PyTorch-ccannotng.git /tmp/dextr && \
+       cd /tmp/dextr && \
+       pip install . && \
+       rm -Rf /tmp/dextr; \
     fi
 
 
-RUN if [ "$DEXTR" = "1" ]; then \
-         git clone --depth=1 https://github.com/iamlab-cmu/DEXTR-KerasTensorflow.git /tmp/dextr2 && \
-         cd /tmp/dextr2 && \
-         sed -i "s/from networks/from dextr/g" networks/classifiers.py && \
-         sed -i "s/from keras.backend import tf/import tensorflow/g" networks/classifiers.py && \
-         sed -i "s/from keras.layers.merge import Concatenate, Add/from keras.layers import concatenate, add/g" networks/classifiers.py && \
-         cp networks/classifiers.py /opt/conda/lib/python3.9/site-packages/dextr-0.0.1-py3.9.egg/dextr/ && \            
-         rm -Rf /tmp/dextr2; \
-    else \
-        echo "Dextr is disabled"; \
-    fi
 
 # RUN pip install segment-anything
 RUN if [ "$SAM" = "1" ]; then \
