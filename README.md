@@ -27,6 +27,8 @@ You can then use any recent werkzeug version.
 - fixed some bugs and javascript errors  
 - can use detectron2 models to help segment objects  
 - moved IA to a dedicated container to make coco-annotator lighter when not using them
+- moved DEXTR from tensorflow to pytorch
+- add SAM (Segment Anything Model) support for 1 click object segmentation
 - maybe more ...  
 
 **what features you will loose or bugs are introduced:**  
