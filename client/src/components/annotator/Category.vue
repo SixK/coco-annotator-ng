@@ -304,13 +304,6 @@ const isFormValid = computed(() => {
   );
 });
 
-/*
-watch(
-  () => activeTool.value,
-  (value) => {
-      activeTool.value = value;
-});*/
-
 watch(
   () => color.value, 
   () => {
@@ -352,7 +345,7 @@ watch(
 });
 
 watch(
-  () => category.value, 
+  category.value, 
   () => {
       initCategory();
 });
@@ -471,9 +464,9 @@ const removeKeypointEdge = (edge) => {
   });
 
   if (index !== -1) {
-    let edge = keypoint.value.edges[index];
+    const edge = keypoint.value.edges[index];
     keypoint.value.edges.splice(index, 1);
-    let annotations = annotationlist.value;
+    const annotations = annotationlist.value;
     if (annotations) {
       annotations.forEach((a) => a.keypoints.removeLine(edge));
     }

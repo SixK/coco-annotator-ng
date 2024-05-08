@@ -400,7 +400,9 @@ const createCompoundPath = (json = null, segments = null) => {
         let x = annotationKeypoints[i] - width / 2,
           y = annotationKeypoints[i + 1] - height / 2,
           v = annotationKeypoints[i + 2];
-        if (annotationKeypoints[i] === 0 && annotationKeypoints[i + 1] === 0 && v === 0) continue;
+        if (annotationKeypoints[i] === 0 
+                && annotationKeypoints[i + 1] === 0 
+                && v === 0) continue;
         addKeypoint(new paper.Point(x, y), v, i / 3 + 1);
       }
     }
@@ -890,42 +892,6 @@ const notUsedKeypointLabels = computed(() => {
   return tags;
 });
 
-/*
-watch(
-    () => activeTool.value,
-    (tool) => {
-      if (isCurrent.value) {
-        session.value.tools.push(tool);
-
-        if (tool === "Keypoints") {
-
-          if (!showKeypoints.value) {
-            showKeypoints.value = true;
-          }
-
-          var labelIndex = -1;
-          for (let i = 0; i < keypointLabels.value.length; ++i) {
-            if (isKeypointLabeled(i)) {
-              if (labelIndex < 0) {
-                labelIndex = i;
-              }
-            } else {
-              labelIndex = i;
-              break;
-            }
-          }
-
-          if (labelIndex > -1) {
-            keypoint.value.tag = [String(labelIndex + 1)];
-            currentKeypoint.value = keypoints.value._labelled[keypoint.value.tag];
-            emit("keypoint-click", labelIndex);
-          }
-        }
-      }
-    }
-);
-*/
-
 watch(
   () => activeTool.value,
   (tool) => {
@@ -1010,7 +976,7 @@ watch(
 });
 
 watch(
-    () => annotation.value, 
+    annotation.value, 
     () => {
     console.log('watch annotation value');
     initAnnotation();
@@ -1062,7 +1028,7 @@ watch(
 watch(
   () => keypointEdges.value, 
   (newEdges) => {
-  keypoints.value.color = darkHSL;
+  keypoints.value.color = darkHSL.value;
   newEdges.forEach((e) => keypoints.value.addEdge(e));
 });
 

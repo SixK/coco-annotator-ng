@@ -62,9 +62,7 @@ const execute = () => {
             },
           })
           .then((response) => {
-
-           let coco = response.data.coco || {};
-
+            let coco = response.data.coco || {};
             let images = coco.images || [];
             let categories = coco.categories || [];
             let annotations = coco.annotations || [];
