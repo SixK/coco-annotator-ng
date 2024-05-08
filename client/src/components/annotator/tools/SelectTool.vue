@@ -16,11 +16,8 @@ const authStore = useAuthStore();
 
 import { nextTick, ref, computed, watch, inject, onMounted, provide } from 'vue'
 
-const getAnnotationFromIndex = inject('getAnnotationFromIndex', () => {});
-const getCategoryByIndex = inject('getCategoryByIndex');
-const getCategory = inject('getCategory');
-const getHover = inject('getHover');
 const getPaper = inject('getPaper');
+const localPaper = ref(getPaper());
 
 const {
     click,
@@ -32,6 +29,7 @@ const {
   }= useTools();
 
 const scale = defineModel('scale', { type: Number, default: 1 });
+const categories = defineModel('categories', { type: Array, required: true });
 
 name.value = "Select";
 name.cursor = "pointer";
@@ -73,13 +71,9 @@ const hitOptions = ref({
   },
 });
 
-const localHover = ref(getHover());
-const localPaper = ref(getPaper());
-
 watch(
   () => keypoint.value, 
   (newKeypoint) => {
-        console.log('keypoint watched !');
         clear();
         if (!newKeypoint) return;
         hoverText();
@@ -123,7 +117,6 @@ watch(
           hover.value.text = null;
         }
         
-        console.log('watch active point:', point);
         if (point.value) {
           point.value.remove();
           point.value = null;
@@ -167,13 +160,13 @@ const generateTitle = () => {
   }
   if (hover.value.category && hover.value.annotation) {
     let id = hover.value.textId;
-    let localcategory = hover.value.category.category.name;
+    let localcategory = hover.value.category.name;
     string += "ID: " + id + " \n";
     string += "Category: " + localcategory + " \n";
   }
   // if (store.getters["user/loginEnabled"]) {
   if (authStore.loginEnabled()) {
-    let creator = hover.value.annotation.annotation.creator;
+    let creator = hover.value.annotation.creator;
     if (creator != null) {
       string += "Created by " + creator + "\n\n";
     }
@@ -187,17 +180,15 @@ const generateStringFromMetadata = () => {
   if (keypoint.value) return "";
   let string = "";
   
-  ////////////// may not work here $refs ????
-  let metadata = hover.value.annotation.$refs?.metadata?.metadataList;
-  if ( metadata == null || metadata.length === 0) {
+  let metadata = hover.value.annotation.metadata;
+  if ( metadata == null || Object.keys(metadata).length === 0) {
     string += "No Metadata \n";
   } else {
     string += "Metadata \n";
-    metadata.forEach((element) => {
-      if (element.key.length !== 0) {
-        string += " " + element.key + " = " + element.value + " \n";
-      }
-    });
+    
+    for (const [key, value] of Object.entries(metadata)) {
+        string += " " + key + " = " + value + " \n";
+    }    
   }
   return string.replace(/\n/g, " \n ").slice(0, -2);
 };
@@ -212,10 +203,9 @@ const hoverText = () => {
 
       let position = hover.value.position.add(hover.value.textShift, 0);
 
-
       if (
         hover.value.text == null ||
-        hover.value.annotation.annotation.id !== hover.value.textId ||
+        hover.value.annotation.id !== hover.value.textId ||
         keypoint.value != null
       ) {
             if (hover.value.text !== null) {
@@ -224,9 +214,9 @@ const hoverText = () => {
             }
             
             if (hover.value.annotation) {
-              hover.value.textId = hover.value.annotation.annotation.id;
+              hover.value.textId = hover.value.annotation.id;
             }
-            let content = generateTitle() + generateStringFromMetadata();
+            const content = generateTitle() + generateStringFromMetadata();
 
             hover.value.text = new paper.PointText(position);
             hover.value.text.justification = "left";
@@ -266,10 +256,9 @@ const checkBbox = (paperObject) => {
   if(!paperObject.data.categoryId) return false;
   let categoryId = paperObject.data.categoryId;  
   
-  let category = getCategoryByIndex(categoryId);
+  let category = categories.value[categoryId];
    if (category == null) return false;
-  let annotation = category.getAnnotationFromIndex(annotationId);
-  // let annotation = category.category.annotations[annotationId];
+   let annotation = category.annotations[annotationId];
   if (annotation == null) return false;
   
   return annotation.isbbox;
@@ -330,7 +319,6 @@ function clear() {
 }
     
 function createPoint(currpoint) {
-    console.log('Create Point');
       if (point.value != null) {
         point.value.remove();
       }
@@ -403,9 +391,6 @@ const onMouseMove = (event) => {
         }
       }
 
-      localHover.value.annotation = -1;
-      localHover.value.category = -1;
-
       localPaper.value.project.activeLayer.selected = false;
       let item = event.item;
 
@@ -421,14 +406,9 @@ const onMouseMove = (event) => {
         let categoryId = event.item.data.categoryId;
         let annotationId = event.item.data.annotationId;
 
-        localHover.value.category = categoryId;
-        localHover.value.annotation = annotationId;
-
-        // hover.value.category = $parent.getCategory(categoryId);
-        hover.value.category = getCategoryByIndex(categoryId);
+        hover.value.category = categories.value[categoryId];
         if (hover.value.category != null) {
-          hover.value.annotation =
-            hover.value.category.getAnnotationFromIndex(annotationId);
+          hover.value.annotation = hover.value.category.annotations[annotationId];
           event.item.selected = true;
           hoverText();
         }
@@ -461,6 +441,8 @@ onMounted(() => {
     state.tool.onMouseDrag = onMouseDrag;
     state.tool.onMouseMove = onMouseMove;
     state.tool.onMouseUp = onMouseUp;
+
+    state.tool.activate();
 })
 
 defineExpose({exportSelect, setPreferences, name, hover, click});

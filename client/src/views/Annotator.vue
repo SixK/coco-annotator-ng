@@ -11,6 +11,7 @@
           ref="select"
           v-model="activeTool"
           :scale="image.scale"
+          :categories="categories"
           @setcursor="setCursor"
         />
         <hr>
@@ -401,7 +402,7 @@ const text = ref({
       topLeft: null,
       topRight: null
 });
-const categories = ref([]);
+const categories = toRef([]);
 const dataset = ref({
       annotate_url: ""
 });
@@ -433,6 +434,10 @@ const setActiveTool = (tool) => {
 
 const getActiveTool = () => {
     return activeTool.value;
+};
+
+const selectLastEditorTool = () => {
+  activeTool.value = localStorage.getItem("editorTool") || "Select";
 };
 
 const getImageId = () => {
@@ -757,51 +762,6 @@ function handleLabeledKeypointSelection(indices) {
       activeTool.value.click();
 }
 
-
-/*
-const onCategoryClick = (indices) => {
-      current.value.annotation = indices.annotation;
-      current.value.category = indices.category;
-      if (!indices.hasOwnProperty("keypoint")) {
-        indices.keypoint = -1;
-      }
-      if (indices.keypoint !== -1) {
-        current.value.keypoint = indices.keypoint;
-        let ann =
-          currentCategoryFromList.value.category.annotations[current.value.annotation];
-          
-        let kpTool = keypoint.value;
-        let selectTool = select.value;
-        let cat = categorylist.value[current.value.category];
-
-        // let annot = cat.$refs.annotation[current.value.annotation];
-        let annot = cat.category.annotations[current.value.annotation]
-        if (currentAnnotationFromList.value) {
-            // keypoints._labelled seem's only visible on currentAnnotation
-            annot = currentAnnotationFromList.value;
-        }
-
-        // let annotation = category.$refs.annotation[this.current.annotation];
-        // let annot = annotation.value[current.value.annotation];
-        annot.showKeypoints = true;
-        let keypoints = annot.keypoints;
-        if (keypoints._labelled && keypoints._labelled[indices.keypoint + 1]) {
-          let indexLabel = String(current.value.keypoint + 1);
-              let keypoint = keypoints._labelled[indexLabel];
-              keypoint.selected = true;
-              activeTool.value = selectTool;
-              activeTool.value.click();
-        } else {
-          currentAnnotationFromList.value.keypoint.next.label = String(
-            indices.keypoint + 1
-          );
-          activeTool.value = kpTool;
-          activeTool.value.click();
-        }
-      }
-};
-*/
-
 const onKeypointsComplete = () => {
        /********* Remove me when this.currentAnnotation will not be empty at start ********/ 
 
@@ -855,10 +815,6 @@ const uniteCurrentAnnotation = (compound, simplify = true, undoable = true, isBB
 const subtractCurrentAnnotation = (compound, simplify = true, undoable = true) => {
   if (currentCategoryFromList.value == null) return;
   currentAnnotationFromList.value.subtract(compound, simplify, undoable);
-};
-
-const selectLastEditorTool = () => {
-  activeTool.value = localStorage.getItem("editorTool") || "Select";
 };
 
 const getImageRaster = () => {
@@ -967,27 +923,6 @@ const incrementAnnotation = () => {
         }
     }
 };
-
-/*
-const incrementAnnotation = () => {
-  let annotationCount = currentCategoryFromList.value.category.annotations.length;
-  if (current.value.annotation === annotationCount - 1) {
-    incrementCategory();
-    current.value.annotation = -1;
-  } else {
-    current.value.annotation += 1;
-    if (
-      currentAnnotation.value != null &&
-      currentAnnotation.value.showKeypoints
-    ) {
-      current.value.keypoint = 0;
-      currentAnnotation.value.onAnnotationKeypointClick(current.value.keypoint);
-    } else {
-      current.value.keypoint = -1;
-    }
-  }
-};
-*/
 
 const decrementAnnotation = () => {
   let annotationCount = currentCategoryFromList.value.category.annotations.length;
