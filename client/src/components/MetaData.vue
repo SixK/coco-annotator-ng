@@ -81,16 +81,6 @@ const exclude = defineModel('exclude', { type: String, default: "" });
 
 const metadataList = ref([]);
 
-
-watchEffect(() => {
-    loadMetadata();
-});
-
-
-onMounted(() => {
-    // loadMetadata();
-});
-
 const exportMetadata = () => {
   let new_metadata = {};
   metadataList.value.forEach((object) => {
@@ -111,6 +101,19 @@ const exportMetadata = () => {
   return new_metadata;
 };
 
+
+
+watchEffect(() => {
+    loadMetadata();
+});
+
+
+onMounted(() => {
+    // loadMetadata();
+});
+
+
+
 const createMetadata = () => {
   metadataList.value.push({ key: "", value: "" });
 };
@@ -121,6 +124,11 @@ function loadMetadata() {
         if (!Object.prototype.hasOwnProperty.call(metadata.value, key)) {
           continue;
         }
+        if (typeof metadata.value[key] === 'function' 
+               || typeof metadata.value[key] === 'object') {
+            continue;
+        }
+        
         if (key === exclude.value) continue;
         let value = metadata.value[key];
         if (value == null) value = '';

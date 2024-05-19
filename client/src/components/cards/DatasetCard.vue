@@ -317,9 +317,11 @@ const onCocoDownloadClick = () => {
   const process = `Generating COCO for ${dataset.value.name}`;
   addProcess(process);
   try {
-    const response = axios.get(`/api/dataset/${dataset.value.id}/coco`);
-    const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(response.data))}`;
-    downloadURI(dataStr, `${dataset.value.name}.json`);
+    const response = axios.get(`/api/dataset/${dataset.value.id}/coco`)
+                          .then((response) => {
+                             const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(response.data))}`;
+                             downloadURI(dataStr, `${dataset.value.name}.json`);
+                           });
   } catch (error) {
     console.error(error);
   } finally {

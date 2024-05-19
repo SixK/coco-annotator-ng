@@ -126,11 +126,11 @@ const shortcuts = ref(null);
 
 let settingsModal = null;
 
-const exportMetadata = (() => {
-      // return props.$refs.metadata.export();
-      // return {};
-      return metadata.value.exportMetadata();
-    });
+const exportMetadata = () => {
+    // return props.$refs.metadata.export();
+    // return {};
+    return metadata.value.exportMetadata();
+};
 
 const setPreferences = (preferences) => {   
     commands.value.forEach((shortcut) => {
@@ -142,7 +142,7 @@ const setPreferences = (preferences) => {
     });
 }
 
-const exportSettings = (() => {
+const exportSettings = () => {
       let data = { shortcuts: [] };
       
       // shortcuts.value.shortcuts.forEach((shortcut) => {
@@ -150,7 +150,7 @@ const exportSettings = (() => {
           data.shortcuts.push(shortcut.myexport());
       });
       return data;
-});
+};
 
 onMounted( () => {
     const settingsTag = document.getElementById('settings');
