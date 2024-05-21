@@ -72,7 +72,8 @@ class User(Resource):
 
         user = UserModel()
         user.username = args.get('username')
-        user.password = generate_password_hash(args.get('password'), method='sha256')
+        user.password = generate_password_hash(args.get('password'), method='pbkdf2:sha256')
+        # user.password = generate_password_hash(args.get('password'), method='sha256')
         user.name = args.get('name', "")
         user.email = args.get('email', "")
         user.is_admin = args.get('isAdmin', False)
@@ -119,7 +120,8 @@ class Username(Resource):
 
         password = args.get('password')
         if len(password) > 0:
-            user.password = generate_password_hash(password, method='sha256')
+            user.password = generate_password_hash(password, method='pbkdf2:sha256')
+            # user.password = generate_password_hash(password, method='sha256')
 
         user.save()
 
