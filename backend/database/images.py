@@ -93,6 +93,16 @@ class ImageModel(DynamicDocument):
         AnnotationModel.objects(image_id=self.id).delete()
         return super(ImageModel, self).delete(*args, **kwargs)
 
+    def segmented(self):
+        """
+        Generates segmented image
+        """
+        pil_image = self.generate_thumbnail()
+        pil_image = pil_image.convert("RGB")
+
+        self.update(is_modified=False)
+        return pil_image
+
     def thumbnail(self):
         """
         Generates (if required) thumbnail

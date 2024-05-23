@@ -73,6 +73,12 @@
             >
               Download Image & COCO
             </button>
+            <button
+              class="btn dropdown-item"
+              @click="onDownloadSegmentedClick"
+            >
+              Download Segmented Image
+            </button>
           </div>
         </div>
 
@@ -167,6 +173,10 @@ const onDownloadClick = () => {
       props.image.file_name.replace(/\.[^/.]+$/, "") + ".json"
     );
   });
+}
+
+const onDownloadSegmentedClick = () => {
+  downloadURI("/api/image/segmented/" + props.image.id + "?asAttachment=true", props.image.file_name);
 }
 
 const onDeleteClick = () => {

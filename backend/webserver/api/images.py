@@ -103,6 +103,39 @@ class Images(Resource):
         return db_image.id
 
 
+@api.route('/segmented/<int:image_id>')
+class ImageSegmentedId(Resource):
+
+    @api.expect(image_download)
+    @login_required
+    def get(self, image_id):
+        """ Returns category by ID """
+        args = image_download.parse_args()
+        as_attachment = args.get('asAttachment')
+        thumbnail = args.get('thumbnail')
+
+        image = current_user.images.filter(id=image_id, deleted=False).first()
+
+        if image is None:
+            return {'success': False}, 400
+
+        width = args.get('width')
+        height = args.get('height')
+        
+        if not width:
+            width = image.width
+        if not height:
+            height = image.height
+        
+        pil_image = image.segmented()
+
+        image_io = io.BytesIO()
+        pil_image = pil_image.convert("RGB")
+        pil_image.save(image_io, "JPEG", quality=90)
+        image_io.seek(0)
+
+        return send_file(image_io, download_name=image.file_name, as_attachment=as_attachment)
+
 @api.route('/<int:image_id>')
 class ImageId(Resource):
 
