@@ -1,4 +1,5 @@
-FROM pytorch/pytorch:1.13.1-cuda11.6-cudnn8-runtime
+# FROM pytorch/pytorch:1.13.1-cuda11.6-cudnn8-runtime
+FROM pytorch/pytorch:2.3.1-cuda11.8-cudnn8-runtime
 
 ENV MASKRCNN="0"
 ENV DEXTR="1"
