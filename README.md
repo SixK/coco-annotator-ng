@@ -52,18 +52,18 @@ Then build compnents images depending of your needs.
 
 Production images with no IA support:
 
-	docker-compose -f ./docker-compose.build.yml build
-	docker-compose -f ./docker-compose.yml up
+	docker compose -f ./docker-compose.build.yml build
+	docker compose -f ./docker-compose.yml up
 
 Dev images with IA support:
 
-	docker-compose -f ./docker-compose.dev.yml build
-	docker-compose -f ./docker-compose.dev.yml up
+	docker compose -f ./docker-compose.dev.yml build
+	docker compose -f ./docker-compose.dev.yml up
 
 Production images with IA support:
 
-	docker-compose -f /docker-compose.gpu.yml build
-	docker-compose -f /docker-compose.gpu.yml up  
+	docker compose -f /docker-compose.gpu.yml build
+	docker compose -f /docker-compose.gpu.yml up  
 
 
 ---
@@ -191,10 +191,10 @@ Download SAM model :
 >    cd models;bash sam_model.sh
 
 Then rebuild/build coco-annotator images using docker-compose.dev.yml or docker-compose.gpu.yml files :  
->    docker-compose -f ./docker-compose.dev.yml build
+>    docker compose -f ./docker-compose.dev.yml build
 
 You can then run coco-annotator:  
->    docker-compose -f ./docker-compose.dev.yml up
+>    docker compose -f ./docker-compose.dev.yml up
 
 Now select or create a new annotation.  
 Select the new SAM button in the left pannel (under DEXTR button).  
@@ -209,10 +209,10 @@ Simply download SAM-HQ model:
 >    cd models;bash sam_hq_model.sh
 
 Rebuild docker images :
->    docker-compose -f ./docker-compose.dev.yml build
+>    docker compose -f ./docker-compose.dev.yml build
 
 You can then run coco-annotator:
->    docker-compose -f ./docker-compose.dev.yml up
+>    docker compose -f ./docker-compose.dev.yml up
 
 SAM-HQ is now default, but you still can use original SAM modifying backend/webserver/Dockerfile  
 to comment line with sam-hq and uncomment line before installing segment-anything.
