@@ -257,24 +257,8 @@ const removeProcess = (process) => procStore.removeProcess(process);
 const dataset = defineModel('dataset', { type: Object, required: true });
 const categories = defineModel('categories', { type: Array, required: true });
 
-/*
-const props = defineProps({
-  dataset: {
-    type: Object,
-    required: true,
-  },
-  categories: {
-    type: Array,
-    required: true,
-  },
-});
-const dataset = ref(props.dataset);
-const categories = ref(props.categories);
-*/
-
 const imageError = ref(false);
 const selectedCategories = ref([]);
-// const defaultMetadata = ref(props.dataset.default_annotation_metadata);
 const defaultMetadata = ref(dataset.value.default_annotation_metadata);
 // const noImageUrl = require("@/assets/no-image.png");
 // const notFoundImageUrl = require("@/assets/404-image.png");

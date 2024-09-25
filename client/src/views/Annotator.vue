@@ -451,12 +451,11 @@ const getHover = () => {
 const getPaper = () => {
     return paper;
 };
-  
+
 const save = (callback) => {
       let process = "Saving";
       procStore.addProcess(process);
-      
-      
+
       let data = {
         mode: mode.value,
         user: {
