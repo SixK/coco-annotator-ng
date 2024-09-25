@@ -15,7 +15,7 @@
 # FROM pytorch/pytorch:1.13.0-cuda11.6-cudnn8-runtime
 FROM python:3.11-slim
 
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
           apt-get install --no-install-recommends  -y git pkg-config gcc python3-dev libfreetype6-dev gfortran libgl1 libsm6 libxext6 
@@ -30,7 +30,7 @@ COPY ./backend/requirements_common.txt /workspace/
 # Install python package dependices
 RUN pip install --no-cache-dir --upgrade pip && \
           pip install --no-cache-dir -r requirements.txt && \
-          pip install --no-cache-dir gunicorn[eventlet]==22.0.0
+          pip install --no-cache-dir gunicorn[eventlet]==23.0.0
 
 RUN apt-get -y -o Dpkg::Options::="--force-confmiss" install --reinstall netbase && \
           apt clean && rm -rf /var/lib/apt/lists/*

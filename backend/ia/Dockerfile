@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install --no-install-recommends  -y libsm6 libxren
 # Install python package dependices
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements_ia.txt && \
-    pip install --no-cache-dir gunicorn[eventlet]==21.2.0
+    pip install --no-cache-dir gunicorn[eventlet]==23.0.0
 
 
 RUN python set_path.py
