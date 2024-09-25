@@ -19,4 +19,6 @@ services:
     command: "mongod --smallfiles --logpath=/dev/null"
     networks:
       - cocoannotator
+    ports:
+      - 27017:27017
 
