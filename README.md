@@ -229,7 +229,7 @@ And modify docker-compose.dev.yml:
 
 Download SAM model (if not already done) rebuild docker images and restart coco-annotator using docker-compose. 
 
-# Using SAM2 (Segment Anything 2)
+# Using SAM2 (Segment Anything 2)
 Sam2 is the latest Segmentation tool from Meta:
 https://github.com/facebookresearch/sam2/
 
@@ -242,12 +242,12 @@ Rebuild docker images :
 You can then run coco-annotator:
 >    docker compose -f ./docker-compose.dev.yml up
 
-In coco-annotator select a class and click on Sam2 button.
+In coco-annotator select a class, click on Sam2 button then click an object.  
 Object should be segmented.
 
-Default model is sam2.1_hiera_base_plus. It seem's to be a good compromise between speed and efficacity.
-You can use any other Sam2 model if needed. 
-Simply download the model and adapt docker-compose lines.
+Default model is sam2.1_hiera_base_plus. It seem's to be a good compromise between speed and efficacity.  
+You can use any other Sam2 model if needed.  
+Simply download the model and adapt docker-compose lines.  
 
 # Demo
 
