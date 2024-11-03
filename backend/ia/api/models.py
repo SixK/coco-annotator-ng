@@ -15,6 +15,12 @@ import numpy as np
 
 logger = logging.getLogger('gunicorn.error')
 
+SAM2_LOADED = os.path.isfile(Config.SAM2_MODEL_FILE)
+if SAM2_LOADED:
+    from ..util.sam2 import model as sam2
+else:
+    logger.warning("SAM2 model is disabled.")
+
 SAM_LOADED = os.path.isfile(Config.SAM_MODEL_FILE)
 if SAM_LOADED:
     from ..util.sam import model as sam
@@ -67,6 +73,10 @@ dextr_args.add_argument('image', location='files', type=FileStorage, required=Tr
 sam_args = reqparse.RequestParser()
 sam_args.add_argument('data', type=str, required=True)
 sam_args.add_argument('image', location='files', type=FileStorage, required=True, help='Image')
+
+sam2_args = reqparse.RequestParser()
+sam2_args.add_argument('data', type=str, required=True)
+sam2_args.add_argument('image', location='files', type=FileStorage, required=True, help='Image')
 
 @api.route('/dextr')
 class MaskRCNN(Resource):
@@ -173,3 +183,31 @@ class MaskRCNN(Resource):
         sam.calcMasks(np.array([points]), np.array([1]))
         sam.getSegmentation()
         return { "segmentaiton": sam.getSegmentation() }
+
+@api.route('/sam2')
+class MaskRCNN(Resource):
+
+    @api.expect(image_upload)
+    def post(self):
+
+        """ COCO data test """
+        if not SAM2_LOADED:
+             return {"disabled": True, "message": "SAM2 is disabled"}, 400
+
+        args = sam2_args.parse_args()
+        # logger.warning("args: {}".format(args))
+        data = json.loads(args['data'])
+        logger.info(f'data: {data}')
+        
+        sam2.setPredictor(float(data['threshold']), float(data['maxhole']), float(data['maxsprinkle']))
+        points=data['points'][0]
+
+        img_file = args['image']
+        im = Image.open(img_file.stream).convert('RGB')
+        im = np.asarray(im)
+        
+        logger.warning("points: {}".format(points))
+        sam2.setImage(im)
+        sam2.calcMasks(np.array([points]), np.array([1]))
+        sam2.getSegmentation()
+        return { "segmentaiton": sam2.getSegmentation() }

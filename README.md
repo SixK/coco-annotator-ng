@@ -28,13 +28,12 @@ You can then use any recent werkzeug version.
 - can use detectron2 models to help segment objects  
 - moved IA to a dedicated container to make coco-annotator lighter when not using them
 - moved DEXTR from tensorflow to pytorch
-- add SAM (Segment Anything Model) support for 1 click object segmentation
+- add SAM and SAM2 (Segment Anything Model) support for 1 click object segmentation
 - maybe more ...  
 
 **what features you will loose or bugs are introduced:**  
 - watchdog to detect new images has been disabled (this was freezing the application. This feature may be reactivated later)  
 - pinch zoom has been removed (need to find a library to replace and use a tablet to test it)  
-- objects id are not the new ones when switching to next or previous images (need to click on an object to get ids updated)  
 - exported json annotations files seem's ok but are actually not fully tested  
 - hope to not have more bugs and features removed...  
 
@@ -230,6 +229,25 @@ And modify docker-compose.dev.yml:
 
 Download SAM model (if not already done) rebuild docker images and restart coco-annotator using docker-compose. 
 
+# Using SAM2 (Segment Anything 2)
+Sam2 is the latest Segmentation tool from Meta:
+https://github.com/facebookresearch/sam2/
+
+Download Sam2 model:
+>    cd models;bash sam2_model.sh
+
+Rebuild docker images :
+>    docker compose -f ./docker-compose.dev.yml build
+
+You can then run coco-annotator:
+>    docker compose -f ./docker-compose.dev.yml up
+
+In coco-annotator select a class and click on Sam2 button.
+Object should be segmented.
+
+Default model is sam2.1_hiera_base_plus. It seem's to be a good compromise between speed and efficacity.
+You can use any other Sam2 model if needed. 
+Simply download the model and adapt docker-compose lines.
 
 # Demo
 

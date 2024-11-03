@@ -66,6 +66,9 @@ class Config:
     ### Models
     SAM_MODEL_FILE = os.getenv("SAM_MODEL_FILE", "")
     SAM_MODEL_TYPE = os.getenv("SAM_MODEL_TYPE", "")
+    SAM2_MODEL_FILE = os.getenv("SAM2_MODEL_FILE", "")
+    SAM2_MODEL_CONFIG = os.getenv("SAM2_MODEL_CONFIG", "")
+
     DEVICE = os.getenv("DEVICE", "cuda")
     
     MASK_RCNN_FILE = os.getenv("MASK_RCNN_FILE", "")

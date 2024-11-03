@@ -69,6 +69,12 @@
           :scale="image.scale"
           @setcursor="setCursor"
         />
+        <Sam2Tool
+          ref="sam2"
+          v-model="activeTool"
+          :scale="image.scale"
+          @setcursor="setCursor"
+        />
       </div>
       <hr>
 
@@ -220,6 +226,9 @@
           <div v-if="sam != null">
             <SamPanel :sam="sam" />
           </div>
+          <div v-if="sam2!= null">
+            <Sam2Panel :sam2="sam2" />
+          </div>
         </div>
       </div>
     </aside>
@@ -286,6 +295,7 @@ import BrushTool from "@/components/annotator/tools/BrushTool";
 import KeypointTool from "@/components/annotator/tools/KeypointTool";
 import DEXTRTool from "@/components/annotator/tools/DEXTRTool";
 import SamTool from "@/components/annotator/tools/SamTool";
+import Sam2Tool from "@/components/annotator/tools/Sam2Tool";
 
 import CopyAnnotationsButton from "@/components/annotator/tools/CopyAnnotationsButton";
 import CenterButton from "@/components/annotator/tools/CenterButton";
@@ -308,6 +318,7 @@ import EraserPanel from "@/components/annotator/panels/EraserPanel";
 import KeypointPanel from "@/components/annotator/panels/KeypointPanel";
 import DEXTRPanel from "@/components/annotator/panels/DEXTRPanel";
 import SamPanel from "@/components/annotator/panels/SamPanel";
+import Sam2Panel from "@/components/annotator/panels/Sam2Panel";
 
 
 import { getCurrentInstance } from 'vue';
@@ -356,6 +367,7 @@ const annotation = ref(null);
 const filetitle = ref(null);
 const dextr = ref(null);
 const sam = ref(null);
+const sam2 = ref(null);
 
 const updateKeypointPanel = ref(1);
 

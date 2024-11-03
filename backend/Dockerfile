@@ -13,7 +13,7 @@
 # 3.8.8 	1.8.0
 # 3.8.3 	1.7.0
 # FROM pytorch/pytorch:1.13.0-cuda11.6-cudnn8-runtime
-FROM python:3.11-slim
+FROM python:3.12-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
 

@@ -4,6 +4,7 @@ FROM pytorch/pytorch:2.3.1-cuda11.8-cudnn8-runtime
 ENV MASKRCNN="0"
 ENV DEXTR="1"
 ENV SAM="1"
+ENV SAM2="1"
 ENV DETECTRON2="0"
 ENV MASKFORMER="0"
 
@@ -38,16 +39,27 @@ RUN if [ "$MASKRCNN" = "1" ]; then \
 RUN if [ "$DEXTR" = "1" ]; then \
        git clone --single --depth 1 https://github.com/SixK/DEXTR-PyTorch-ccannotng.git /tmp/dextr && \
        cd /tmp/dextr && \
-       pip install . && \
+       pip --no-cache-dir  install . && \
        rm -Rf /tmp/dextr; \
     fi
 
-
+# RUN pip install sam2  // segment anything 2
+RUN if [ "$SAM2" = "1" ]; then \
+             git clone --single --depth 1 https://github.com/facebookresearch/sam2.git /tmp/sam2 && \
+             cd /tmp/sam2 && \
+             python setup.py egg_info && \
+             pip --no-cache-dir  install `sed '/^\[dev\]/,/^\[/d' SAM_2.egg-info/requires.txt|sed '/^\[interactive-demo\]/,/^\[/d'|sed '/^\[notebooks\]/,/^\[/d'` && \
+             pip --no-cache-dir install --no-deps . && \
+             rm -Rf /tmp/sam2; \
+    fi
 
 # RUN pip install segment-anything
 RUN if [ "$SAM" = "1" ]; then \
-             git clone https://github.com/SysCV/sam-hq.git && cd sam-hq && pip --no-cache-dir install -e . && \
-             pip --no-cache-dir install timm; \
+             git clone https://github.com/SysCV/sam-hq.git /tmp/sam-hq \
+             && cd /tmp/sam-hq \
+             && pip --no-cache-dir install timm \
+             && pip --no-cache-dir install --no-deps .[all]  \
+             && rm -Rf /tmp/sam-hq; \
     fi
 
 # RUN python -m pip install detectron2 -f \

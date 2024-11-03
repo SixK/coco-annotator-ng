@@ -33,9 +33,18 @@ services:
       - FLASK_ENV=development
       - DEBUG=true
       - DEVICE=cuda
+     # Install IA applications or not
+      - MASKRCNN="0"
+      - DEXTR="1"
+      - SAM="1"
+      - SAM2="1"
+      - DETECTRON2="0"
+      - MASKFORMER="0"
       # - SAM_MODEL_FILE=/models/sam_vit_b_01ec64.pth
       - SAM_MODEL_FILE=/models/sam_hq_vit_b.pth
       - SAM_MODEL_TYPE=vit_b
+      - SAM2_MODEL_FILE=/models/sam2.1_hiera_base_plus.pt
+      - SAM2_MODEL_CONFIG=configs/sam2.1/sam2.1_hiera_b+.yaml
       # - DETECTRON2_FILE=/models/quick_schedules/mask_rcnn_R_50_FPN_inference_acc_test.yaml
       # - DETECTRON2_WEIGHTS=detectron2://COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x/137849600/model_final_f10217.pkl
       # - MASK_FORMER_FILE=/models/ade20k-150/maskformer_R50_bs16_160k.yaml
