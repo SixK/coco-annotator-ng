@@ -252,8 +252,8 @@ const hoverText = () => {
 const checkBbox = (paperObject) => {
   if (!paperObject) return false;
   let annotationId = paperObject.data.annotationId;
-  
-  if(!paperObject.data.categoryId) return false;
+
+  if(paperObject.data.categoryId===null) return false;
   let categoryId = paperObject.data.categoryId;  
   
   let category = categories.value[categoryId];
