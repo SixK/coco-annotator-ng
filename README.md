@@ -28,7 +28,7 @@ You can then use any recent werkzeug version.
 - can use detectron2 models to help segment objects  
 - moved IA to a dedicated container to make coco-annotator lighter when not using them
 - moved DEXTR from tensorflow to pytorch
-- add SAM and SAM2 (Segment Anything Model) support for 1 click object segmentation
+- add SAM, SAM2 (Segment Anything Model) and Zim (Zero-Shot Image Matting for Anything aka Zim Anything) support for 1 click object segmentation
 - maybe more ...  
 
 **what features you will loose or bugs are introduced:**  
@@ -247,6 +247,26 @@ Object should be segmented.
 
 Default model is sam2.1_hiera_base_plus. It seem's to be a good compromise between speed and efficacity.  
 You can use any other Sam2 model if needed.  
+Simply download the model and adapt docker-compose lines.  
+
+# Using ZIM (ZIM Anything) (Zero-Shot Image Matting for Anything)
+Zim is the latest Segmentation tool from NAVER Cloud Corp:
+https://github.com/naver-ai/ZIM/
+
+Download Zim model:
+>    cd models;bash zim_model.sh
+
+Rebuild docker images :
+>    docker compose -f ./docker-compose.dev.yml build
+
+You can then run coco-annotator:
+>    docker compose -f ./docker-compose.dev.yml up
+
+In coco-annotator select a class, click on Zim button then click an object.  
+Object should be segmented.
+
+Default model is Vit_b. It seem's to be a good compromise between speed, memory and efficacity.  
+You can use any other Zim model if needed.  
 Simply download the model and adapt docker-compose lines.  
 
 # Demo

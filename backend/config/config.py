@@ -68,6 +68,8 @@ class Config:
     SAM_MODEL_TYPE = os.getenv("SAM_MODEL_TYPE", "")
     SAM2_MODEL_FILE = os.getenv("SAM2_MODEL_FILE", "")
     SAM2_MODEL_CONFIG = os.getenv("SAM2_MODEL_CONFIG", "")
+    ZIM_MODEL_FILE = os.getenv("ZIM_MODEL_FILE", "")
+    ZIM_MODEL_TYPE = os.getenv("ZIM_MODEL_TYPE", "")
 
     DEVICE = os.getenv("DEVICE", "cuda")
     

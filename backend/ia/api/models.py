@@ -27,6 +27,13 @@ if SAM_LOADED:
 else:
     logger.warning("SAM model is disabled.")
 
+ZIM_LOADED = os.path.isdir(Config.ZIM_MODEL_FILE)
+if ZIM_LOADED:
+    from ..util.zim import model as zim
+else:
+    logger.warning("ZIM model is disabled.")
+
+
 MASKRCNN_LOADED = os.path.isfile(Config.MASK_RCNN_FILE)
 logger.info('MaskRCNN path: {}'.format(Config.MASK_RCNN_FILE))
 if MASKRCNN_LOADED:
@@ -77,6 +84,11 @@ sam_args.add_argument('image', location='files', type=FileStorage, required=True
 sam2_args = reqparse.RequestParser()
 sam2_args.add_argument('data', type=str, required=True)
 sam2_args.add_argument('image', location='files', type=FileStorage, required=True, help='Image')
+
+zim_args = reqparse.RequestParser()
+zim_args.add_argument('data', type=str, required=True)
+zim_args.add_argument('image', location='files', type=FileStorage, required=True, help='Image')
+
 
 @api.route('/dextr')
 class MaskRCNN(Resource):
@@ -177,7 +189,7 @@ class MaskRCNN(Resource):
         img_file = args['image']
         im = Image.open(img_file.stream).convert('RGB')
         im = np.asarray(im)
-        
+
         logger.warning("points: {}".format(points))
         sam.setImage(im)
         sam.calcMasks(np.array([points]), np.array([1]))
@@ -198,7 +210,7 @@ class MaskRCNN(Resource):
         # logger.warning("args: {}".format(args))
         data = json.loads(args['data'])
         logger.info(f'data: {data}')
-        
+
         sam2.setPredictor(float(data['threshold']), float(data['maxhole']), float(data['maxsprinkle']))
         points=data['points'][0]
 
@@ -211,3 +223,28 @@ class MaskRCNN(Resource):
         sam2.calcMasks(np.array([points]), np.array([1]))
         sam2.getSegmentation()
         return { "segmentaiton": sam2.getSegmentation() }
+
+@api.route('/zim')
+class MaskRCNN(Resource):
+
+    @api.expect(image_upload)
+    def post(self):
+
+        """ COCO data test """
+        if not ZIM_LOADED:
+             return {"disabled": True, "message": "ZIM is disabled"}, 400
+
+        args = zim_args.parse_args()
+        # logger.warning("args: {}".format(args))
+        data = json.loads(args['data'])
+        points=data['points'][0]
+
+        img_file = args['image']
+        im = Image.open(img_file.stream).convert('RGB')
+        im = np.asarray(im)
+        
+        logger.warning("points: {}".format(points))
+        zim.setImage(im)
+        zim.calcMasks(np.array([points]), np.array([1]))
+        zim.getSegmentation()
+        return { "segmentaiton": zim.getSegmentation() }

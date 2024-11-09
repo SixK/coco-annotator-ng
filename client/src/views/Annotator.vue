@@ -75,6 +75,12 @@
           :scale="image.scale"
           @setcursor="setCursor"
         />
+        <ZimTool
+          ref="zim"
+          v-model="activeTool"
+          :scale="image.scale"
+          @setcursor="setCursor"
+        />
       </div>
       <hr>
 
@@ -223,12 +229,19 @@
           <div v-if="dextr != null">
             <DEXTRPanel :dextr="dextr" />
           </div>
+          <!--
           <div v-if="sam != null">
             <SamPanel :sam="sam" />
-          </div>
+          </div> 
+          -->
           <div v-if="sam2!= null">
             <Sam2Panel :sam2="sam2" />
           </div>
+          <!--
+          <div v-if="zim != null">
+            <ZimPanel :zim="zim" />
+          </div>
+          -->
         </div>
       </div>
     </aside>
@@ -296,6 +309,8 @@ import KeypointTool from "@/components/annotator/tools/KeypointTool";
 import DEXTRTool from "@/components/annotator/tools/DEXTRTool";
 import SamTool from "@/components/annotator/tools/SamTool";
 import Sam2Tool from "@/components/annotator/tools/Sam2Tool";
+import ZimTool from "@/components/annotator/tools/ZimTool";
+
 
 import CopyAnnotationsButton from "@/components/annotator/tools/CopyAnnotationsButton";
 import CenterButton from "@/components/annotator/tools/CenterButton";
@@ -319,6 +334,7 @@ import KeypointPanel from "@/components/annotator/panels/KeypointPanel";
 import DEXTRPanel from "@/components/annotator/panels/DEXTRPanel";
 import SamPanel from "@/components/annotator/panels/SamPanel";
 import Sam2Panel from "@/components/annotator/panels/Sam2Panel";
+import ZimPanel from "@/components/annotator/panels/ZimPanel";
 
 
 import { getCurrentInstance } from 'vue';
@@ -368,6 +384,7 @@ const filetitle = ref(null);
 const dextr = ref(null);
 const sam = ref(null);
 const sam2 = ref(null);
+const zim = ref(null);
 
 const updateKeypointPanel = ref(1);
 

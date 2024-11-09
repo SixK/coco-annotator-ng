@@ -1,10 +1,14 @@
 # FROM pytorch/pytorch:1.13.1-cuda11.6-cudnn8-runtime
-FROM pytorch/pytorch:2.3.1-cuda11.8-cudnn8-runtime
+# if you don't need Zim, prefer runtime image that is lighter
+# else devel is necessary
+# FROM pytorch/pytorch:2.3.1-cuda11.8-cudnn8-runtime
+FROM pytorch/pytorch:2.4.1-cuda12.4-cudnn9-devel 
 
 ENV MASKRCNN="0"
 ENV DEXTR="1"
 ENV SAM="1"
 ENV SAM2="1"
+ENV ZIM="1"
 ENV DETECTRON2="0"
 ENV MASKFORMER="0"
 
@@ -60,6 +64,12 @@ RUN if [ "$SAM" = "1" ]; then \
              && pip --no-cache-dir install timm \
              && pip --no-cache-dir install --no-deps .[all]  \
              && rm -Rf /tmp/sam-hq; \
+    fi
+
+# RUN pip install zim_anything
+RUN if [ "$ZIM" = "1" ]; then \
+             apt update && apt install libcudnn9-cuda-12 && \
+             pip --no-cache-dir install zim_anything easydict; \
     fi
 
 # RUN python -m pip install detectron2 -f \
