@@ -35,6 +35,7 @@ const settings = ref({
       threshold: 80,
 });
 
+const paperPoints=[];
 const points = ref([]);
 
 const localCurrentAnnotation=ref(null);
@@ -58,6 +59,7 @@ function createPoint(point) {
       let paperPoint = new paper.Path.Circle(point, 5);
       paperPoint.fillColor = localCurrentAnnotation.value.color;
       paperPoint.data.point = point;
+      paperPoints.push(paperPoint);
       points.value.push(paperPoint);
 }
 
@@ -67,6 +69,24 @@ function onMouseDown(event) {
       createPoint(event.point);
       checkPoints(points.value);
     }
+}
+
+function createPath(segments, width, height) {
+        let center = new paper.Point(width, height);
+
+        let compoundPath = new paper.CompoundPath();
+        for (let i = 0; i < segments.length; i++) {
+            let polygon = segments[i];
+            let path = new paper.Path();
+
+            for (let j = 0; j < polygon.length; j += 2) {
+              let point = new paper.Point(polygon[j], polygon[j + 1]);
+              path.add(point.subtract(center));
+            }
+          path.closePath();
+          compoundPath.addChild(path);
+        }
+        return compoundPath;
 }
 
 
@@ -107,26 +127,14 @@ function checkPoints(newPoints) {
                 }
             })
           .then((response) => {
-            let segments = response.data.segmentaiton;
-            let center = new paper.Point(width, height);
-
-            let compoundPath = new paper.CompoundPath();
-            for (let i = 0; i < segments.length; i++) {
-              let polygon = segments[i];
-              let path = new paper.Path();
-
-              for (let j = 0; j < polygon.length; j += 2) {
-                let point = new paper.Point(polygon[j], polygon[j + 1]);
-                path.add(point.subtract(center));
-              }
-              path.closePath();
-              compoundPath.addChild(path);
-            }
-
+            let compoundPath = createPath(response.data.segmentaiton, width, height);
             currentAnnotation.unite(compoundPath);
           })
-          .finally(() => points.value = [] );
-          // .finally(() => points.value.forEach((point) => point.remove()));
+          .finally(() => { 
+              points.value = [];
+              // paperPoint.removeSegments();
+              paperPoints.map((path) => path.removeSegments());
+          });
         });
     }
 };

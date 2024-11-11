@@ -36,6 +36,7 @@ const settings = ref({
       maxsprinkle: 0,
 });
 
+let paperPoint=null;
 const points = ref([]);
 
 const localCurrentAnnotation=ref(null);
@@ -56,7 +57,7 @@ watch(
 );
 
 function createPoint(point) {
-      let paperPoint = new paper.Path.Circle(point, 5);
+      paperPoint = new paper.Path.Circle(point, 5);
       paperPoint.fillColor = localCurrentAnnotation.value.color;
       paperPoint.data.point = point;
       points.value.push(paperPoint);
@@ -70,6 +71,23 @@ function onMouseDown(event) {
     }
 }
 
+function createPath(segments, width, height) {
+        let center = new paper.Point(width, height);
+
+        let compoundPath = new paper.CompoundPath();
+        for (let i = 0; i < segments.length; i++) {
+            let polygon = segments[i];
+            let path = new paper.Path();
+
+            for (let j = 0; j < polygon.length; j += 2) {
+              let point = new paper.Point(polygon[j], polygon[j + 1]);
+              path.add(point.subtract(center));
+            }
+          path.closePath();
+          compoundPath.addChild(path);
+        }
+        return compoundPath;
+}
 
 // original code was watching for new points, but it seem's to be a bug between Vue3 and paper.js.
 // so we call function directly
@@ -104,26 +122,13 @@ function checkPoints(newPoints) {
             })
           .then((response) => {
             console.log('response:', response.data);
-            let segments = response.data.segmentaiton;
-            let center = new paper.Point(width, height);
-
-            let compoundPath = new paper.CompoundPath();
-            for (let i = 0; i < segments.length; i++) {
-              let polygon = segments[i];
-              let path = new paper.Path();
-
-              for (let j = 0; j < polygon.length; j += 2) {
-                let point = new paper.Point(polygon[j], polygon[j + 1]);
-                path.add(point.subtract(center));
-              }
-              path.closePath();
-              compoundPath.addChild(path);
-            }
-
+            let compoundPath = createPath(response.data.segmentaiton, width, height);
             currentAnnotation.unite(compoundPath);
           })
-          .finally(() => points.value = [] );
-          // .finally(() => points.value.forEach((point) => point.remove()));
+          .finally(() => { 
+              points.value = [];
+              paperPoint.removeSegments();
+          });
     });
   }
 };

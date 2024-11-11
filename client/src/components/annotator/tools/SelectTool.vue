@@ -255,10 +255,10 @@ const checkBbox = (paperObject) => {
 
   if(paperObject.data.categoryId===null) return false;
   let categoryId = paperObject.data.categoryId;  
-  
+
   let category = categories.value[categoryId];
-   if (category == null) return false;
-   let annotation = category.annotations[annotationId];
+  if (category == null) return false;
+  let annotation = category.annotations[annotationId];
   if (annotation == null) return false;
   
   return annotation.isbbox;
