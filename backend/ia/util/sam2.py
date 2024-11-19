@@ -26,7 +26,7 @@ class SAM2():
         self.predictor = SAM2ImagePredictor(self.sam2_model, threshold, max_hole_area, max_sprinkle_area)
 
     def setImage(self, image) :
-        self.predictor.set_image(image)
+        self.predictor.set_image(np.array(image, copy=True))
 
     def calcMasks(self, input_points, input_label) :
         self.masks, self.scores, self.logits = self.predictor.predict(

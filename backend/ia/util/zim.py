@@ -22,7 +22,7 @@ class ZIM():
         self.predictor = ZimPredictor(zim_model)
 
     def setImage(self, image) :
-        self.predictor.set_image(image)
+        self.predictor.set_image(np.array(image, copy=True))
 
     def calcMasks(self, input_points, input_label) :
         self.masks, self.scores, self.logits = self.predictor.predict(
