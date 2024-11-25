@@ -921,14 +921,11 @@ const incrementCategory = () => {
       current.value.category = -1;
     } else {
       current.value.category += 1;
-      if (currentKeypoint.value) {
-        currentAnnotation.value.onAnnotationKeypointClick(current.value.keypoint);
-      }
     }
 };
 
 const decrementCategory = () => {
-    if (current.value.category === -1) {
+    if (current.value.category <= 0) {
       current.value.category = categories.value.length - 1;
       let annotationCount = currentCategoryFromList.value.category.annotations.length;
       if (annotationCount > 0) {
@@ -936,37 +933,49 @@ const decrementCategory = () => {
       }
     } else {
       current.value.category -= 1;
+      if (currentCategoryFromList.value.showAnnotations) {
+          let annotationCount = currentCategoryFromList.value.category.annotations.length;
+          if (annotationCount > 0) {
+               current.value.annotation = annotationCount - 1;
+          }
+          
+
+          let keypointCount = currentAnnotationFromList.value.keypointLabels.length;
+          if (keypointCount > 0) {
+                // current.value.keypoint = keypointCount - 1;
+                current.value.keypoint = 0;
+                currentAnnotationFromList.value.onAnnotationKeypointClick(current.value.keypoint);
+           } 
+      }
     }
 };
 
 const incrementAnnotation = () => {
-    if (current.value.annotation === currentCategoryFromList.value.category.annotations.length - 1) {
+    if (current.value.annotation === currentCategoryFromList.value.category.annotations.length - 1 ||
+              currentCategoryFromList.value.showAnnotations == false) {
         incrementCategory();
         current.value.annotation = -1;
     } else {
         current.value.annotation += 1;
         current.value.keypoint = -1;
-        if (currentAnnotation.value && currentAnnotation.value.showKeypoints) {
-            currentAnnotation.value.onAnnotationKeypointClick(current.value.keypoint);
-        }
     }
 };
 
 const decrementAnnotation = () => {
   let annotationCount = currentCategoryFromList.value.category.annotations.length;
-  if (current.value.annotation === -1) {
+  if (current.value.annotation === -1 && annotationCount > 0) {
     current.value.annotation = annotationCount - 1;
-  } else if (current.value.annotation === 0) {
+  } else if (current.value.annotation === 0 || annotationCount === 0 ||
+              currentCategoryFromList.value.showAnnotations == false) {
     decrementCategory();
   } else {
     current.value.annotation -= 1;
     if (
-      currentAnnotation.value != null &&
-      currentAnnotation.value.showKeypoints
+      currentAnnotationFromList.value != null &&
+      currentAnnotationFromList.value.showKeypoints
     ) {
-      current.value.keypoint =
-        currentAnnotation.value.keypointLabels.length - 1;
-      currentAnnotation.value.onAnnotationKeypointClick(current.value.keypoint);
+      current.value.keypoint = 0;
+      currentAnnotationFromList.value.onAnnotationKeypointClick(current.value.keypoint);
     } else {
       current.value.keypoint = -1;
     }
@@ -974,105 +983,99 @@ const decrementAnnotation = () => {
 };
 
 const incrementKeypoint = () => {
-    let keypointCount = currentAnnotation.value.keypointLabels.length;
+    let keypointCount = currentAnnotationFromList.value.keypointLabels.length;
     if (current.value.keypoint === keypointCount - 1) {
       incrementAnnotation();
     } else {
       current.value.keypoint += 1;
-    }
-    if (currentKeypoint.value != null) {
       currentAnnotationFromList.value.onAnnotationKeypointClick(current.value.keypoint);
-      // currentAnnotation.value.emit("keypoint-click", current.value.keypoint);
     }
   };
 
 const decrementKeypoint = () => {
-    if (current.value.keypoint === 0) {
+    if (current.value.keypoint <= 0) {
       decrementAnnotation();
     } else {
       current.value.keypoint -= 1;
-    }
-    if (currentKeypoint.value != null) {
-      currentAnnotationFromList.value.onAnnotationKeypointClick(current.value.keypoint);
-      // currentAnnotation.value.emit("keypoint-click", current.value.keypoint);
+      if(current.value.keypoint >= 0 ) {
+          currentAnnotationFromList.value.onAnnotationKeypointClick(current.value.keypoint);
+      }
     }
 };
 
 const moveUp = () => {
-  if (currentCategoryFromList.value != null) {
-    if (currentAnnotationFromList.value != null) {
-      if (currentKeypoint.value != null) {
-        decrementKeypoint();
-      } else if (
-        currentAnnotationFromList.value.showKeypoints &&
-        current.value.keypoint === -1
-      ) {
-        decrementKeypoint();
-      } else {
-        decrementAnnotation();
-      }
-    } else if (current.value.annotation === -1) {
+  if (currentCategoryFromList.value == null) {
+    decrementCategory();
+    return;
+  }
+
+  if (currentAnnotationFromList.value == null) {
+    if (current.value.annotation === -1) {
       decrementAnnotation();
     } else {
       decrementCategory();
     }
+    return;
+  }
+
+  if (currentKeypoint.value != null || 
+      (currentAnnotationFromList.value.showKeypoints && current.value.keypoint >0)) {
+    decrementKeypoint();
   } else {
-    decrementCategory();
+    decrementAnnotation();
   }
 };
 
 const moveDown = () => {
-  if (currentCategoryFromList.value != null) {
-    if (currentAnnotationFromList.value != null) {
-      if (currentKeypoint.value != null) {
-        incrementKeypoint();
-      } else if (
-        currentAnnotationFromList.value.showKeypoints &&
-        current.value.keypoint == -1
-      ) {
-        incrementKeypoint();
-      } else {
-        incrementAnnotation();
-      }
-    } else if (current.value.annotation == -1) {
+  if (currentCategoryFromList.value == null) {
+    incrementCategory();
+    return;
+  }
+
+  if (currentAnnotationFromList.value == null) {
+    if (current.value.annotation === -1) {
       incrementAnnotation();
     } else {
       incrementCategory();
     }
+    return;
+  }
+
+  if (currentKeypoint.value != null || 
+      (currentAnnotationFromList.value.showKeypoints )) {
+    incrementKeypoint();
   } else {
-    incrementCategory();
+    incrementAnnotation();
   }
 };
 
 const stepIn = () => {
-    console.log('stepIn ...');
-      if (currentCategoryFromList.value != null) {
-        if (!currentCategoryFromList.value.isVisible && currentAnnotationFromList.value) {
-          currentCategoryFromList.value.isVisible = true;
-          current.value.annotation = 0;
-          currentAnnotationFromList.value.showKeypoints = false;
-          current.value.keypoint = -1;
-        } else if (
-          !currentCategoryFromList.value.showAnnotations &&
-          currentAnnotationLength.value > 0
-        ) {
-          currentCategoryFromList.value.showAnnotations = true;
-          current.value.annotation = 0;
-          currentAnnotationFromList.value.showKeypoints = false;
-          current.value.keypoint = -1;
-        } else if (
-          currentAnnotationFromList.value != null &&
-          !currentAnnotationFromList.value.showKeypoints &&
-          currentAnnotationFromList.value.keypointLabels &&
-          currentAnnotationFromList.value.keypointLabels.length > 0
-        ) {
-          currentAnnotationFromList.value.showKeypoints = true;
-          current.value.keypoint = 0;
-          currentAnnotationFromList.value.onAnnotationKeypointClick(
-            current.value.keypoint
-          );
-        }
-      }
+  console.log('stepIn ...');
+
+  if (currentCategoryFromList.value == null) return;
+
+  const { isVisible, showAnnotations } = currentCategoryFromList.value;
+  const annotationExists = currentAnnotationFromList.value != null;
+
+  const hasKeypointLabels = annotationExists && 
+                                                        currentAnnotationFromList.value.keypointLabels && 
+                                                        currentAnnotationFromList.value.keypointLabels.length > 0;
+
+  if (!isVisible && annotationExists) {
+    currentCategoryFromList.value.isVisible = true;
+    current.value.annotation = 0;
+    currentAnnotationFromList.value.showKeypoints = false;
+    current.value.keypoint = -1;
+  } else if (!showAnnotations && currentAnnotationLength.value > 0) {
+    currentCategoryFromList.value.showAnnotations = true;
+    current.value.annotation = 0;
+    currentAnnotationFromList.value.showKeypoints = false;
+    current.value.keypoint = -1;
+  } else if (hasKeypointLabels && !currentAnnotationFromList.value.showKeypoints) {
+    currentAnnotationFromList.value.showKeypoints = true;
+    current.value.keypoint = 0;
+    currentAnnotationFromList.value.onAnnotationKeypointClick(current.value.keypoint);
+  }
 };
 
 const stepOut = () => {

@@ -219,7 +219,7 @@ const group = ref(null);
 const supercategory = ref(category.value.supercategory);
 const color = ref(category.value.color);
 
-const keypoint = ref({
+const keypoint = toRef({
       labels: [...category.value.keypoint_labels],
       edges: [...category.value.keypoint_edges],
       colors: [...category.value.keypoint_colors],

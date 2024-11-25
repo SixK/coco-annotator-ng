@@ -310,7 +310,7 @@ const keypointColors = defineModel('keypointColors', { type: Array, required: tr
 const activeTool = defineModel('activeTool', { type: String, required: true });
 const allCategories = defineModel('allCategories', { type: Array, default: () => [] });
 
-const keypointEdges = ref(props.keypointEdges);
+const keypointEdges = toRef(props.keypointEdges);
 
 const isVisible = ref(true);
 const showKeypoints = ref(false);
@@ -324,7 +324,7 @@ const uuid = ref("");
 const pervious = ref([]);
 const count = ref(0);
 const currentKeypoint = ref(null);
-const keypoint = ref({
+const keypoint = toRef({
     tag: [],
     visibility: 0,
     next: {
@@ -806,7 +806,7 @@ const getKeypointBackgroundColor = (index) => {
     let activeIndex = keypoint.value.next.label;
 
     if (activeTool.value === "Select") {
-      activeIndex = keypoint.value.tag;
+      activeIndex = keypoint.value.tag[0];
     }
     if (isCurrent.value && activeIndex == index + 1) return "rgb(30, 86, 36)";
     return "#383c4a";
@@ -1084,8 +1084,8 @@ onUnmounted(() => {
     keypointSettingsModal.hide();
 });
 
-defineExpose({annotation, keypoint, notUsedKeypointLabels, 
-                              unite, createUndoAction, keypoints,
+defineExpose({annotation, keypoint, notUsedKeypointLabels, onAnnotationKeypointClick,
+                              unite, createUndoAction, keypoints, keypointLabels,
                               subtract, simplifyPath, exportAnnotation,
                               compoundPath, setColor, isVisible, showKeypoints, 
                               color, metadata, isEmpty, name, uuid, pervious,
