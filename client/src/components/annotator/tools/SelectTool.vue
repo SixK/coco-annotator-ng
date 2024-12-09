@@ -421,14 +421,14 @@ const onMouseMove = (event) => {
         item.lastChild.hasOwnProperty("keypoint")
       ) {
         hover.value.position = event.point;
-        for (let i = 0; i < item.children.length; ++i) {
-          if (item.children[i].hasOwnProperty("keypoint")) {
-            let childkeypoint = item.children[i].keypoint;
-            if (event.point.getDistance(childkeypoint) <= childkeypoint.radius) {
-              keypoint.value = item.children[i];
-              break;
+        for (const child of item.children) {
+            if (child.hasOwnProperty("keypoint")) {
+                const childKeypoint = child.keypoint;
+                if (event.point.getDistance(childKeypoint) <= childKeypoint.radius) {
+                    keypoint.value = child;
+                    break;
+                }
             }
-          }
         }
       } else {
         clear();

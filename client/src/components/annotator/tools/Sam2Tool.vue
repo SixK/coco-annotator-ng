@@ -72,21 +72,18 @@ function onMouseDown(event) {
 }
 
 function createPath(segments, width, height) {
-        let center = new paper.Point(width, height);
-
-        let compoundPath = new paper.CompoundPath();
-        for (let i = 0; i < segments.length; i++) {
-            let polygon = segments[i];
-            let path = new paper.Path();
-
-            for (let j = 0; j < polygon.length; j += 2) {
-              let point = new paper.Point(polygon[j], polygon[j + 1]);
-              path.add(point.subtract(center));
-            }
-          path.closePath();
-          compoundPath.addChild(path);
+    const center = new paper.Point(width, height);
+    const compoundPath = new paper.CompoundPath();
+    segments.forEach(polygon => {
+        const path = new paper.Path();
+        for (let j = 0; j < polygon.length; j += 2) {
+            const point = new paper.Point(polygon[j], polygon[j + 1]);
+            path.add(point.subtract(center));
         }
-        return compoundPath;
+        path.closePath();
+        compoundPath.addChild(path);
+    });
+    return compoundPath;
 }
 
 // original code was watching for new points, but it seem's to be a bug between Vue3 and paper.js.
