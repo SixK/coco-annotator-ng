@@ -122,7 +122,7 @@ watch(
           point.value = null;
           segment.value = null;
         }
-        if (hover.value.annotation) {
+        if (hover.value.annotation && hover.value.annotation.compoundPath) {
           hover.value.annotation.compoundPath.selected = false;
         }
       }
