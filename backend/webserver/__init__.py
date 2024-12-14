@@ -1,6 +1,7 @@
 import eventlet
 eventlet.monkey_patch(thread=False)
 
+import os
 import sys
 # import workers
 
@@ -17,7 +18,7 @@ from flask_socketio import SocketIO
 # from werkzeug.contrib.fixers import ProxyFix
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-from flask import request, jsonify
+from flask import request, jsonify, send_file
 import requests
 
 from celery import Celery
@@ -46,7 +47,7 @@ def create_app():
     #   run_watcher()
 
     flask = Flask(__name__,
-                  static_url_path='',
+                  # static_url_path='', # this option seem's to cause trouble with path handling
                   static_folder='../dist')
 
     flask.config.from_object(Config)
@@ -81,11 +82,14 @@ app.logger.setLevel(logger.level)
 if Config.INITIALIZE_FROM_FILE:
     create_from_json(Config.INITIALIZE_FROM_FILE)
 
+@app.route('/assets/<path:filepath>')
+def data(filepath):
+    return send_file(os.path.join('../dist/assets', filepath))
 
-@app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
+@app.route('/<string:path>')
+@app.route('/', defaults={'path': ''})
 def index(path):
-    
     if app.debug:
         return requests.get('http://frontend:8080/{}'.format(path)).text
 
