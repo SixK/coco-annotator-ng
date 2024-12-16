@@ -1,5 +1,4 @@
-include:
-  - ./docker-compose.yml
+# To be used with docker-compose -f docker-compose.yml -f docker-compose.dev.yml [build|up|down|etc]
 
 services:
   ia:
@@ -13,6 +12,7 @@ services:
     build:
       context: .
       dockerfile: ./backend/webserver/Dockerfile
+    image: "annotator_webclient:dev"
     environment:
       - FLASK_APP=webserver
       - FLASK_ENV=development
