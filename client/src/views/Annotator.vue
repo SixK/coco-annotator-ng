@@ -1196,22 +1196,22 @@ const addAnnotation = (categoryName, segments, keypoints, isbbox = false) => {
       });
 };
 
-const updateAnnotationCategory = (newAnnotation, oldCategory, newCategoryName) => {
+const updateAnnotationCategory = (annotation, oldCategory, newCategoryName) => {
   const newCategory = findCategoryByName(newCategoryName);
+  
+  if (!newCategory || !annotation) return;
 
-  if (!newCategory || !annotation.value) return;
-
-  Annotations.update(newAnnotation.id, { category_id: newCategory.id }).then(
+  Annotations.update(annotation.id, { category_id: newCategory.id }).then(
     (response) => {
       let newAnnotation = {
         ...response.data,
-        ...newAnnotation,
+        ...annotation,
         metadata: response.data.metadata,
         category_id: newCategory.id
       };
       if (newAnnotation) {
         oldCategory.annotations = oldCategory.annotations.filter(
-          (a) => a.id !== newAnnotation.id
+          (a) => a.id !== annotation.id
         );
         newCategory.annotations.push(newAnnotation);
       }
