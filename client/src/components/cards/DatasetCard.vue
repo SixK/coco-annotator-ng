@@ -131,7 +131,7 @@
               <div class="form-group">
                 <label>Default Categories</label>
                 <TagsInput
-                  v-model:selectedCategories="selectedCategories"
+                  v-model:selectedItems="selectedCategories"
                   element-id="changeDataset"
                   :existing-tags="categoryTags"
                   :typeahead="true"
@@ -198,7 +198,7 @@
               <div class="form-group">
                 <label>Users shared with</label>
                 <TagsInput
-                  v-model="sharedUsers"
+                  v-model:selectedItems="sharedUsers"
                   element-id="usersList"
                   :existing-tags="users"
                   :typeahead="true"
@@ -283,7 +283,7 @@ const onImageClick = () => {
 };
 
 const onShare = () => {
-  dataset.value.users = sharedUsers;
+  dataset.value.users = sharedUsers.value;
 
   axios
     .post('/api/dataset/' + dataset.value.id + '/share', {
@@ -352,7 +352,7 @@ const createSelectedCategories = () => {
 };
 
 const createSelectedUsers = () => {
-      sharedUsers.value.users = dataset.value.users;
+      sharedUsers.value = dataset.value.users;
 };
 
 const percent = computed(() => {

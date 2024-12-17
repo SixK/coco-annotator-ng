@@ -124,7 +124,7 @@
               <div class="form-group">
                 <label>Default Categories</label>
                 <TagsInput
-                  v-model:selectedCategories="create.categories"
+                  v-model:selectedItems="create.categories"
                   element-id="createCategory"
                   :existing-tags="categoryTags"
                   :typeahead="true"

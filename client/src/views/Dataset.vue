@@ -504,7 +504,7 @@
         <div class="form-group">
           <label>Show Annotated Categories</label>
           <TagsInput
-            v-model:selectedCategories="selected.categories"
+            v-model:selectedItems="selected.categories"
             element-id="selectedCategories"
             title="Only shows images annotated with the selected categories for 'Show Annotated' button. Leave empty to show all annotated images."
             :existing-tags="categoryTags"
@@ -664,7 +664,7 @@
               <div class="form-group">
                 <label>Categories (Empty export all)</label>
                 <TagsInput
-                  v-model:selectedCategories="exporting.categories"
+                  v-model:selectedItems="exporting.categories"
                   element-id="exportCategories"
                   :existing-tags="categoryTags"
                   :typeahead="true"

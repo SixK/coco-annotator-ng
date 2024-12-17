@@ -78,7 +78,7 @@
               <div class="form-group">
                 <label>Copy Only Selected Categories</label>
                 <TagsInput
-                  v-model:selectedCategories="selectedCategories"
+                  v-model:selectedItems="selectedCategories"
                   element-id="categoriesToCopy"
                   :existing-tags="categoryTags"
                   :typeahead="true"

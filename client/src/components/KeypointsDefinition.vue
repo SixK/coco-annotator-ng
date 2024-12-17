@@ -80,7 +80,7 @@
               style="padding-left: 5px"
             >
               <TagsInput
-                :selectedCategories="object.edges"
+                :selectedItems="object.edges"
                 :value="object.edges"
                 placeholder="Add connected label"
                 class="keypoint-input"
@@ -89,7 +89,7 @@
                 :only-existing-tags="true"
                 :typeahead="true"
                 :typeahead-activation-threshold="0"
-                @selectedCategories="keypointEdgesUpdated(index, $event)"
+                @selectedItems="keypointEdgesUpdated(index, $event)"
               />
             </div>
           </div>

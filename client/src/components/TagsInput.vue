@@ -87,11 +87,11 @@
 import { nextTick } from 'vue';
 import { toRaw, toRef, ref, computed, watch, onMounted } from 'vue';
 
-const emit = defineEmits(["initialized", "tag-added", "tags-updated", "tag-removed"]);
+const emit = defineEmits(["initialized", "tag-added", "tags-updated", "tag-removed", "selected-items"]);
 
 const elementId = defineModel('elementId', { type: String, required: true });
 const existingTags = defineModel('existingTags', { type: Object,      default: () => {return {}} });
-const selectedCategories = defineModel('selectedCategories', { type: [Array, String],      default: () => {return []} });
+const selectedItems = defineModel('selectedItems', { type: [Array, String],      default: () => {return []} });
 const typeahead = defineModel('typeahead', { type: Boolean, default: false });
 const typeaheadStyle = defineModel('typeaheadStyle', { type: String, default: "badges" });
 const typeaheadActivationThreshold = defineModel('typeaheadActivationThreshold', { type: Number, default: 1 });
@@ -118,7 +118,7 @@ const taginput = ref(null);
 
 const showPlaceholder = computed(() => {
   if (onlyExistingTags.value) {
-    if (selectedCategories.value.length === Object.keys(existingTags.value).length) {
+    if (selectedItems.value.length === Object.keys(existingTags.value).length) {
       return false;
     }
   }
@@ -126,7 +126,7 @@ const showPlaceholder = computed(() => {
 });
 
 watch(
-  () => selectedCategories.value,
+  () => selectedItems.value,
   () => {
     tagsFromValue();
   }
@@ -137,8 +137,8 @@ watch(
   (newVal, oldVal) => {
       hiddenInput.value = newVal.join(",");
       // don't have to emit thank's to defineModel, we simply attribute new value
-      // emit("update:selected-categories", newVal);
-      selectedCategories.value = newVal;
+      emit("selected-items", newVal);
+      selectedItems.value = newVal;
 });
 
 
@@ -278,12 +278,12 @@ const clearTags = () => {
 }
 
 const tagsFromValue = () => {
-    // const rawArray = toRaw(selectedCategories.value);
+    // const rawArray = toRaw(selectedItems.value);
 
-      if (selectedCategories.value && selectedCategories.value.length) {
-        const newTags = Array.isArray(selectedCategories.value)
-          ? selectedCategories.value
-          : selectedCategories.value.split(',');
+      if (selectedItems.value && selectedItems.value.length) {
+        const newTags = Array.isArray(selectedItems.value)
+          ? selectedItems.value
+          : selectedItems.value.split(',');
         if (JSON.stringify(newTags) === JSON.stringify(tags.value)) {
           return;
         }
