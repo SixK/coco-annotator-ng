@@ -2,6 +2,7 @@ from config import Config as AnnotatorConfig
 
 import cv2
 import numpy as np
+import torch
 
 from zim_anything import ZimAutomaticMaskGenerator, zim_model_registry, ZimPredictor
 
@@ -17,7 +18,9 @@ class ZIM():
         device=AnnotatorConfig.DEVICE
         logger.info(f'zz info: {ZIM_MODEL_TYPE}, {ZIM_MODEL_PATH}, {device}')
         zim_model = zim_model_registry[ZIM_MODEL_TYPE](checkpoint=ZIM_MODEL_PATH)
-        zim_model.cuda()
+        
+        if torch.cuda.is_available():
+            zim_model.cuda()
         # mask_generator = SamAutomaticMaskGenerator(sam)
         self.predictor = ZimPredictor(zim_model)
 
