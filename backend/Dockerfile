@@ -18,7 +18,8 @@ FROM python:3.12-slim
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
-          apt-get install --no-install-recommends  -y git pkg-config gcc python3-dev libfreetype6-dev gfortran libgl1 libsm6 libxext6 
+          apt-get install --no-install-recommends  -y git pkg-config gcc python3-dev libfreetype6-dev gfortran libgl1 libsm6 libxext6 && \
+          apt clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /workspace/
 

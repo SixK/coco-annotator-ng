@@ -1,6 +1,7 @@
 FROM node:18
 
-RUN apt update && apt install -y libpango1.0-dev libcairo2-dev libpangocairo-1.0-0
+RUN apt update && apt install -y libpango1.0-dev libcairo2-dev libpangocairo-1.0-0 && \
+          apt clean && rm -rf /var/lib/apt/lists/*
 
 RUN npm install -g --quiet \
     vite@latest 
