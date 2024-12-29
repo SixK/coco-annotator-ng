@@ -79,17 +79,16 @@
         role="document"
       >
         <div class="modal-content">
-          <div class="modal-header">
+          <div class="modal-header justify-content-between">
             <h5 class="modal-title">
               Category: {{ category.name }}
             </h5>
             <button
               type="button"
-              class="close"
+              class="btn-close"
               data-bs-dismiss="modal"
               aria-label="Close"
             >
-              <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
@@ -267,7 +266,6 @@ const onUpdateClick = () => {
           console.log('sooooo:',    error.message);
         axiosReqestError(
           'Updating Category',
-          // error.response.data.message
           error.message
         );
         emit('updatePage');
