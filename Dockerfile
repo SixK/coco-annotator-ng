@@ -8,21 +8,11 @@ RUN apt update && \
          apt clean && rm -rf /var/lib/apt/lists/*
 
 RUN npm install -g vite@latest
-# RUN npm install -g SixK/paper.js#develop
-# RUN npm install -g @vue/cli@5.0.8
-# RUN npm install -g @vue/cli-service@5.0.8
-# RUN npm install --location=global @vue/cli@4.5.19
-# RUN npm install --location=global @vue/cli-service@4.5.19
 
 COPY ./client/package* /workspace/
 
 ENV NODE_PATH=/workspace/node_modules
 RUN npm install && npm cache clean --force
-
-# COPY ./client/patch_strict/paper-full.min.js  /workspace/node_modules/paper/dist/paper-full.min.js
-# COPY ./client/patch_strict/paper-full.js  /workspace/node_modules/paper/dist/paper-full.js
-# COPY ./client/patch_strict/paper-full.min.js  /workspace/client/node_modules/paper/dist/paper-full.min.js
-# COPY ./client/patch_strict/paper-full.js  /workspace/client/node_modules/paper/dist/paper-full.js
 
 WORKDIR /workspace/client
 RUN npm --depth 20 update caniuse-lite browserslist

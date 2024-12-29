@@ -119,7 +119,6 @@ const onKeydown = ((e) => {
         keys.value = keysDown.value;
       } else if (route.name === "annotate") {
         if (keysDown.value.sort().join(",") === keys.value.sort().join(",")) {
-            console.log('here...');
           myfunction(e);
         }
       }
