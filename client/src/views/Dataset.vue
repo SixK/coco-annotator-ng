@@ -103,6 +103,7 @@
           </p>
           <div v-else>
             <Pagination
+              v-model:page="page"
               :pages="pages"
               @pagechange="updatePage"
             />
@@ -115,6 +116,7 @@
               />
             </div>
             <Pagination
+              v-model:page="page"
               :pages="pages"
               @pagechange="updatePage"
             />
@@ -737,6 +739,7 @@ let cocoImportModal = null;
 let cocoExportModal = null;
 
 const identifier = ref(props.identifier);
+const page = ref(1);
 const pages = ref(1);
 const generateLimit = ref(100);
 const limit = ref(52);

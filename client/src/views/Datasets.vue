@@ -63,6 +63,7 @@
           style="background-color: gray"
         >
           <Pagination
+            v-model:page="page"
             :pages="pages"
             @pagechange="updatePage"
           />

@@ -33,9 +33,10 @@
 import { ref, computed, watch, onUnmounted, onMounted} from 'vue';
 
 const pages = defineModel('pages', { type: Number, required: true });
+const page = defineModel('page', { type: Number, required: true });
 
 const pageRange = ref(11);
-const page = ref(1);
+// const page = ref(1);
 let timer = null;
 const emit  = defineEmits(['pagechange']);
 

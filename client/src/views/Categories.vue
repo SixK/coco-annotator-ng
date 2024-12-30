@@ -54,6 +54,7 @@
         </p>
         <div v-else>
           <Pagination
+            v-model:page="page"
             :pages="pages"
             @pagechange="updatePage"
           />
