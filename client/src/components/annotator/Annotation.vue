@@ -1089,7 +1089,7 @@ defineExpose({annotation, keypoint, notUsedKeypointLabels, onAnnotationKeypointC
                               color, metadata, isEmpty, name, uuid, pervious,
                               count, currentKeypoint, sessions, session, 
                               tagRecomputeCounter, addKeypoint,
-                              deleteKeypoint, deleteAnnotation});
+                              deleteKeypoint, deleteAnnotation, deleteAnnot});
 
 </script>
 
