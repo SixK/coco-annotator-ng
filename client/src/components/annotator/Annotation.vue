@@ -525,6 +525,8 @@ const createUndoAction = (actionName) => {
       const copy = compoundPath.value.clone();
       copy.fullySelected = false;
       copy.visible = false;
+      copy.onDoubleClick = compoundPath.value.onDoubleClick;
+      copy.onClick = compoundPath.value.onClick;
       pervious.value.push(copy);
 
       const action = new UndoAction({
