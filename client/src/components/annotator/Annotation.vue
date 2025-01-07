@@ -545,27 +545,30 @@ const simplifyPath = () => {
         return;
       }
 
-      compoundPath.value.flatten(1);
-      if (compoundPath.value instanceof paper.Path) {
-        compoundPath.value = new paper.CompoundPath(compoundPath.value);
-        compoundPath.value.data.annotationId = index.value;
-        compoundPath.value.data.categoryId = categoryIndex.value;
+     let newCompoundPath =  compoundPath.value.clone();
+
+      newCompoundPath.flatten(1);
+      if (newCompoundPath instanceof paper.Path) {
+        newCompoundPath = new paper.CompoundPath(newCompoundPath);
+        newCompoundPath.data.annotationId = index.value;
+        newCompoundPath.data.categoryId = categoryIndex.value;
       }
 
-      let newChildren = [];
-      compoundPath.value.children.forEach(path => {
-            let points = [];
-            path.segments.forEach(seg => {
-                    points.push({ x: seg.point.x, y: seg.point.y });
-            });
-            points = simplifyjs(points, simplify.value, true);
-            let newPath = new paper.Path(points);
+      const newChildren = [];
+      newCompoundPath.children.forEach(path => {
+            const points = path.segments.map(seg => ({ x: seg.point.x, y: seg.point.y }));
+            const simplifiedPoints = simplifyjs(points, simplify.value, true);
+            const newPath = new paper.Path(simplifiedPoints);
             newPath.closePath();
             newChildren.push(newPath);
       });
-      compoundPath.value.removeChildren();
-      compoundPath.value.addChildren(newChildren);
-      compoundPath.value.fullySelected = isCurrent.value;
+      newCompoundPath.removeChildren();
+      newCompoundPath.addChildren(newChildren);
+      newCompoundPath.fullySelected = isCurrent.value;
+
+      compoundPath.value.remove();
+      compoundPath.value=newCompoundPath;
+
       keypoints.value.bringToFront();
       emitModify();
 };
