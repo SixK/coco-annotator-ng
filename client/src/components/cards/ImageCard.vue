@@ -119,30 +119,25 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const emit = defineEmits(['updatePage']);
 
-const props = defineProps({
-    image: {
-      type: Object,
-      required: true
-    }
-});
+const image = defineModel('image', { type: Object, required: true });
 
 const hover = ref(false);
 const showAnnotations = ref(true);
-// const loaderUrl = require("@/assets/loader.gif");
+
 import loaderUrl from "@/assets/loader.gif";
 
 const imageUrl = computed(() => {
       let d = new Date();
       if (showAnnotations.value) {
-        return `/api/image/${props.image.id}?width=250&thumbnail=true&dummy=${d.getTime()}`;
+        return `/api/image/${image.value.id}?width=250&thumbnail=true&dummy=${d.getTime()}`;
       } else {
-        return "/api/image/" + props.image.id + "?width=250";
+        return "/api/image/" + image.value.id + "?width=250";
       }
 });
     
 const annotated = computed(() => {
-      if (!props.image.annotating) return 0;
-      return props.image.annotating.length > 0;
+      if (!image.value.annotating) return 0;
+      return image.value.annotating.length > 0;
 });
 
 const downloadURI = (uri, exportName) => {
@@ -157,30 +152,30 @@ const downloadURI = (uri, exportName) => {
 const openAnnotator = () => {
   router.push({
     name: "annotate",
-    params: { identifier: props.image.id }
+    params: { identifier: image.value.id }
   });
 };
 
 const onDownloadClick = () => {
-  downloadURI("/api/image/" + props.image.id + "?asAttachment=true", props.image.file_name);
+  downloadURI("/api/image/" + image.value.id + "?asAttachment=true", image.value.file_name);
   
-  axios.get("/api/image/" + props.image.id + "/coco").then(response => {
+  axios.get("/api/image/" + image.value.id + "/coco").then(response => {
     let dataStr =
       "data:text/json;charset=utf-8," +
       encodeURIComponent(JSON.stringify(response.data));
     downloadURI(
       dataStr,
-      props.image.file_name.replace(/\.[^/.]+$/, "") + ".json"
+      image.value.file_name.replace(/\.[^/.]+$/, "") + ".json"
     );
   });
 }
 
 const onDownloadSegmentedClick = () => {
-  downloadURI("/api/image/segmented/" + props.image.id + "?asAttachment=true", props.image.file_name);
+  downloadURI("/api/image/segmented/" + image.value.id + "?asAttachment=true", image.value.file_name);
 }
 
 const onDeleteClick = () => {
-  axios.delete(`/api/image/${props.image.id}`);
+  axios.delete(`/api/image/${image.value.id}`);
   // $parent.updatePage();
   emit('updatePage');
 };
