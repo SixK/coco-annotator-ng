@@ -34,16 +34,16 @@
   },
   "devDependencies": {
     "@babel/core": "7.26.0",
-    "@babel/eslint-parser": "^7.25.9",
+    "@babel/eslint-parser": "^7.26.5",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/eslint-config-prettier": "^10.1.0",
     "@vue/test-utils": "^2.4.6",
     "babel-jest": "^29.7.0",
-    "eslint": "^9.17.0",
+    "eslint": "^9.18.0",
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-vue": "^9.32.0",
     "prettier": "^3.4.2",
-    "vite": "^6.0.5"
+    "vite": "^6.0.7"
   },
   "eslintConfig": {
     "root": true,
