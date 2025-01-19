@@ -639,8 +639,8 @@ const initCanvas = () => {
 
       image.value.raster = new paper.Raster(image.value.url);
       image.value.raster.onLoad = () => {
-        let width = image.value.raster.width;
-        let height = image.value.raster.height;
+        const width = image.value.raster.width;
+        const height = image.value.raster.height;
 
         image.value.raster.sendToBack();
         fit();
@@ -648,15 +648,15 @@ const initCanvas = () => {
 
         procStore.removeProcess(process);
 
-        let tempCtx = document.createElement("canvas").getContext("2d");
+        const tempCtx = document.createElement("canvas").getContext("2d");
         tempCtx.canvas.width = width;
         tempCtx.canvas.height = height;
         tempCtx.drawImage(image.value.raster.image, 0, 0);
 
         image.value.data = tempCtx.getImageData(0, 0, width, height);
-        let fontSize = width * 0.025;
+        const fontSize = width * 0.025;
 
-        let positionTopLeft = new paper.Point(
+        const positionTopLeft = new paper.Point(
           -width / 2,
           -height / 2 - fontSize * 0.5
         );
@@ -665,7 +665,7 @@ const initCanvas = () => {
         text.value.topLeft.fillColor = "white";
         text.value.topLeft.content = image.value.filename;
 
-        let positionTopRight = new paper.Point(
+        const positionTopRight = new paper.Point(
           width / 2,
           -height / 2 - fontSize * 0.4
         );
@@ -809,7 +809,7 @@ const getCategoryByIndex = (index) => {
       if (index == null) return null;
       if (index < 0) return null;
       
-      let cat = categorylist.value;
+      const cat = categorylist.value;
       // let cat = backup.value;
 
       if (cat == null) return null;
@@ -824,7 +824,7 @@ const getCategory = (index) => {
       if (index == null) return null;
       if (index < 0) return null;
 
-      let cat = category.value;
+      const cat = category.value;
       // let cat = backup.value;
 
       if (cat == null) return null;
@@ -961,7 +961,7 @@ const incrementAnnotation = () => {
 };
 
 const decrementAnnotation = () => {
-  let annotationCount = currentCategoryFromList.value.category.annotations.length;
+  const annotationCount = currentCategoryFromList.value.category.annotations.length;
   if (current.value.annotation === -1 && annotationCount > 0) {
     current.value.annotation = annotationCount - 1;
   } else if (current.value.annotation === 0 || annotationCount === 0 ||
@@ -970,8 +970,7 @@ const decrementAnnotation = () => {
   } else {
     current.value.annotation -= 1;
     if (
-      currentAnnotationFromList.value != null &&
-      currentAnnotationFromList.value.showKeypoints
+      currentAnnotationFromList.value?.showKeypoints
     ) {
       current.value.keypoint = 0;
       currentAnnotationFromList.value.onAnnotationKeypointClick(current.value.keypoint);
