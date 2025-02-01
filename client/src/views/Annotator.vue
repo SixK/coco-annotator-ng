@@ -621,7 +621,6 @@ const onWheel = (e) => {
 
 const fit = () => {
   const canvas = document.getElementById("editor");
-  // const canvas = refcanvas.value;
   const parentX = image.value.raster.width;
   const parentY = image.value.raster.height;
 
@@ -1093,11 +1092,7 @@ const moveDown = () => {
   }
 };
 
-
-
-
 const stepIn = () => {
-  console.log('stepIn ...');
 
   if (currentCategoryFromList.value == null) return;
 
@@ -1169,8 +1164,6 @@ const deleteAnnotation = () => {
 
     annotation.deleteAnnotation();
 };
-
-
 
 const doShortcutAction = (action) => {
     switch(action) {
@@ -1302,13 +1295,11 @@ const doneLoading = computed(() => {
 });
 
 const currentAnnotationLength = computed(() => {
-    console.log('currentAnnotationLength computed');
   if (currentCategoryFromList.value == null) return null;
   return currentCategoryFromList.value.category.annotations.length;
 });
 
 const currentKeypointLength = computed(() => {
-   console.log('currentKeypointLength computed');
 
   if (currentAnnotationFromList.value == null) return null;
   return currentAnnotationFromList.value.annotation.keypoints.length;

@@ -252,7 +252,7 @@ const getCategoryIndex  = () => {
 
 
 const showCategory = computed(() => {
-  let search = categorysearch.value.toLowerCase();
+  const search = categorysearch.value.toLowerCase();
   if (search.length === 0) return true;
   return category.value.name.toLowerCase().includes(search);
 });
@@ -285,10 +285,10 @@ const borderColor = computed(() => {
 });
 
 const darkHSL = computed(() => {
-  let localcolor = new paper.Color(color.value);
-  let h = Math.round(localcolor.hue);
-  let l = Math.round(localcolor.lightness * 50);
-  let s = Math.round(localcolor.saturation * 100);
+  const localcolor = new paper.Color(color.value);
+  const h = Math.round(localcolor.hue);
+  const l = Math.round(localcolor.lightness * 50);
+  const s = Math.round(localcolor.saturation * 100);
   return "hsl(" + h + "," + s + "%," + l + "%)";
 });
 
@@ -312,7 +312,7 @@ watch(
 watch(
   () => opacity.value, 
   (newopacity) => {
-      let annotations = annotationlist.value
+      const annotations = annotationlist.value
       if (annotations.value == null) return;
       annotations.value.forEach((a) => (a.compoundPath.opacity = newopacity));
 });
@@ -320,7 +320,7 @@ watch(
 watch(
   () => isVisible.value, 
   (newVisible) => {
-      let annotations = annotationlist.value
+      const annotations = annotationlist.value
       if (annotations == null) return;
 
       annotations.forEach((a) => {
@@ -376,15 +376,11 @@ const onUpdateClick = () => {
 };
 
 const createAnnotation = () => {
-      // let parent = $parent;
-      let annotationId = category.value.annotations.length;
+      const annotationId = category.value.annotations.length;
       Annotations.create({
         image_id: getImageId(),
         category_id: category.value.id,
       }).then((response) => {
-        // workaround to access to $socket
-        
-        // app.__vue_app__.config.globalProperties.$socket.emit("annotation", {
        socket.io.emit("annotation", {
           action: "create",
           category_id: category.value.id,
@@ -406,14 +402,13 @@ const createAnnotation = () => {
         isVisible.value = true;
         showAnnotations.value = true;
 
-        let annotations = annotationlist.value;
+        const annotations = annotationlist.value;
         if (annotations == null) return;
 
-        let tmp_annotation = annotations[annotationId - 1];
+        const tmp_annotation = annotations[annotationId - 1];
         
         if (tmp_annotation == null) {
           const element = document.getElementById(`heading' + category.id`);
-          // scrollElement($el);
           scrollElement(element);
         } else {
           scrollElement(tmp_annotation.$el);
@@ -440,13 +435,11 @@ const exportCategory = () => {
       keypoint_colors: category.value.keypoint_colors,
     };
 
-
     if (annotationlist.value != null) {
       annotationlist.value.forEach((ann) => {
         categoryData.annotations.push(ann.exportAnnotation());
       });
     }
-
 
   return categoryData;
 };
@@ -456,9 +449,9 @@ const addKeypointEdge = (edge) => {
 };
 
 const removeKeypointEdge = (edge) => {
-  let index = keypoint.value.edges.findIndex((e) => {
-    let i1 = Math.min(edge[0], edge[1]) == Math.min(e[0], e[1]);
-    let i2 = Math.max(edge[0], edge[1]) == Math.max(e[0], e[1]);
+  const index = keypoint.value.edges.findIndex((e) => {
+    const i1 = Math.min(edge[0], edge[1]) == Math.min(e[0], e[1]);
+    const i2 = Math.max(edge[0], edge[1]) == Math.max(e[0], e[1]);
     return i1 && i2;
   });
 
@@ -532,20 +525,20 @@ const initCategory = () => {
 };
 
 const getAnnotation = (index) => {
-      let ref = annotation.value;
+      const ref = annotation.value;
       if (ref == null) return null;
       return annotation.value[index];
 };
 
 const getAnnotationFromIndex = (index) => {
-      let ref = annotationlist.value;
+      const ref = annotationlist.value;
       if (ref == null) return null;
       return annotationlist.value[index];
 };
 
 
 const setColor = () => {
-    let annotations = annotationlist.value;
+    const annotations = annotationlist.value;
     if (annotations == null) return;
     if (!isVisible.value) return;
 
@@ -567,7 +560,7 @@ const annotationDeleted = (indexDeleted) => {
       selectedAnnotation.value--;
     }
 
-    let indices = {
+    const indices = {
       annotation: selectedAnnotation.value,
       category: index.value,
       keypoint: -1,
@@ -582,11 +575,11 @@ const annotationDeleted = (indexDeleted) => {
 
 // probably need to use something like $socket.on with vue3...
 const onAnnotation = (data) => {
-      let action = data.action;
-      let annot = data.annotation;
+      const action = data.action;
+      const annot = data.annotation;
       if (annot.image_id != getImageId()) return;
       if (annot.category_id != category.value.id) return;
-      let found = category.value.annotations.findIndex(
+      const found = category.value.annotations.findIndex(
         (a) => a.id == annot.id
       );
 
@@ -605,18 +598,14 @@ onBeforeUpdate(() => {
 
 onMounted( () => {
     initCategory();
-    // app.__vue_app__.config.globalProperties.$socket.on('annotation', onAnnotation);
-     // app.__vue_app__._instance.ctx.sockets.subscribe('annotation', onAnnotation);
-     getCurrentInstance().ctx.sockets.subscribe('annotation', onAnnotation);
-     isMounted.value = true;
-    let categoryTag = document.getElementById(`categorySettings${category.value.id}`);
+    getCurrentInstance().ctx.sockets.subscribe('annotation', onAnnotation);
+    isMounted.value = true;
+    const categoryTag = document.getElementById(`categorySettings${category.value.id}`);
     console.log('CategoryTag:', categoryTag);
     categorySettingsModal = new Modal(categoryTag, { });
 });
 
 onUnmounted(() => {
-    // app.__vue_app__.config.globalProperties.$socket.off('annotation', onAnnotation);
-    // app.__vue_app__._instance.ctx.sockets.unsubscribe('annotation');
     getCurrentInstance().ctx.sockets.unsubscribe('annotation');
 
     categorySettingsModal.hide();

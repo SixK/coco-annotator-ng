@@ -361,87 +361,130 @@ const initAnnotation = () => {
 };
 
 
+/* createCompoundPath */
 const createCompoundPath = (json = null, segments = null) => {
-  let width = annotation.value.width;
-  let height = annotation.value.height;
-  // Validate json
-  if (json !== null && json.length !== 2) json = null;
-  // Validate segments
-  if (segments !== null && segments.length === 0) segments = null;
+  // Validate inputs
+  const isValidJson = json !== null && json.length === 2;
+  const isValidSegments = segments !== null && segments.length > 0;
 
-  if (compoundPath.value != null) compoundPath.value.remove();
-  if (keypoints.value != null) keypoints.value.remove();
-  // Create new compoundpath
-  compoundPath.value = new paper.CompoundPath();
-  compoundPath.value.onDoubleClick = () => {
-    if (activeTool.value !== 'Select') return;
+  if (!isValidJson) json = null;
+  if (!isValidSegments) segments = null;
 
-    annotationSettingsModal.show();
-  };
+  // Clear existing compound path and keypoints
+  clearExistingPaths();
 
-    keypoints.value = new Keypoints(
-      keypointEdges.value,
-      keypointLabels.value,
-      keypointColors.value,
-      {
-        annotationId: annotation.value.id,
-        categoryName: category.value.name,
-      }
-    );
+  // Create new compound path
+  compoundPath.value = createNewCompoundPath();
 
-    keypoints.value.radius = scale.value * 6;
-    keypoints.value.lineWidth = scale.value * 2;
-    
-    let annotationKeypoints = annotation.value.keypoints;
-    if (annotationKeypoints) {
-      for (let i = 0; i < annotationKeypoints.length; i += 3) {
-        let x = annotationKeypoints[i] - width / 2,
-          y = annotationKeypoints[i + 1] - height / 2,
-          v = annotationKeypoints[i + 2];
-        if (annotationKeypoints[i] === 0 
-                && annotationKeypoints[i + 1] === 0 
-                && v === 0) continue;
-        addKeypoint(new paper.Point(x, y), v, i / 3 + 1);
-      }
-    }
+  // Initialize keypoints
+  initializeKeypoints();
 
-    if (json != null) {
-        // Import data directroy from paper object
-        compoundPath.value.importJSON(json);
-    } else if (segments != null) {
-        // Load segments input compound path
-        const center = new paper.Point(width / 2, height / 2);
+  // Load annotation keypoints
+  loadAnnotationKeypoints();
 
-        for (let i = 0; i < segments.length; i++) {
-            const polygon = segments[i];
-            const path = new paper.Path();
+  // Populate compound path based on input type
+  if (json !== null) {
+    importJsonToCompoundPath(json);
+  } else if (segments !== null) {
+    loadSegmentsToCompoundPath(segments);
+  }
 
-            for (let j = 0; j < polygon.length; j += 2) {
-                const point = new paper.Point(polygon[j], polygon[j + 1]);
-                path.add(point.subtract(center));
-            }
-            path.closePath();
-            compoundPath.value.addChild(path);
-        }
-    }
-
-    compoundPath.value.data.annotationId = index.value;
-    compoundPath.value.data.categoryId = categoryIndex.value;
-
-    compoundPath.value.fullySelected = isCurrent.value;
-    compoundPath.value.opacity = opacity.value;
-
-    setColor();
-
-    compoundPath.value.onClick = () => {
-        emit('click', index.value);
-    };
+  // Set metadata and styles for the compound path
+  configureCompoundPath();
 };
+
+// Helper Functions
+
+const clearExistingPaths = () => {
+  if (compoundPath.value) compoundPath.value.remove();
+  if (keypoints.value != null) {
+    keypoints.value._keypoints.forEach((keypoint) => {
+        keypoints.value.deleteKeypoint(keypoint);
+    });
+    keypoints.value.remove();
+  }
+};
+
+const createNewCompoundPath = () => {
+  const path = new paper.CompoundPath();
+  path.onDoubleClick = handleDoubleClick;
+  return path;
+};
+
+const handleDoubleClick = () => {
+  if (activeTool.value !== 'Select') return;
+  annotationSettingsModal.show();
+};
+
+const initializeKeypoints = () => {
+  keypoints.value = new Keypoints(
+    keypointEdges.value,
+    keypointLabels.value,
+    keypointColors.value,
+    {
+      annotationId: annotation.value.id,
+      categoryName: category.value.name,
+    }
+  );
+
+  keypoints.value.radius = scale.value * 6;
+  keypoints.value.lineWidth = scale.value * 2;
+};
+
+const loadAnnotationKeypoints = () => {
+  const { width, height } = annotation.value;
+  const annotationKeypoints = annotation.value.keypoints;
+
+  if (annotationKeypoints) {
+    for (let i = 0; i < annotationKeypoints.length; i += 3) {
+      const x = annotationKeypoints[i] - width / 2;
+      const y = annotationKeypoints[i + 1] - height / 2;
+      const v = annotationKeypoints[i + 2];
+
+      if (x === 0 && y === 0 && v === 0) continue;
+
+      addKeypoint(new paper.Point(x, y), v, i / 3 + 1);
+    }
+  }
+};
+
+const importJsonToCompoundPath = (json) => {
+  compoundPath.value.importJSON(json);
+};
+
+const loadSegmentsToCompoundPath = (segments) => {
+  const { width, height } = annotation.value;
+  const center = new paper.Point(width / 2, height / 2);
+
+  segments.forEach((polygon) => {
+    const path = new paper.Path();
+
+    for (let j = 0; j < polygon.length; j += 2) {
+      const point = new paper.Point(polygon[j], polygon[j + 1]);
+      path.add(point.subtract(center));
+    }
+
+    path.closePath();
+    compoundPath.value.addChild(path);
+  });
+};
+
+const configureCompoundPath = () => {
+  updateCompoundPathData(compoundPath.value);
+
+  compoundPath.value.fullySelected = isCurrent.value;
+  compoundPath.value.opacity = opacity.value;
+
+  setColor();
+
+  compoundPath.value.onClick = () => {
+    emit('click', index.value);
+  };
+};
+/* end - createCompoundPath */
 
 const deleteAnnotation = (id) => {
   axios.delete("/api/annotation/" + annotation.value.id).then(() => {
-    // workaround to try to emit action to socket
-    // app.__vue_app__.config.globalProperties.$socket.emit("annotation", {
     socket.io.emit("annotation", {
       action: "delete",
       annotation: annotation.value,
@@ -455,13 +498,7 @@ const deleteAnnot = (id) => {
   console.log('deleting id:', id);
   // we delete annotation on category component to avoid index desynchro between category.annotations and 
   // category.value.annotations.splice(id, 1);
-  if (compoundPath.value != null) compoundPath.value.remove();
-  if (keypoints.value != null) {
-    keypoints.value._keypoints.forEach((keypoint) => {
-      keypoints.value.deleteKeypoint(keypoint);
-    });
-    keypoints.value.remove();
-  }
+  clearExistingPaths();
 };
 
 const onAnnotationClick = (newshowKeypoints) => {
@@ -485,9 +522,9 @@ const onAnnotationKeypointClick = (labelIndex) => {
 
 const onAnnotationKeypointSettingsClick = (labelIndex) => {
       keypoint.value.tag = [String(labelIndex + 1)];
-      let indexLabel = parseInt(String(keypoint.value.tag));
+      const indexLabel = parseInt(String(keypoint.value.tag));
       if (keypoints.value && indexLabel in keypoints.value._labelled) {
-        let labelled = keypoints.value._labelled[indexLabel];
+        const labelled = keypoints.value._labelled[indexLabel];
         currentKeypoint.value = labelled;
       }
       keypoint.value.visibility = getKeypointVisibility(labelIndex);
@@ -535,45 +572,80 @@ const createUndoAction = (actionName) => {
         func: undoCompound,
         args: {},
       });
-      // addUndo(action);
-      // store.commit('addUndo', action);
+
       procStore.addUndo(action);
-      
 };
 
+/*  simplifyPath */
 const simplifyPath = () => {
-      if (compoundPath.value != null && compoundPath.value.isEmpty() && keypoints.value.isEmpty()) {
+    if (shouldDeleteAnnotation()) {
         deleteAnnotation(index.value);
         return;
-      }
+    }
 
-     let newCompoundPath =  compoundPath.value.clone();
+    const newCompoundPath = cloneAndFlattenCompoundPath();
+    updateCompoundPathData(newCompoundPath);
 
-      newCompoundPath.flatten(1);
-      if (newCompoundPath instanceof paper.Path) {
-        newCompoundPath = new paper.CompoundPath(newCompoundPath);
-        newCompoundPath.data.annotationId = index.value;
-        newCompoundPath.data.categoryId = categoryIndex.value;
-      }
+    const newChildren = createSimplifiedChildren(newCompoundPath);
+    updateCompoundPathChildren(newCompoundPath, newChildren);
 
-      const newChildren = [];
-      newCompoundPath.children.forEach(path => {
-            const points = path.segments.map(seg => ({ x: seg.point.x, y: seg.point.y }));
-            const simplifiedPoints = simplifyjs(points, simplify.value, true);
-            const newPath = new paper.Path(simplifiedPoints);
-            newPath.closePath();
-            newChildren.push(newPath);
-      });
-      newCompoundPath.removeChildren();
-      newCompoundPath.addChildren(newChildren);
-      newCompoundPath.fullySelected = isCurrent.value;
-
-      compoundPath.value.remove();
-      compoundPath.value=newCompoundPath;
-
-      keypoints.value.bringToFront();
-      emitModify();
+    finalizeCompoundPath(newCompoundPath);
 };
+
+// Helper Functions
+
+const shouldDeleteAnnotation = () => {
+    return (
+        compoundPath.value != null &&
+        compoundPath.value.isEmpty() &&
+        keypoints.value.isEmpty()
+    );
+};
+
+const cloneAndFlattenCompoundPath = () => {
+    let newCompoundPath = compoundPath.value.clone();
+    newCompoundPath.flatten(1);
+
+    if (newCompoundPath instanceof paper.Path) {
+        newCompoundPath = new paper.CompoundPath(newCompoundPath);
+    }
+
+    return newCompoundPath;
+};
+
+const updateCompoundPathData = (newCompoundPath) => {
+    newCompoundPath.data.annotationId = index.value;
+    newCompoundPath.data.categoryId = categoryIndex.value;
+};
+
+const createSimplifiedChildren = (newCompoundPath) => {
+    const newChildren = [];
+    newCompoundPath.children.forEach(path => {
+        const points = path.segments.map(seg => ({ x: seg.point.x, y: seg.point.y }));
+        const simplifiedPoints = simplifyjs(points, simplify.value, true);
+        const newPath = new paper.Path(simplifiedPoints);
+        newPath.closePath();
+        newChildren.push(newPath);
+    });
+    return newChildren;
+};
+
+const updateCompoundPathChildren = (newCompoundPath, newChildren) => {
+    newCompoundPath.removeChildren();
+    newCompoundPath.addChildren(newChildren);
+};
+
+const finalizeCompoundPath = (newCompoundPath) => {
+    newCompoundPath.fullySelected = isCurrent.value;
+
+    compoundPath.value.remove();
+    compoundPath.value = newCompoundPath;
+
+    keypoints.value.bringToFront();
+    emitModify();
+};
+/* end - simplifyPath */
+
 
 const undoCompound = () => {
   if (pervious.value.length === 0) return;
@@ -582,72 +654,114 @@ const undoCompound = () => {
   compoundPath.value.fullySelected = isCurrent.value;
 };
 
+/* addKeypoint */
 const addKeypoint = (point, visibility, label) => {
+  // Early exit if the point already exists and no label is provided
   if (label == null && keypoints.value.contains(point)) return;
+   
+   // uncomment to prevent creating keypoint as annotation
+   // if(keypoint.value.next.label === -1) return;
+   
+   console.log('keypoint:', keypoint.value);
+
+  // Set default visibility and label if not provided
   visibility = visibility || parseInt(keypoint.value.next.visibility);
   label = label || parseInt(keypoint.value.next.label);
-  let newkeypoint = new Keypoint(point.x, point.y, {
+
+  // Create a new keypoint
+  const newKeypoint = createKeypoint(point, visibility, label);
+
+  // Add the new keypoint to the keypoints collection
+  keypoints.value.addKeypoint(newKeypoint);
+
+  // Update the isEmpty state
+  updateIsEmptyState();
+
+  // Update the next available label
+  updateNextLabel(label);
+
+  // Increment the tag recomputation counter
+  tagRecomputeCounter.value++;
+};
+
+// Helper Functions
+
+const createKeypoint = (point, visibility, label) => {
+  return new Keypoint(point.x, point.y, {
     visibility: visibility || 0,
     indexLabel: label || -1,
     fillColor: keypointColors[label - 1],
     radius: scale.value * 6,
-    onClick: event => {
-      if (!['Select', 'Keypoints'].includes(activeTool.value)) return;
-      const targetkeypoint = event.target.keypoint;
-      // Remove if already selected
-      if (targetkeypoint == currentKeypoint.value) {
-        currentKeypoint.value = null;
-        return;
-      }
-  
-      onAnnotationClick(true);
-      onAnnotationKeypointClick(targetkeypoint.indexLabel - 1);
-      
-      if (currentKeypoint.value) {
-        const i1 = currentKeypoint.value.indexLabel;
-        const i2 = targetkeypoint.indexLabel;
-        if (keypoints.value && i1 > 0 && i2 > 0) {
-          const edge = [i1, i2];
-          if (!keypoints.value.getLine(edge)) {
-            // $parent.addKeypointEdge(edge);
-            addKeypointEdge(edge);
-          } else {
-            // $parent.removeKeypointEdge(edge);
-            removeKeypointEdge(edge);
-          }
-        }
-      }
-      currentKeypoint.value = targetkeypoint;
-   },
-   onDoubleClick: (event) => {
-      // if (!$parent.isCurrent) return;
-      if (!categoryIsCurrent.value) return;
-      if (!["Select", "Keypoints"].includes(activeTool.value)) return;
-      currentKeypoint.value = event.target.keypoint;
-      // const id = `#keypointSettings${annotation.id}`;
-      const indexLabel = currentKeypoint.value.indexLabel;
-      keypoint.value.tag = indexLabel == -1 ? [] : [indexLabel.toString()];
-      keypoint.value.visibility = currentKeypoint.value.visibility;
-      // $(id).modal("show");
-
-      keypointSettingsModal.show();
-    },
-    onMouseDrag: (event) => {
-        const targetkeypoint = event.target.keypoint;
-        if (!["Select", "Keypoints"].includes(activeTool.value)) return;
-        keypoints.value.moveKeypoint(event.point, targetkeypoint);
-    }
+    onClick: handleKeypointClick,
+    onDoubleClick: handleKeypointDoubleClick,
+    onMouseDrag: handleKeypointMouseDrag,
   });
+};
 
-  keypoints.value.addKeypoint(newkeypoint);
+const handleKeypointClick = (event) => {
+  if (!['Select', 'Keypoints'].includes(activeTool.value)) return;
+
+  const targetKeypoint = event.target.keypoint;
+
+  // Remove if already selected
+  if (targetKeypoint === currentKeypoint.value) {
+    currentKeypoint.value = null;
+    return;
+  }
+
+  onAnnotationClick(true);
+  onAnnotationKeypointClick(targetKeypoint.indexLabel - 1);
+
+  if (currentKeypoint.value) {
+    const i1 = currentKeypoint.value.indexLabel;
+    const i2 = targetKeypoint.indexLabel;
+
+    if (keypoints.value && i1 > 0 && i2 > 0) {
+      const edge = [i1, i2];
+      if (!keypoints.value.getLine(edge)) {
+        addKeypointEdge(edge);
+      } else {
+        removeKeypointEdge(edge);
+      }
+    }
+  }
+
+  currentKeypoint.value = targetKeypoint;
+};
+
+const handleKeypointDoubleClick = (event) => {
+  if (!categoryIsCurrent.value) return;
+  if (!['Select', 'Keypoints'].includes(activeTool.value)) return;
+
+  currentKeypoint.value = event.target.keypoint;
+
+  const indexLabel = currentKeypoint.value.indexLabel;
+  keypoint.value.tag = indexLabel === -1 ? [] : [indexLabel.toString()];
+  keypoint.value.visibility = currentKeypoint.value.visibility;
+
+  keypointSettingsModal.show();
+};
+
+const handleKeypointMouseDrag = (event) => {
+  if (!['Select', 'Keypoints'].includes(activeTool.value)) return;
+
+  const targetKeypoint = event.target.keypoint;
+  keypoints.value.moveKeypoint(event.point, targetKeypoint);
+};
+
+const updateIsEmptyState = () => {
   isEmpty.value = compoundPath.value.isEmpty() && keypoints.value.isEmpty();
+};
+
+const updateNextLabel = (currentLabel) => {
   const unusedLabels = notUsedKeypointLabels.value;
-  delete unusedLabels[String(label)];
+  delete unusedLabels[String(currentLabel)];
+
   const unusedLabelKeys = Object.keys(unusedLabels);
   if (unusedLabelKeys.length > 0) {
     let nextLabel = unusedLabelKeys[0];
     for (let ul in unusedLabels) {
-      if (ul > label) {
+      if (ul > currentLabel) {
         nextLabel = ul;
         break;
       }
@@ -657,26 +771,23 @@ const addKeypoint = (point, visibility, label) => {
     keypoint.value.next.label = -1;
     emit("keypointsComplete");
   }
-  tagRecomputeCounter.value++;
 };
+/* end - addKeypoint */
+
 
 const deleteKeypoint = (keypoint) => {
       keypoints.value.deleteKeypoint(keypoint);
 };
 
 const unite = (compound, simplify = true, undoable = true, isBBox = false) => {
-  if (compoundPath.value == null) {
-    createCompoundPath();
-  }
+  if (compoundPath.value == null) createCompoundPath();
   const newCompound = compoundPath.value.unite(compound);
   newCompound.strokeColor = null;
   newCompound.strokeWidth = 0;
   newCompound.onDoubleClick = compoundPath.value.onDoubleClick;
   newCompound.onClick = compoundPath.value.onClick;
   annotation.value.isbbox = isBBox;
-  if (undoable) {
-    createUndoAction("Unite");
-  }
+  if (undoable) createUndoAction("Unite");
   compoundPath.value.remove();
   compoundPath.value = newCompound;
   keypoints.value.bringToFront();
@@ -687,7 +798,7 @@ const unite = (compound, simplify = true, undoable = true, isBBox = false) => {
 
 const subtract = (compound, simplify = true, undoable = true) => {
   if (compoundPath.value == null) createCompoundPath();
-  let newCompound = compoundPath.value.subtract(compound);
+  const newCompound = compoundPath.value.subtract(compound);
   newCompound.onDoubleClick = compoundPath.value.onDoubleClick;
   if (undoable) createUndoAction("Subtract");
   compoundPath.value.remove();
@@ -704,8 +815,6 @@ const setColor = () => {
   // and I don't understand why
   // if (!showAnnotations.value) {
   if (!getShowAnnotations()) {
-    // $parent.setColor();
-    
     emit('set-color');
     return;
   }
@@ -723,51 +832,83 @@ const setCategory = (event) => {
         oldCategory,
         newCategoryName
       );
-      // $(`#annotationSettings${annotation.id}`).modal("hide");
-      // const annotationSettingsModal = Modal.getInstance(`#annotationSettings${annotation.value.id}`);
       annotationSettingsModal.hide();
 };
 
+
+/* exportAnnotation */
 const exportAnnotation = () => {
-      if (compoundPath.value == null) createCompoundPath();
-      // metadata.value = $refs.metadata.exportMetadata();
-      let localmetadata = metadata.value.exportMetadata();
-      if (name.value.length > 0) localmetadata.name = name.value;
+  ensureCompoundPathExists();
+  const localMetadata = prepareMetadata();
+  const annotationData = createBaseAnnotationData(localMetadata);
 
-      const annotationData = {
-        id: annotation.value.id,
-        isbbox: annotation.value.isbbox,
-        color: color.value,
-        metadata: localmetadata,
-      };
+  simplifyAndPrepareCompoundPath(annotationData);
+  addKeypointsToAnnotationData(annotationData);
+  restoreCompoundPathState();
 
-      simplifyPath();
-      compoundPath.value.fullySelected = false;
+  exportSessions(annotationData);
 
-      const json = compoundPath.value.exportJSON({
-        asString: false,
-        precision: 1,
-      });
-
-      if (!keypoints.value.isEmpty()) {
-        annotationData.keypoints = keypoints.value.exportJSON(
-          keypointLabels.value,
-          annotation.value.width,
-          annotation.value.height
-        );
-      }
-
-      compoundPath.value.fullySelected = isCurrent.value;
-      if (annotation.value.paper_object !== json) {
-        annotationData.compoundPath = json;
-      }
-
-      // Export sessions and reset
-      annotationData.sessions = sessions.value;
-      sessions.value = [];
-
-      return annotationData;
+  return annotationData;
 };
+
+// Helper Functions
+
+const ensureCompoundPathExists = () => {
+  if (compoundPath.value == null) {
+    createCompoundPath();
+  }
+};
+
+const prepareMetadata = () => {
+  const localMetadata = metadata.value.exportMetadata();
+  if (name.value.length > 0) {
+    localMetadata.name = name.value;
+  }
+  return localMetadata;
+};
+
+const createBaseAnnotationData = (localMetadata) => {
+  return {
+    id: annotation.value.id,
+    isbbox: annotation.value.isbbox,
+    color: color.value,
+    metadata: localMetadata,
+  };
+};
+
+const simplifyAndPrepareCompoundPath = (annotationData) => {
+  simplifyPath();
+  compoundPath.value.fullySelected = false;
+
+  const json = compoundPath.value.exportJSON({
+    asString: false,
+    precision: 1,
+  });
+
+  if (annotation.value.paper_object !== json) {
+    annotationData.compoundPath = json;
+  }
+};
+
+const addKeypointsToAnnotationData = (annotationData) => {
+  if (!keypoints.value.isEmpty()) {
+    annotationData.keypoints = keypoints.value.exportJSON(
+      keypointLabels.value,
+      annotation.value.width,
+      annotation.value.height
+    );
+  }
+};
+
+const restoreCompoundPathState = () => {
+  compoundPath.value.fullySelected = isCurrent.value;
+};
+
+const exportSessions = (annotationData) => {
+  annotationData.sessions = sessions.value;
+  sessions.value = [];
+};
+/* end - exportAnnotation */
 
 const emitModify = () => {
   const uuid = Math.random().toString(36).replace(/[^a-z]+/g, "");
@@ -795,7 +936,7 @@ const isKeypointLabeled = (index) => {
 const getKeypointVisibility = (index) => {
     let visibility = 0;
     if (keypoints.value && keypoints.value._labelled) {
-      let labelled = keypoints.value._labelled[index + 1];
+      const labelled = keypoints.value._labelled[index + 1];
       if (labelled) {
         visibility = labelled.visibility;
       }
@@ -818,7 +959,6 @@ const getKeypointBackgroundColor = (index) => {
 
 const categoryIndex = computed(() => {
       return getCategoryIndex();
-      // return this.$parent.index;
 });
 
 const isCurrent = computed(() => {
@@ -861,7 +1001,6 @@ const isHover = computed(() => {
 });
 
 const backgroundColor = computed(() => {
-      // console.log('change Background color');
       if (isHover.value && isHoverCategory.value) return "#646c82";
       if (isCurrent.value) return "#4b624c";
       return "inherit";
@@ -947,7 +1086,6 @@ watch(
 watch(
     () => color.value, 
     () => {
-    console.log('watch color.value');
     setColor();
 });
 
@@ -968,14 +1106,14 @@ watch(
     console.log('watch keypoints:', compoundPath.value.isEmpty(), keypoints.value.isEmpty());
     compoundPath.value.visible = isVisible.value;
     setColor();
-    isEmpty.value = compoundPath.value.isEmpty() && keypoints.value.isEmpty();
+    updateIsEmptyState();
 }
 );
 
 watch(
     () => keypoints.value, 
     () => {
-    isEmpty.value = compoundPath.value.isEmpty() && keypoints.value.isEmpty();
+    updateIsEmptyState();
 });
 
 watch(
@@ -1071,16 +1209,10 @@ onMounted( () => {
         resetCategorySettings();
     });
 
-    /// app.__vue_app__.config.globalProperties.$socket.on('annotation', onAnnotation);
-    // app.__vue_app__._instance.ctx.sockets.subscribe('annotation', onAnnotation);
     getCurrentInstance().ctx.sockets.subscribe('annotation', onAnnotation);
-
-    console.log('should be mounted Annotation');
 });
 
 onUnmounted(() => {
-    // app.__vue_app__.config.globalProperties.$socket.off('annotation', onAnnotation);
-    // app.__vue_app__._instance.ctx.sockets.unsubscribe('annotation');
     getCurrentInstance().ctx.sockets.unsubscribe('annotation');
 
     annotationSettingsModal.hide();
