@@ -72,38 +72,38 @@ function onMouseDown(event) {
 }
 
 function createPath(segments, width, height) {
-    const center = new paper.Point(width, height);
-    const compoundPath = new paper.CompoundPath();
-    segments.forEach(polygon => {
-        const path = new paper.Path();
-        for (let j = 0; j < polygon.length; j += 2) {
-            const point = new paper.Point(polygon[j], polygon[j + 1]);
-            path.add(point.subtract(center));
-        }
-        path.closePath();
-        compoundPath.addChild(path);
-    });
-    return compoundPath;
+  const center = new paper.Point(width, height);
+  const compoundPath = new paper.CompoundPath();
+  segments.forEach((polygon) => {
+    const path = new paper.Path();
+    for (let j = 0; j < polygon.length; j += 2) {
+      const point = new paper.Point(polygon[j], polygon[j + 1]);
+      path.add(point.subtract(center));
+    }
+    path.closePath();
+    compoundPath.addChild(path);
+  });
+  return compoundPath;
 }
 
 // original code was watching for new points, but it seem's to be a bug between Vue3 and paper.js.
 // so we call function directly
 function checkPoints(newPoints) {
   if (newPoints.length == 1) {
-    let currentAnnotation = localCurrentAnnotation.value;
-    let pointsList = [];
-    let width = localImageRaster.value.width / 2;
-    let height = localImageRaster.value.height / 2;
+    const currentAnnotation = localCurrentAnnotation.value;
+    const pointsList = [];
+    const width = localImageRaster.value.width / 2;
+    const height = localImageRaster.value.height / 2;
     newPoints.forEach((point) => {
-      let pt = point.position;
+      const pt = point.position;
       pointsList.push([
         Math.round(width + pt.x),
         Math.round(height + pt.y),
       ]);
     });
 
-    let  canvas = getImageRaster().canvas;
-    let data = new FormData();
+    const  canvas = getImageRaster().canvas;
+    const data = new FormData();
 
     data.append('data', JSON.stringify({ 'points': pointsList,
             ...settings.value}));

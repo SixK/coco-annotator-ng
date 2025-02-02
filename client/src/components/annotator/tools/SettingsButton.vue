@@ -153,7 +153,6 @@ const exportSettings = () => {
 
 onMounted( () => {
     const settingsTag = document.getElementById('settings');
-    console.log('SettingsTag:', settingsTag);
     settingsModal = new Modal(settingsTag, { });
 });
 

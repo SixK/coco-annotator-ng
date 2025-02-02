@@ -30,7 +30,6 @@ export const useInfoStore = defineStore('info', () => {
       try {
         const response = await axios.get('/api/info/');
         const data = response.data;
-        console.log('it is ok - set loading to false');
         loading.value = false;
         success.value = true;
         version.value = data.git.tag;
@@ -38,7 +37,6 @@ export const useInfoStore = defineStore('info', () => {
         loginEnabled.value = data.login_enabled;
         totalUsers.value = data.total_users;
       } catch (error) {
-          console.log('something is wrong - set loading to false');
         loading.value = false;
         success.value = true;
         version.value = 'unknown';

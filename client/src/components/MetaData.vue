@@ -84,7 +84,6 @@ const metadataList = ref([]);
 const exportMetadata = () => {
   let new_metadata = {};
   metadataList.value.forEach((object) => {
-    console.log('each metadata list:',object);
 
     if (object.key.length > 0) {
       if (!isNaN(object.value))

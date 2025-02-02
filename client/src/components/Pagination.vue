@@ -62,7 +62,6 @@ watch(page, (newPage, oldPage) => {
 });
 
 const startPage = computed(() => {
-  console.log('rng:', pageRange.value, pages.value);
   if (pageRange.value > pages.value) {
     return 0;
   }

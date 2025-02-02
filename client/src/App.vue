@@ -76,7 +76,7 @@ watch(
       if (newVal) return;
       setTimeout(() => {
         if (socketConnection.value) return;
-        let options = {
+        const options = {
           positionClass: "toast-bottom-left"
         };
         $toast.warning(
@@ -102,8 +102,6 @@ watch(
 );
 
 onMounted(() => {
-    // app.__vue_app__.config.globalProperties.$socket.connect(() => {store.commit('info/socket', true);});
-    // app.__vue_app__.config.globalProperties.$socket.disconnect(() => {store.commit('info/socket', false);});
     loader = $loading.show({
         height: 100
       });

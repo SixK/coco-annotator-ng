@@ -99,7 +99,6 @@ const flood = (x, y, thr, rad) => {
 };
 
 const onMouseDown = (event) => {
-    console.log('width:', width, width.value);
       let x = Math.round(width.value / 2 + event.point.x);
       let y = Math.round(height.value / 2 + event.point.y);
 

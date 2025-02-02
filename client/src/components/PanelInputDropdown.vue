@@ -28,7 +28,6 @@ const values = defineModel('values', { type: Object, required: true });
 
 
 const options = computed(() => {
- console.log('inputdropdown:', values.value);
   let array = [];
   Object.keys(values.value).forEach((k) => {
     array.push({

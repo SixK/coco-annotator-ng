@@ -206,7 +206,7 @@ const copyAnnotations =  () => {
 
 
 const validImageId = computed(() => {
-  let errorMsg = "Enter a valid image ID";
+  const errorMsg = "Enter a valid image ID";
 
   if (fromId.value == null) return errorMsg;
   if (fromId.value === "") return errorMsg;
@@ -217,7 +217,7 @@ const validImageId = computed(() => {
 });
 
 const categoryTags = computed(() => {
-  let tags = {};
+  const tags = {};
   localCategories.value.forEach((category) => {
     tags[category.id] = category.name;
   });
@@ -234,7 +234,7 @@ watchEffect(() => {
 watch(
   () => localCategories.value,
   (newCategories) => {
-    let tags = [];
+    const tags = [];
     newCategories.forEach((category) => {
       tags.push(category.id.toString());
     });

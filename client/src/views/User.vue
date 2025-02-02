@@ -115,7 +115,6 @@ const inputPasswordClasses = (password) => {
 };
 
 const user = computed(() => {
-    console.log('ZZZZ - user:',  authStore.user);
     return authStore.user;
     });
 

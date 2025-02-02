@@ -83,14 +83,12 @@ watch(
 watch(
   () => scale.value, 
   (newScale) => {
-      console.log('scaling');
       hover.value.rounded = newScale * 5;
       hover.value.textShift = newScale * 40;
       hover.value.fontSize = newScale * scaleFactor;
       edit.value.distance = newScale * 40;
       edit.value.indicatorSize = newScale * 10;
       edit.value.indicatorWidth = newScale * 2;
-      console.log('scale:', edit.value.center, point);
       if (edit.value.center && point.value != null) {
         createPoint(edit.value.center);
       }
@@ -142,12 +140,12 @@ const setPreferences = (pref) => {
 const generateTitle = () => {
   let string = " ";
   if (keypoint.value) {
-    let index = keypoint.value.keypoint.indexLabel;
-    let label = keypoint.value.keypoints.labels[index - 1];
-    let visibility = keypoint.value.keypoint.visibility;
-    let visibilityDesc = keypoint.value.keypoint.getVisibilityDescription();
-    let annotationId = keypoint.value.keypoints.annotationId;
-    let categoryName = keypoint.value.keypoints.categoryName;
+    const index = keypoint.value.keypoint.indexLabel;
+    const label = keypoint.value.keypoints.labels[index - 1];
+    const visibility = keypoint.value.keypoint.visibility;
+    const visibilityDesc = keypoint.value.keypoint.getVisibilityDescription();
+    const annotationId = keypoint.value.keypoints.annotationId;
+    const categoryName = keypoint.value.keypoints.categoryName;
     string += "Keypoint: " + label + " \n";
     string += "Visibility: " + visibility + " (" + visibilityDesc + ") \n";
     if (annotationId !== -1) {
@@ -159,14 +157,13 @@ const generateTitle = () => {
     return string.replace(/\n/g, " \n ").slice(0, -2);
   }
   if (hover.value.category && hover.value.annotation) {
-    let id = hover.value.textId;
-    let localcategory = hover.value.category.name;
+    const id = hover.value.textId;
+    const localcategory = hover.value.category.name;
     string += "ID: " + id + " \n";
     string += "Category: " + localcategory + " \n";
   }
-  // if (store.getters["user/loginEnabled"]) {
   if (authStore.loginEnabled()) {
-    let creator = hover.value.annotation.creator;
+    const creator = hover.value.annotation.creator;
     if (creator != null) {
       string += "Created by " + creator + "\n\n";
     }
@@ -201,7 +198,7 @@ const hoverText = () => {
         if (hover.value.annotation == null) return;
       }
 
-      let position = hover.value.position.add(hover.value.textShift, 0);
+      const position = hover.value.position.add(hover.value.textShift, 0);
 
       if (
         hover.value.text == null ||
@@ -251,14 +248,14 @@ const hoverText = () => {
 
 const checkBbox = (paperObject) => {
   if (!paperObject) return false;
-  let annotationId = paperObject.data.annotationId;
+  const annotationId = paperObject.data.annotationId;
 
   if(paperObject.data.categoryId===null) return false;
-  let categoryId = paperObject.data.categoryId;  
+  const categoryId = paperObject.data.categoryId;  
 
-  let category = categories.value[categoryId];
+  const category = categories.value[categoryId];
   if (category == null) return false;
-  let annotation = category.annotations[annotationId];
+  const annotation = category.annotations[annotationId];
   if (annotation == null) return false;
   
   return annotation.isbbox;
@@ -331,12 +328,11 @@ function createPoint(currpoint) {
 
 const onMouseDrag = (event) => {
   if (isBbox.value && moveObject.value) {
-    console.log('isBbox and moveObject');
-    let delta_x = initPoint.value.x - event.point.x;
-    let delta_y = initPoint.value.y - event.point.y;
-    let segments = moveObject.value.children[0].segments;
+    const delta_x = initPoint.value.x - event.point.x;
+    const delta_y = initPoint.value.y - event.point.y;
+    const segments = moveObject.value.children[0].segments;
     segments.forEach((msegment) => {
-      let p = msegment.point;
+      const p = msegment.point;
       msegment.point = new paper.Point(p.x - delta_x, p.y - delta_y);
     });
     initPoint.value = event.point;
@@ -345,19 +341,19 @@ const onMouseDrag = (event) => {
   if (segment.value && edit.value.canMove) {
     createPoint(event.point);
     if (isBbox.value) {
-      let isCounterClock =
+      const isCounterClock =
         segment.value.previous.point.x == segment.value.point.x;
-      let prev = isCounterClock ? segment.value.previous : segment.value.next;
-      let next = !isCounterClock ? segment.value.previous : segment.value.next;
+      const prev = isCounterClock ? segment.value.previous : segment.value.next;
+      const next = !isCounterClock ? segment.value.previous : segment.value.next;
       prev.point = new paper.Point(event.point.x, prev.point.y);
       next.point = new paper.Point(next.point.x, event.point.y);
     }
     segment.value.point = event.point;
   } else if (!keypoint.value && initPoint.value) {
-        let delta_x = initPoint.value.x - event.point.x;
-        let delta_y = initPoint.value.y - event.point.y;
-        let center_delta = new paper.Point(delta_x, delta_y);
-        let new_center = localPaper.value.view.center.add(center_delta);
+        const delta_x = initPoint.value.x - event.point.x;
+        const delta_y = initPoint.value.y - event.point.y;
+        const center_delta = new paper.Point(delta_x, delta_y);
+        const new_center = localPaper.value.view.center.add(center_delta);
         localPaper.value.view.setCenter(new_center);
   }
 };
@@ -392,7 +388,7 @@ const onMouseMove = (event) => {
       }
 
       localPaper.value.project.activeLayer.selected = false;
-      let item = event.item;
+      const item = event.item;
 
       keypoint.value = null;
 
@@ -403,8 +399,8 @@ const onMouseMove = (event) => {
       ) {
         hover.value.position = event.point;
 
-        let categoryId = event.item.data.categoryId;
-        let annotationId = event.item.data.annotationId;
+        const categoryId = event.item.data.categoryId;
+        const annotationId = event.item.data.annotationId;
 
         hover.value.category = categories.value[categoryId];
         if (hover.value.category != null) {

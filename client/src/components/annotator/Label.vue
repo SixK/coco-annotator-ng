@@ -52,7 +52,6 @@ const isSelected = computed(() => {
   return categoryIds.value.indexOf(category.value.id) > -1;
 });
 const click = () => {
-  console.log('label clicked:', categoryIds.value);
   let copy = categoryIds.value.slice();
   if (!isSelected.value) {
     copy.push(category.value.id);

@@ -73,7 +73,6 @@ watch(
 );
 
 const myexport = (() => {
-      console.log('in myexport');
       return {
         name: props.shortcut.name,
         keys: keys.value,

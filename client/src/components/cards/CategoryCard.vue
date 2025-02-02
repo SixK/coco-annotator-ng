@@ -247,13 +247,11 @@ const onUpdateClick = () => {
           keypoint_labels: keypoint.value.labels,
           keypoint_colors: keypoint.value.colors,
         });
-        console.log('axios put');
         axiosReqestSuccess(
           'Updating Category',
           'Category successfully updated'
         );
 
-        console.log('axiosReqSuccess');
         category.value.name = name.value;
         category.value.supercategory = supercategory.value;
         category.value.color = color.value;
@@ -263,7 +261,7 @@ const onUpdateClick = () => {
         category.value.keypoint_colors = [...keypoint.value.colors];
         emit('updatePage');
       } catch (error) {
-          console.log('sooooo:',    error.message);
+          console.error('Error updating category:',    error.message);
         axiosReqestError(
           'Updating Category',
           error.message

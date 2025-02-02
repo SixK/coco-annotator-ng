@@ -152,7 +152,6 @@ const getLogs = () => {
 };
 
 const onTaskProgress = (data) => {
-      console.log('received task progress!!!');
       if (data.id !== task.value.id) return;
 
       task.value.progress = data.progress;

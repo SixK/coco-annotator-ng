@@ -733,7 +733,6 @@ const props = defineProps({
   }
 });
 
-
 // modals
 let cocoImportModal = null;
 let cocoExportModal = null;
@@ -823,7 +822,7 @@ const generateDataset = () => {
 const updatePage = (page) => {
   let process = "Loading images from dataset";
   procStore.addProcess(process);
-  
+
   console.log('queryannotated:', queryAnnotated);
   Dataset.getData(dataset.value.id, {
     page: page,
@@ -834,8 +833,8 @@ const updatePage = (page) => {
     category_ids__in: encodeURI(selected.value.categories),
     order: order.value
   })
-    .then(response => {
-      let data = response.data;
+    .then((response) => {
+      const data = response.data;
       images.value = data.images;
       dataset.value = data.dataset;
       categories.value = data.categories;
@@ -843,16 +842,16 @@ const updatePage = (page) => {
       pages.value = data.pages;
       subdirectories.value = data.subdirectories;
     })
-    .catch(error => {
+    .catch((error) => {
       axiosReqestError("Loading Dataset", error.response.data.message);
     })
     .finally(() => {
-              procStore.removeProcess(process);
+      procStore.removeProcess(process);
     });
 }
 
 const getUsers = () => {
-  Dataset.getUsers(dataset.value.id).then(response => {
+  Dataset.getUsers(dataset.value.id).then((response) => {
     users.value = response.data;
   });
 };
@@ -862,19 +861,19 @@ const downloadExport = (id) => {
 };
 
 const getExports = () => {
-  Dataset.getExports(dataset.value.id).then(response => {
+  Dataset.getExports(dataset.value.id).then((response) => {
     datasetExports.value = response.data;
   });
 };
 
 const resetMetadata = () => {
-    let r = confirm(
-            "You can not undo reseting of all metadata in" +    
+    const r = confirm(
+            "You can not undo reseting of all metadata in" +
             "this dataset. This includes metadata of images" +
             "and annotations."
      );
-     if (r) { 
-         Dataset.resetMetadata(dataset.value.id); 
+     if (r) {
+         Dataset.resetMetadata(dataset.value.id);
      }
 };
 
@@ -884,32 +883,27 @@ const getStats = () => {
         stats.value = response.data;
       });
 };
-    
+
 const createScanTask = () => {
-      let process = "Loading images from dataset";
-      console.log("scanning...");
-      if (scan.value.id != null) {
-        router.push({ path: "/tasks", query: { id: scan.value.id } });
-        return;
-      }
-      Dataset.scan(dataset.value.id)
-        .then(response => {
-          let id = response.data.id;
-          scan.value.id = id;
-        })
-        .catch(error => {
-          axiosReqestError(
-            "Scanning Dataset",
-            error.response.data.message
-          );
-        })
-        .finally(() => {
-            procStore.removeProcess(process);
-        });
+  const process = "Loading images from dataset";
+  if (scan.value.id != null) {
+    router.push({ path: "/tasks", query: { id: scan.value.id } });
+    return;
+  }
+  Dataset.scan(dataset.value.id)
+    .then((response) => {
+      const id = response.data.id;
+      scan.value.id = id;
+    })
+    .catch((error) => {
+      axiosReqestError("Scanning Dataset", error.response.data.message);
+    })
+    .finally(() => {
+      procStore.removeProcess(process);
+    });
 };
 
 const exportModal = () => {
-  console.log('exportModal invoked...:',exporting);
   if (exporting.value.id !== null) {
     router.push({ path: "/tasks", query: { id: exporting.value.id } });
     return;
@@ -921,7 +915,7 @@ const exportModal = () => {
 const exportCOCO = () => {
   // $("#exportDataset").modal("hide");
   cocoExportModal.hide();
-  let process = "Loading images from dataset";
+  const process = "Loading images from dataset";
 
   Dataset.exportingCOCO(
     dataset.value.id,
@@ -932,11 +926,11 @@ const exportCOCO = () => {
       let id = response.data.id;
       exporting.value.id = id;
     })
-    .catch(error => {
+    .catch((error) => {
       axiosReqestError("Exporting COCO", error.response.data.message);
     })
     .finally(() => {
-        procStore.removeProcess(process);
+      procStore.removeProcess(process);
     });
 };
 
@@ -951,7 +945,7 @@ const importModal = () => {
     router.push({ path: "/tasks", query: { id: importing.value.id } });
     return;
   }
-  
+
   // $("#cocoUpload").modal("show");
   cocoImportModal.show();
 };
@@ -960,11 +954,11 @@ const importCOCO = () => {
   let process = "Loading images from dataset";
   const uploaded = document.getElementById("coco");
   Dataset.uploadCoco(dataset.value.id, uploaded.files[0])
-    .then(response => {
+    .then((response) => {
       const id = response.data.id;
       importing.value.id = id;
     })
-    .catch(error => {
+    .catch((error) => {
       axiosReqestError("Importing COCO", error.response.data.message);
     })
     .finally(() => {
@@ -973,10 +967,10 @@ const importCOCO = () => {
 };
 
 const mouseMove = (event) => {
-      let element = document.querySelector('.sidebar');
-      let sidebarWidth = element.offsetWidth;
-      let clickWidth = event.x;
-      let pixelsFromSide = Math.abs(sidebarWidth - clickWidth);      
+      const element = document.querySelector('.sidebar');
+      const sidebarWidth = element.offsetWidth;
+      const clickWidth = event.x;
+      const pixelsFromSide = Math.abs(sidebarWidth - clickWidth);      
       sidebar.value.drag = pixelsFromSide < 4;
       if (sidebar.value.canResize) {
         event.preventDefault();
@@ -1028,18 +1022,17 @@ const onTaskProgress = (data) => {
 
 // socket
 const onAnnotating = (data) => {
-      const image = images.value.find(i => i.id == data.image_id);
-      if (image == null) return;
-      if (data.active) {
-        const found = image.annotating.indexOf(data.username);
-        if (found < 0) {
-          image.annotating.push(data.username);
-        }
-      } else {
-        image.annotating.splice(image.annotating.indexOf(data.username), 1);
-      }
+  const image = images.value.find((i) => i.id == data.image_id);
+  if (image == null) return;
+  if (data.active) {
+    const found = image.annotating.indexOf(data.username);
+    if (found < 0) {
+      image.annotating.push(data.username);
+    }
+  } else {
+    image.annotating.splice(image.annotating.indexOf(data.username), 1);
+  }
 };
-
 
 watch(
     () => tab.value,
@@ -1137,38 +1130,32 @@ onBeforeRouteUpdate ((to, from, next) => {
     updatePage();
 });
 
-
 onMounted(() => {
       window.addEventListener('mouseup', stopDrag);
       window.addEventListener('mousedown', startDrag);
 
-      let ltab = localStorage.getItem("dataset/tab");
-      let lorder = localStorage.getItem("dataset/order");
-      let sideWidth = localStorage.getItem("dataset/sideWidth");
-      
+      const ltab = localStorage.getItem("dataset/tab");
+      const lorder = localStorage.getItem("dataset/order");
+      const sideWidth = localStorage.getItem("dataset/sideWidth");
+
       if (sideWidth !== null) sidebar.value.width = parseInt(sideWidth);
       if (ltab !== null) tab.value = ltab;
       if (lorder !== null) order.value = lorder;
       dataset.value.id = parseInt(identifier.value);
       updatePage();
-      
+
       const importTag = document.getElementById("cocoUpload");
       cocoImportModal = new Modal(importTag, { });
 
       const exportTag = document.getElementById("exportDataset");
       cocoExportModal = new Modal(exportTag, { });
-    
-      // app.__vue_app__._instance.ctx.sockets.subscribe('taskProgress', onTaskProgress);
-      // app.__vue_app__._instance.ctx.sockets.subscribe('annotating', onAnnotating);
-      
+
       getCurrentInstance().ctx.sockets.subscribe('taskProgress', onTaskProgress);
       getCurrentInstance().ctx.sockets.subscribe('annotating', onAnnotating);
 
 });
 
 onUnmounted(() => {
-      // app.__vue_app__._instance.ctx.sockets.unsubscribe('taskProgress');
-      // app.__vue_app__._instance.ctx.sockets.unsubscribe('annotating');
       getCurrentInstance().ctx.sockets.unsubscribe('taskProgress');
       getCurrentInstance().ctx.sockets.unsubscribe('annotating');
 

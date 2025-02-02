@@ -35,7 +35,6 @@ const buttonType = computed(() => {
 });
 
 const process = computed(() => { 
-            console.log(procStore.process.length);
             return procStore.process;});
 
 const message = computed(() => {

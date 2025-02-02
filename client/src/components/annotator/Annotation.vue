@@ -495,7 +495,6 @@ const deleteAnnotation = (id) => {
 };
 
 const deleteAnnot = (id) => {
-  console.log('deleting id:', id);
   // we delete annotation on category component to avoid index desynchro between category.annotations and 
   // category.value.annotations.splice(id, 1);
   clearExistingPaths();
@@ -996,7 +995,6 @@ const keypointListView = computed(() => {
 });
 
 const isHover = computed(() => {
-  console.log('isHover:', index, hover, index.value, hover.value);
   return index.value === hover.value;
 });
 
@@ -1092,7 +1090,6 @@ watch(
 watch(
     () => isVisible.value, 
     (newVisible) => {
-    console.log('isVisible:', newVisible, compoundPath.value.visible);
     if (compoundPath.value == null) return;
     compoundPath.value.visible = newVisible;
     keypoints.value.visible = newVisible;
@@ -1101,9 +1098,7 @@ watch(
 watch(
     () => compoundPath.value, 
     () => {
-    console.log('compoundPath changed...');
     if (compoundPath.value == null) return;
-    console.log('watch keypoints:', compoundPath.value.isEmpty(), keypoints.value.isEmpty());
     compoundPath.value.visible = isVisible.value;
     setColor();
     updateIsEmptyState();
@@ -1119,7 +1114,6 @@ watch(
 watch(
     annotation.value, 
     () => {
-    console.log('watch annotation value');
     initAnnotation();
 });
 

@@ -370,12 +370,9 @@ const imageUrl = computed(() => {
 // const listCategories = computed(() => {
 const listCategories = computed(() => {
   let list = [];
-  console.log('listCategories 1: ', dataset.value.hasOwnProperty("categories"));
   if (!dataset.value.hasOwnProperty("categories")) return [];
-  console.log('listCategories 2: ', dataset.value.categories.length);
   if (dataset.value.categories.length === 0) return [];
   
-  console.log('listCategories 3: ', dataset.value.categories, categories);
   dataset.value.categories.forEach((category) => {
     let elements = categories.value.filter(
       // quick and dirty fix for categories initiated with id and returned by TagsInput as name
