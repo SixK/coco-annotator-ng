@@ -4,84 +4,15 @@
       v-show="panels.show.left"
       class="left-panel shadow-lg"
     >
-      <div v-show="mode == 'segment'">
-        <hr>
+      <ToolsPanel
+        ref="toolspanel"
+        :active-tool="activeTool"
+        :image="image"
+        :categories="categories"
+        :mode="mode"
+        @setcursor="setCursor"
+      />
 
-        <SelectTool
-          ref="select"
-          v-model="activeTool"
-          :scale="image.scale"
-          :categories="categories"
-          @setcursor="setCursor"
-        />
-        <hr>
-
-        <BBoxTool
-          ref="bbox"
-          v-model="activeTool"
-          :scale="image.scale"
-          @setcursor="setCursor"
-        />
-
-        <PolygonTool
-          ref="polygon"
-          v-model="activeTool"
-          :scale="image.scale"
-          @setcursor="setCursor"
-        />
-
-        <MagicWandTool
-          ref="magicwand"
-          v-model="activeTool"
-          :width="image.raster.width"
-          :height="image.raster.height"
-          :image-data="image.data"
-          @setcursor="setCursor"
-        />
-
-        <BrushTool
-          ref="brush"
-          v-model="activeTool"
-          :scale="image.scale"
-          @setcursor="setCursor"
-        />
-        <EraserTool
-          ref="eraser"
-          v-model="activeTool"
-          :scale="image.scale"
-          @setcursor="setCursor"
-        />
-
-        <KeypointTool
-          ref="keypoint"
-          v-model="activeTool"
-          @setcursor="setCursor"
-        />
-        <DEXTRTool
-          ref="dextr"
-          v-model="activeTool"
-          :scale="image.scale"
-          @setcursor="setCursor"
-        />
-        <SamTool
-          ref="sam"
-          v-model="activeTool"
-          :scale="image.scale"
-          @setcursor="setCursor"
-        />
-        <Sam2Tool
-          ref="sam2"
-          v-model="activeTool"
-          :scale="image.scale"
-          @setcursor="setCursor"
-        />
-        <ZimTool
-          ref="zim"
-          v-model="activeTool"
-          :scale="image.scale"
-          @setcursor="setCursor"
-        />
-      </div>
       <hr>
 
       <AnnotateButton :annotate-url="dataset.annotate_url" />
@@ -196,46 +127,46 @@
           class="tool-section"
           style="max-height: 30%; color: lightgray"
         >
-          <div v-if="bbox != null">
-            <BBoxPanel :bbox="bbox" />
+          <div v-if="bboxTool() != null">
+            <BBoxPanel :bbox="bboxTool()" />
           </div>
-          <div v-if="polygon != null">
-            <PolygonPanel :polygon="polygon" />
-          </div>
-
-          <div v-if="select != null">
-            <SelectPanel :select="select" />
+          <div v-if="polygonTool() != null">
+            <PolygonPanel :polygon="polygonTool()" />
           </div>
 
-          <div v-if="magicwand != null">
-            <MagicWandPanel :magicwand="magicwand" />
+          <div v-if="selectTool() != null">
+            <SelectPanel :select="selectTool()" />
           </div>
 
-          <div v-if="brush != null">
-            <BrushPanel :brush="brush" />
+          <div v-if="magicwandTool() != null">
+            <MagicWandPanel :magicwand="magicwandTool()" />
           </div>
 
-          <div v-if="eraser != null">
-            <EraserPanel :eraser="eraser" />
+          <div v-if="brushTool() != null">
+            <BrushPanel :brush="brushTool()" />
           </div>
 
-          <div v-if="keypoint != null">
+          <div v-if="eraserTool() != null">
+            <EraserPanel :eraser="eraserTool()" />
+          </div>
+
+          <div v-if="keypointTool() != null">
             <KeypointPanel
               :key="updateKeypointPanel"
-              :keypoint="keypoint"
+              :keypoint="keypointTool()"
               :current-annotation="currentAnnotation"
             />
           </div>
-          <div v-if="dextr != null">
-            <DEXTRPanel :dextr="dextr" />
+          <div v-if="dextrTool() != null">
+            <DEXTRPanel :dextr="dextrTool()" />
           </div>
           <!--
           <div v-if="sam != null">
             <SamPanel :sam="sam" />
           </div> 
           -->
-          <div v-if="sam2!= null">
-            <Sam2Panel :sam2="sam2" />
+          <div v-if="sam2Tool() != null">
+            <Sam2Panel :sam2="sam2Tool()" />
           </div>
           <!--
           <div v-if="zim != null">
@@ -298,19 +229,6 @@ import Category from "@/components/annotator/Category";
 import CLabel from "@/components/annotator/Label";
 import Annotations from "@/models/annotations";
 
-import PolygonTool from "@/components/annotator/tools/PolygonTool";
-import BBoxTool from "@/components/annotator/tools/BBoxTool";
-import SelectTool from "@/components/annotator/tools/SelectTool";
-import MagicWandTool from "@/components/annotator/tools/MagicWandTool";
-import EraserTool from "@/components/annotator/tools/EraserTool";
-import BrushTool from "@/components/annotator/tools/BrushTool";
-import KeypointTool from "@/components/annotator/tools/KeypointTool";
-import DEXTRTool from "@/components/annotator/tools/DEXTRTool";
-import SamTool from "@/components/annotator/tools/SamTool";
-import Sam2Tool from "@/components/annotator/tools/Sam2Tool";
-import ZimTool from "@/components/annotator/tools/ZimTool";
-
-
 import CopyAnnotationsButton from "@/components/annotator/tools/CopyAnnotationsButton";
 import CenterButton from "@/components/annotator/tools/CenterButton";
 import DownloadButton from "@/components/annotator/tools/DownloadButton";
@@ -322,6 +240,8 @@ import UndoButton from "@/components/annotator/tools/UndoButton";
 import ShowAllButton from "@/components/annotator/tools/ShowAllButton";
 import HideAllButton from "@/components/annotator/tools/HideAllButton";
 import AnnotateButton from "@/components/annotator/tools/AnnotateButton";
+
+import ToolsPanel from "@/components/annotator/panels/ToolsPanel.vue";
 
 import PolygonPanel from "@/components/annotator/panels/PolygonPanel";
 import BBoxPanel from "@/components/annotator/panels/BBoxPanel";
@@ -356,7 +276,7 @@ const infoStore = useInfoStore();
 const socket = inject('socket')
 
 
-import { toRaw, onBeforeUpdate, onUpdated, nextTick, markRaw, toRef, ref, computed, watch, inject, onMounted, provide } from 'vue';
+import { onBeforeUpdate, onUpdated, nextTick, toRef, ref, computed, watch, inject, onMounted, provide } from 'vue';
 
 const props = defineProps({
   identifier: {
@@ -368,22 +288,24 @@ const props = defineProps({
 const annotations = ref(null);
 const backup = ref(null);
 const refcanvas = ref(null);
+
 // bind all components
-const bbox = ref(null);
-const polygon = ref(null);
-const eraser = ref(null);
-const brush = ref(null);
-const magicwand = ref(null);
-const select = ref(null);
 const settings = ref(null);
-const keypoint  = ref(null);
+const toolspanel  = ref(null);
+
+const bboxTool = () => toolspanel.value?.bbox;
+const polygonTool = () => toolspanel.value?.polygon;
+const eraserTool = () => toolspanel.value?.eraser;
+const brushTool = () => toolspanel.value?.brush;
+const magicwandTool = () => toolspanel.value?.magicwand;
+const selectTool = () => toolspanel.value?.select;
+const keypointTool = () => toolspanel.value?.keypoint;
+const dextrTool = () => toolspanel.value?.dextr;
+const sam2Tool = () => toolspanel.value?.sam2;
+
 // const category = ref(null);
 const annotation = ref(null);
 const filetitle = ref(null);
-const dextr = ref(null);
-const sam = ref(null);
-const sam2 = ref(null);
-const zim = ref(null);
 
 const updateKeypointPanel = ref(1);
 
@@ -510,15 +432,11 @@ const prepareSaveData = () => {
   return data;
 };
 
-const exportUserTools = () => ({
-  bbox: bbox.value.exportBBox(),
-  polygon: polygon.value.exportPolygon(),
-  eraser: eraser.value.exportEraser(),
-  brush: brush.value.exportBrush(),
-  magicwand: magicwand.value.exportWand(),
-  select: select.value.exportSelect(),
-  settings: settings.value.exportSettings()
-});
+const exportUserTools = () => {
+  return { ...toolspanel.value.exportUserTools(), 
+                   settings: settings.value.exportSettings()
+                 } ;
+};
 
 const exportImageData = () => ({
   id: image.value.id,
@@ -620,7 +538,7 @@ const onWheel = (e) => {
 };
 
 const fit = () => {
-  const canvas = document.getElementById("editor");
+  const canvas = getCanvasElement();
   const parentX = image.value.raster.width;
   const parentY = image.value.raster.height;
 
@@ -643,73 +561,103 @@ const changeZoom = (delta, p) => {
   return { zoom: newZoom, offset: a };
 };
 
+/* initCanvas */
 const initCanvas = () => {
-      let process = "Initializing canvas";
-      procStore.addProcess(process);
+  const process = "Initializing canvas";
+  addProcessToStore(process);
+  setLoadingState(true);
 
-      loading.value.image = true;
-
-      let canvas = document.getElementById("editor");
-      // let canvas = refcanvas.value;
-      
-      paper.setup(canvas);
-      paper.view.viewSize = [
-        paper.view.size.width,
-        window.innerHeight
-      ];
-      paper.activate();
-
-      image.value.raster = new paper.Raster(image.value.url);
-      image.value.raster.onLoad = () => {
-        const width = image.value.raster.width;
-        const height = image.value.raster.height;
-
-        image.value.raster.sendToBack();
-        fit();
-        image.value.ratio = (width * height) / 1000000;
-
-        procStore.removeProcess(process);
-
-        const tempCtx = document.createElement("canvas").getContext("2d");
-        tempCtx.canvas.width = width;
-        tempCtx.canvas.height = height;
-        tempCtx.drawImage(image.value.raster.image, 0, 0);
-
-        image.value.data = tempCtx.getImageData(0, 0, width, height);
-        const fontSize = width * 0.025;
-
-        const positionTopLeft = new paper.Point(
-          -width / 2,
-          -height / 2 - fontSize * 0.5
-        );
-        text.value.topLeft = new paper.PointText(positionTopLeft);
-        text.value.topLeft.fontSize = fontSize;
-        text.value.topLeft.fillColor = "white";
-        text.value.topLeft.content = image.value.filename;
-
-        const positionTopRight = new paper.Point(
-          width / 2,
-          -height / 2 - fontSize * 0.4
-        );
-        text.value.topRight = new paper.PointText(positionTopRight);
-        text.value.topRight.justification = "right";
-        text.value.topRight.fontSize = fontSize;
-        text.value.topRight.fillColor = "white";
-        text.value.topRight.content = width + "x" + height;
-
-        loading.value.image = false;
-      };
+  const canvas = getCanvasElement();
+  setupPaper(canvas);
+  loadImageAndSetupText(process);
 };
 
+// Function to add a process to the store
+const addProcessToStore = (process) => {
+  procStore.addProcess(process);
+};
+
+// Function to set the loading state
+const setLoadingState = (isLoading) => {
+  loading.value.image = isLoading;
+};
+
+// Function to get the canvas element
+const getCanvasElement = () => {
+  return document.getElementById("editor");
+};
+
+// Function to set up Paper.js
+const setupPaper = (canvas) => {
+  paper.setup(canvas);
+  paper.view.viewSize = [paper.view.size.width, window.innerHeight];
+  paper.activate();
+};
+
+// Function to load the image and set up text
+const loadImageAndSetupText = (process) => {
+  image.value.raster = new paper.Raster(image.value.url);
+  image.value.raster.onLoad = () => {
+    handleImageLoad(process);
+  };
+};
+
+// Function to handle image load
+const handleImageLoad = (process) => {
+  const { width, height } = image.value.raster;
+
+  image.value.raster.sendToBack();
+  fit();
+  image.value.ratio = (width * height) / 1000000;
+
+  removeProcessFromStore(process);
+  extractImageData(width, height);
+  createTopLeftText(width, height);
+  createTopRightText(width, height);
+
+  setLoadingState(false);
+};
+
+// Function to remove a process from the store
+const removeProcessFromStore = (process) => {
+  procStore.removeProcess(process);
+};
+
+// Function to extract image data
+const extractImageData = (width, height) => {
+  const tempCtx = document.createElement("canvas").getContext("2d");
+  tempCtx.canvas.width = width;
+  tempCtx.canvas.height = height;
+  tempCtx.drawImage(image.value.raster.image, 0, 0);
+
+  image.value.data = tempCtx.getImageData(0, 0, width, height);
+};
+
+// Function to create top-left text
+const createTopLeftText = (width, height) => {
+  const fontSize = width * 0.025;
+  const positionTopLeft = new paper.Point(-width / 2, -height / 2 - fontSize * 0.5);
+  text.value.topLeft = new paper.PointText(positionTopLeft);
+  text.value.topLeft.fontSize = fontSize;
+  text.value.topLeft.fillColor = "white";
+  text.value.topLeft.content = image.value.filename;
+};
+
+// Function to create top-right text
+const createTopRightText = (width, height) => {
+  const fontSize = width * 0.025;
+  const positionTopRight = new paper.Point(width / 2, -height / 2 - fontSize * 0.4);
+  text.value.topRight = new paper.PointText(positionTopRight);
+  text.value.topRight.justification = "right";
+  text.value.topRight.fontSize = fontSize;
+  text.value.topRight.fillColor = "white";
+  text.value.topRight.content = `${width}x${height}`;
+};
+/* end - initCanvas */
+
 const setPreferences = (preferences) => {
-      bbox.value.setPreferences(preferences.bbox || preferences.polygon || {});
-      polygon.value.setPreferences(preferences.polygon || {});
-      select.value.setPreferences(preferences.select || {});
-      magicwand.value.setPreferences(preferences.magicwand || {});
-      brush.value.setPreferences(preferences.brush || {});
-      eraser.value.setPreferences(preferences.eraser || {});
-      
-      settings.value.setPreferences(preferences.settings || {});
+    toolspanel.value.setPreferences(preferences);
+    settings.value.setPreferences(preferences.settings || {});
 };
 
 const updateCurrentAnnotation = (value) => {
@@ -1329,7 +1277,7 @@ watch(
           currentAnnotationFromList.value == null ||
           !newCategory.showAnnotations
       ) {
-          let element = newCategory.$el;
+          const element = newCategory.$el;
           scrollElement(element);
       }
 });
@@ -1340,7 +1288,7 @@ watch(
       updateKeypointPanel.value = updateKeypointPanel.value + 1;
       if (newElement == null) return;
       if (newElement.showAnnotations) {
-          let element = newElement.$el;
+          const element = newElement.$el;
           scrollElement(element);
       }
 });
@@ -1484,8 +1432,8 @@ const {commands, undo, annotator} = useShortcuts(moveUp, moveDown, stepIn, stepO
                                                                                                       setActiveTool, nextImage, previousImage,
                                                                                                       fit, save, doShortcutAction);
 
-defineExpose({simplify, dataset, bbox, select, category});
-
+// defineExpose({simplify, dataset, bbox, select, category});
+defineExpose({simplify, dataset, category});
 
 
 
