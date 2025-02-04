@@ -95,7 +95,7 @@ import SamTool from "@/components/annotator/tools/SamTool";
 import Sam2Tool from "@/components/annotator/tools/Sam2Tool";
 import ZimTool from "@/components/annotator/tools/ZimTool";
 
-import { defineProps, ref } from "vue";
+import { ref } from "vue";
 
 const activeTool = defineModel('activeTool', { type: String, required: true });
 const image = defineModel('image', { type: Object, required: true });
