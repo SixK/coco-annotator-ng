@@ -152,7 +152,6 @@
 
           <div v-if="keypointTool() != null">
             <KeypointPanel
-              :key="updateKeypointPanel"
               :keypoint="keypointTool()"
               :current-annotation="currentAnnotation"
             />
@@ -743,7 +742,7 @@ const onCategoryClick = (indices) => {
         handleLabeledKeypointSelection(indices);
       } else {
         currentAnnotationFromList.value.keypoint.next.label = String(indices.keypoint + 1);
-        activeTool.value = keypoint.value;
+        activeTool.value = keypointTool();
         activeTool.value.click();
       }
 };
@@ -767,10 +766,10 @@ function handleLabeledKeypointSelection(indices) {
 
       if (label) {
         label.selected = true;
-        activeTool.value = select.value;
+        activeTool.value = selectTool();
       } else {
         currentAnnotationFromList.value.keypoint.next.label = indexLabel;
-        activeTool.value = keypoint.value;
+        activeTool.value = keypointTool();
       }
       activeTool.value.click();
 }
@@ -786,7 +785,7 @@ const onKeypointsComplete = () => {
        }
        /********* Remove me when this.currentAnnotation will not be empty at start ********/
        if ( activeTool.value === 'Keypoints') {
-            activeTool.value = select.value;
+            activeTool.value = selectTool();
             activeTool.value.click();
         }
 };
@@ -1116,22 +1115,22 @@ const deleteAnnotation = () => {
 const doShortcutAction = (action) => {
     switch(action) {
       case "cancelBbox":
-            bbox.value.deleteBbox();
+            bboxTool().deleteBbox();
       break;
       case "cancelPolygon":
-            polygon.value.deletePolygon();
+            polygonTool().deletePolygon();
       break;
       case "eraserIncreaseRadius":
-            eraser.value.increaseRadius();
+            eraserTool().increaseRadius();
       break;
       case "eraserDecreaseRadius":
-            eraser.value.decreaseRadius();
+            eraserTool().decreaseRadius();
       break;
       case "brushIncreaseRadius":
-            brush.value.increaseRadius();
+            brushTool().increaseRadius();
       break;
       case "brushDecreaseRadius":
-            brush.value.decreaseRadius();
+            brushTool().decreaseRadius();
       break;
       default:
     }
@@ -1358,7 +1357,6 @@ onBeforeRouteLeave((to, from, next) => {
     current.value.annotation = -1;
 
     nextTick(() => {
-      // this.$socket.emit("annotating", {
       socket.io.emit("annotating", {
         image_id: image.value.id,
         active: false
@@ -1380,14 +1378,8 @@ onMounted(() => {
     getData();
 
     console.log('socket:', socket, getCurrentInstance());
-    // const instance = getCurrentInstance();
-    // socket.io.emit("annotating", {image_id: image.value.id, active: true });
     socket.emit("annotating", {image_id: image.value.id, active: true });
     getCurrentInstance().ctx.sockets.subscribe('annotating', onAnnotating);
-    
-    // app.__vue_app__._instance.ctx.sockets.subscribe('annotating', onAnnotating);
-    // app.__vue_app__.config.globalProperties.$socket.emit("annotating", {image_id: image.value.id, active: true });
-
 });
 
 
