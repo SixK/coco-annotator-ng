@@ -1,4 +1,4 @@
-FROM node:18 as build-stage
+FROM node:20 as build-stage
 
 WORKDIR /workspace/
 COPY ./client /workspace/client
@@ -36,17 +36,6 @@ RUN apt update && \
           apt clean && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --no-cache-dir -r ./requirements.txt
-
-# RUN git clone https://github.com/SysCV/sam-hq.git && cd sam-hq && pip install -e .
-# RUN pip install timm
-
-# RUN git clone --depth=1 https://github.com/iamlab-cmu/DEXTR-KerasTensorflow.git /tmp/dextr2 && \
-#            cd /tmp/dextr2 && \
-#            sed -i "s/from networks/from dextr/g" networks/classifiers.py && \
-#            sed -i "s/from keras.backend import tf/import tensorflow/g" networks/classifiers.py && \
-#            sed -i "s/from keras.layers.merge import Concatenate, Add/from keras.layers import concatenate, add/g" networks/classifiers.py && \
-#             cp networks/classifiers.py /opt/conda/lib/python3.9/site-packages/dextr-0.0.1-py3.9.egg/dextr/ && \
-#             rm -Rf /tmp/dextr2
 
 ENV FLASK_ENV=production
 ENV DEBUG=false
