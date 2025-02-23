@@ -827,12 +827,10 @@ const getImageRaster = () => {
 };
 
 const getCurrentCategory = () => {
-    console.log('getCurrentCategory called');
   return currentCategoryFromList.value;
 };
 
 const getCurrentAnnotation = () => {
-        console.log('getCurrentAnnotation called');
         return currentAnnotationFromList.value;
 };
 
@@ -854,7 +852,6 @@ const currentCategory = computed(() => {
 
 const currentAnnotationFromList = computed(() => {
   // recursive call in production mode
-  console.log('annotator compute currentAnnotationFromList:', currentCategoryFromList.value);
 
   if (currentCategoryFromList.value == null) {
     return null;

@@ -54,10 +54,6 @@ const nextPage = () => {
 
 watch(page, (newPage, oldPage) => {
   if (newPage === oldPage) return
-  /*
-  clearTimeout(timer)
-  timer = setTimeout(() => emit('pagechange', page.value), 0)
-  */
   emit('pagechange', page.value);
 });
 

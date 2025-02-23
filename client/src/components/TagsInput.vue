@@ -278,8 +278,6 @@ const clearTags = () => {
 }
 
 const tagsFromValue = () => {
-    // const rawArray = toRaw(selectedItems.value);
-
       if (selectedItems.value && selectedItems.value.length) {
         const newTags = Array.isArray(selectedItems.value)
           ? selectedItems.value
