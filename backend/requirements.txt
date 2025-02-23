@@ -3,7 +3,7 @@
 git+https://github.com/maxcountryman/flask-login.git#egg=Flask-Login
 git+https://github.com/ScrambledRK/fork-google-images-download.git#egg=google-images-download
 watchdog==6.0.0
-pytest==8.3.3
+pytest==8.3.4
 pytest-ordering==0.6
 Flask-SocketIO
 celery==5.4.0

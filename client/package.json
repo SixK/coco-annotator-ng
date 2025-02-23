@@ -19,8 +19,8 @@
     "bootstrap": "^5.3.3",
     "floating-vue": "^5.2.2",
     "paper": "^0.12.18",
-    "pinia": "^2.3.0",
-    "postcss": "^8.4.49",
+    "pinia": "^3.0.1",
+    "postcss": "^8.5.2",
     "postcss-loader": "^8.1.1",
     "postcss-modules": "^6.0.1",
     "simplify-js": "^1.2.4",
@@ -33,17 +33,17 @@
     "vue3-touch-events": "^4.2.0"
   },
   "devDependencies": {
-    "@babel/core": "7.26.0",
-    "@babel/eslint-parser": "^7.26.5",
+    "@babel/core": "7.26.9",
+    "@babel/eslint-parser": "^7.26.8",
     "@vitejs/plugin-vue": "^5.2.1",
-    "@vue/eslint-config-prettier": "^10.1.0",
+    "@vue/eslint-config-prettier": "^10.2.0",
     "@vue/test-utils": "^2.4.6",
     "babel-jest": "^29.7.0",
-    "eslint": "^9.18.0",
-    "eslint-plugin-prettier": "^5.2.1",
+    "eslint": "^9.20.1",
+    "eslint-plugin-prettier": "^5.2.3",
     "eslint-plugin-vue": "^9.32.0",
     "prettier": "^3.4.2",
-    "vite": "^6.0.7"
+    "vite": "^6.1.0"
   },
   "eslintConfig": {
     "root": true,

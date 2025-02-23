@@ -1,4 +1,4 @@
-FROM node:18
+FROM node:20
 
 RUN apt update && apt install -y libpango1.0-dev libcairo2-dev libpangocairo-1.0-0 && \
           apt clean && rm -rf /var/lib/apt/lists/*
