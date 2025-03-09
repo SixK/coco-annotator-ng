@@ -7,6 +7,8 @@
 <script setup>
 import { ref, inject } from 'vue'
 import { useButton } from "@/composables/toolBar/button";
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
 const { iconColor, click } = useButton();
 
@@ -17,6 +19,10 @@ const icon = ref("fa-save");
 
 const execute = () => {
     save();
+    // Hack to force reload the page
+    // Cause keypoints points modifications are not propagated to annotation.keypoints
+    // but modifications are saved
+    router.go(0);
 }
 
 </script>

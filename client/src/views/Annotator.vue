@@ -411,10 +411,6 @@ const save = (callback) => {
     sendDataToServer(data, callback);
   } finally {
     procStore.removeProcess(process);
-    // Hack to force reload the page
-    // Cause keypoints points modifications are not propagated to annotation.keypoints
-    // but modifications are saved
-    router.go(0);
   }
 };
 
