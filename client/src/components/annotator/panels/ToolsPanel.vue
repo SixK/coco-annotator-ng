@@ -3,7 +3,6 @@
     <hr />
     <SelectTool
       ref="select"
-      v-model="activeTool"
       :scale="image.scale"
       :categories="categories"
       @setcursor="setCursor"
@@ -11,21 +10,18 @@
     <hr />
     <BBoxTool
       ref="bbox"
-      v-model="activeTool"
       :scale="image.scale"
       @setcursor="setCursor"
     />
 
     <PolygonTool
       ref="polygon"
-      v-model="activeTool"
       :scale="image.scale"
       @setcursor="setCursor"
     />
 
     <MagicWandTool
       ref="magicwand"
-      v-model="activeTool"
       :width="image.raster.width"
       :height="image.raster.height"
       :image-data="image.data"
@@ -34,48 +30,41 @@
 
     <BrushTool
       ref="brush"
-      v-model="activeTool"
       :scale="image.scale"
       @setcursor="setCursor"
     />
 
     <EraserTool
       ref="eraser"
-      v-model="activeTool"
       :scale="image.scale"
       @setcursor="setCursor"
     />
 
     <KeypointTool
       ref="keypoint"
-      v-model="activeTool"
       @setcursor="setCursor"
     />
 
     <DEXTRTool
       ref="dextr"
-      v-model="activeTool"
       :scale="image.scale"
       @setcursor="setCursor"
     />
 
     <SamTool
       ref="sam"
-      v-model="activeTool"
       :scale="image.scale"
       @setcursor="setCursor"
     />
 
     <Sam2Tool
       ref="sam2"
-      v-model="activeTool"
       :scale="image.scale"
       @setcursor="setCursor"
     />
 
     <ZimTool
       ref="zim"
-      v-model="activeTool"
       :scale="image.scale"
       @setcursor="setCursor"
     />
@@ -97,7 +86,7 @@ import ZimTool from "@/components/annotator/tools/ZimTool";
 
 import { ref } from "vue";
 
-const activeTool = defineModel('activeTool', { type: String, required: true });
+// const activeTool = defineModel('activeTool', { type: String, required: true });
 const image = defineModel('image', { type: Object, required: true });
 const categories = defineModel('categories', { type: Array, required: true });
 const mode = defineModel('mode', { type: String, required: true });

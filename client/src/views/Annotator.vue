@@ -6,7 +6,6 @@
     >
       <ToolsPanel
         ref="toolspanel"
-        :active-tool="activeTool"
         :image="image"
         :categories="categories"
         :mode="mode"
