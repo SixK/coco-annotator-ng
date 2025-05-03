@@ -345,7 +345,7 @@ let keypointSettingsModal = null;
 
 
 const initAnnotation = () => {
-    let metaName = annotation.value.metadata.name;
+    const metaName = annotation.value.metadata.name;
 
     if (metaName) {
         name.value = metaName;
@@ -530,7 +530,7 @@ const onAnnotationKeypointSettingsClick = (labelIndex) => {
 };
 
 const onDeleteKeypointClick = (labelIndex) => {
-      let label = String(labelIndex + 1);
+      const label = String(labelIndex + 1);
       if (label in keypoints.value._labelled) {
         deleteKeypoint(keypoints.value._labelled[label]);
       }
@@ -974,7 +974,7 @@ const isCurrent = computed(() => {
 });
 
 const keypointListView = computed(() => {
-  let listView = [];
+  const listView = [];
   for (let i = 0; i < keypointLabels.value.length; ++i) {
     const visibility = getKeypointVisibility(i);
     let iconColor = "rgb(40, 42, 49)";
@@ -1146,7 +1146,7 @@ watch(
 watch(
   () => keypoint.value.tag, 
   (newVal) => {
-  let id = newVal.length === 0 ? -1 : newVal[0];
+  const id = newVal.length === 0 ? -1 : newVal[0];
   if (id !== -1) {
     currentKeypoint.value = keypoints.value._labelled[id];
   }

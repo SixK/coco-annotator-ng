@@ -147,7 +147,7 @@ const escapeRegExp = (string) => {
 };
 
 const tagFromInput = () => {
-      let hasSpace = input.value.trim() !== input.value;
+      const hasSpace = input.value.trim() !== input.value;
       if (searchResults.value.length && searchSelection.value >= 0 && !hasSpace) {
         tagFromSearch(searchResults.value[searchSelection.value]);
         input.value = "";
@@ -156,7 +156,7 @@ const tagFromInput = () => {
         if (!onlyExistingTags.value && text.length && validate.value(text)) {
           input.value = "";
           let slug = makeSlug(text);
-          let existingTag = existingTags.value[slug];
+          const existingTag = existingTags.value[slug];
           slug = existingTag ? slug : text;
           text = existingTag ? existingTag : text;
           addTag(slug, text);
@@ -200,7 +200,7 @@ const removeLastTag = () => {
 }
 
 const removeTag = (index) => {
-  let slug = tags.value[index];
+  const slug = tags.value[index];
 
   tags.value.splice(index, 1);
   tagBadges.value.splice(index, 1);

@@ -33,6 +33,7 @@ const categories = defineModel('categories', { type: Array, required: true });
 
 name.value = "Select";
 name.cursor = "pointer";
+cursor.value = "pointer";
 const icon = ref("fa-hand-pointer-o");
 // const movePath = ref(false);
 const point = ref(null);

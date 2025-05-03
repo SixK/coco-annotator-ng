@@ -36,8 +36,6 @@ const pages = defineModel('pages', { type: Number, required: true });
 const page = defineModel('page', { type: Number, required: true });
 
 const pageRange = ref(11);
-// const page = ref(1);
-let timer = null;
 const emit  = defineEmits(['pagechange']);
 
 const previousPage = () => {
@@ -62,8 +60,8 @@ const startPage = computed(() => {
     return 0;
   }
 
-  let pageRangeValue = Math.round(pageRange.value / 2);
-  let start = page.value - pageRangeValue;
+  const pageRangeValue = Math.round(pageRange.value / 2);
+  const start = page.value - pageRangeValue;
   if (start < 0) return 0;
   if (start > pages.value || start + pageRange.value > pages.value) {
     return pages.value - pageRange.value;
@@ -78,7 +76,6 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  clearTimeout(timer)
 });
 
 </script>
