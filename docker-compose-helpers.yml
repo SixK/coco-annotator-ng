@@ -1,26 +1,11 @@
-volumes:
-  mongodb_data:
-    external: false
-
 networks:
   cocoannotator:
     external: false
 
 services:
-  ia:
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              device_ids: ['0']
-              capabilities: [gpu]
-    container_name: annotator_ia
-    build:
-      context: .
-      dockerfile: ./backend/ia/Dockerfile
-    ports:
-      - 6000:6000
+  service-common:
+    networks:
+      - cocoannotator
     volumes:
       - "./backend/config:/workspace/config"
       - "./backend/ia:/workspace/ia"
@@ -28,13 +13,20 @@ services:
       - "./backend/database:/workspace/database"
       - "./datasets:/datasets"
       - "./models:/models"
+  
+  ia-cpu:
+    extends: service-common
+    container_name: annotator_ia
+    build:
+      context: .
+      dockerfile: ./backend/ia/Dockerfile
+    ports:
+      - 6000:6000
     environment:
       - FILE_WATCHER=true
       - FLASK_APP=ia
-      - FLASK_ENV=development
-      - DEBUG=true
-      - DEVICE=cuda
-     # Install IA applications or not
+      - DEVICE=cpu
+      # Install IA aplications or not
       - MASKRCNN="0"
       - DEXTR="1"
       - SAM="1"
@@ -72,49 +64,15 @@ services:
         keyboard,cell phone,microwave,oven,toaster,
         sink,refrigerator,book,clock,vase,scissors,
         teddy bear,hair drier,toothbrush
-    networks:
-      - cocoannotator
-    depends_on:
-      - database
-      - workers
 
-  webserver:
-    image: annotator_webclient
-    container_name: annotator_webclient
-    restart: "no"
-    ports:
-      - "5000:5000"
+  ia-gpu:
+    extends: ia-cpu
+    deploy:
+        resources:
+          reservations:
+            devices:
+              - driver: nvidia
+                device_ids: ["0"]
+                capabilities: ["gpu"]
     environment:
-      - SECRET_KEY=RandomSecretKeyHere
-      - FILE_WATCHER=true
-      - TARGET_PROXY=http://annotator_ia:6000
-      - NAME=Test Annotator
-    volumes:
-      - "./datasets:/datasets"
-      - "./models:/models"
-    depends_on:
-      - database
-      - workers
-    networks:
-      - cocoannotator
-
-  workers:
-    container_name: annotator_workers
-    image: annotator_workers
-    volumes:
-      - "./datasets:/datasets"
-    depends_on:
-      - messageq
-      - database
-    networks:
-      - cocoannotator
-
-  database:
-    extends:
-      file: ./mongo_and_rabbitmq-compose.yml
-      service: database
-  messageq:
-    extends:
-      file: ./mongo_and_rabbitmq-compose.yml
-      service: messageq
-
+      - DEVICE=cuda
