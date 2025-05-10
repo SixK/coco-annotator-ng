@@ -1069,7 +1069,7 @@ watch(
 );
 
 watch(
-    () => folders.value,
+    () => folders.value.length,
     () => updatePage()
 );
 
