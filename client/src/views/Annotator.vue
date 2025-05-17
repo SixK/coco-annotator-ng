@@ -219,7 +219,6 @@
 </template>
 
 <script setup>
-import paper from "paper";
 import axios from "axios";
 
 import FileTitle from "@/components/annotator/FileTitle";
@@ -259,8 +258,8 @@ import { onBeforeRouteLeave, useRouter, useRoute } from 'vue-router';
 const router = useRouter();
 const route = useRoute();
 
+import useCanvas from '@/composables/useCanvas';
 import useShortcuts from "@/composables/shortcuts";
-
 import useAxiosRequest from "@/composables/axiosRequest";
 const {axiosReqestError, axiosReqestSuccess} = useAxiosRequest();
 
@@ -272,7 +271,6 @@ import { useInfoStore } from "@/store/info";
 const infoStore = useInfoStore();
 
 const socket = inject('socket')
-
 
 import { onBeforeUpdate, onUpdated, nextTick, toRef, ref, computed, watch, inject, onMounted, provide } from 'vue';
 
@@ -308,7 +306,6 @@ const filetitle = ref(null);
 const updateKeypointPanel = ref(1);
 
 const activeTool = ref("Select");
-// const paper = ref(null);
 const shapeOpacity = ref(0.6);
 const zoom = ref(0.2);
 const cursor = ref("move");
@@ -346,10 +343,6 @@ const image = ref({
       data: null
 });
 
-const text = ref({
-      topLeft: null,
-      topRight: null
-});
 const categories = toRef([]);
 const dataset = ref({
       annotate_url: ""
@@ -374,6 +367,19 @@ const setCategoryRef = el => {
       }
 }
 
+// need to be declared after image
+const {
+  getCanvasElement,
+  setupPaper,
+  onWheel,
+  onPinchStart,
+  onPinch,
+  fit,
+  initCanvas,
+  getImageRaster,
+  updateImageName,
+  getPaper
+} = useCanvas(image, activeTool, current, procStore);
 
 // should try toRef on activeTool, this function could probably be removed 
 const setActiveTool = (tool) => {
@@ -396,9 +402,6 @@ const getHover = () => {
     return hover.value;
 };
   
-const getPaper = () => {
-    return paper;
-};
 
 /* save function */
 const save = (callback) => {
@@ -477,182 +480,6 @@ const sendDataToServer = (data, callback) => {
 };
 /* end - save function */
 
-
-
-const onpinchstart = (e) => {
-      e.preventDefault();
-      if (!doneLoading.value) return;
-      let view = paper.view;
-      pinching.value.old_zoom = paper.view.zoom;
-      return false;
-};
-
-const onpinch = (e) => {
-      e.preventDefault();
-      if (!doneLoading.value) return;
-      let view = paper.view;
-      let viewPosition = view.viewToProject(
-        new paper.Point(e.center.x, e.center.y)
-      );
-      let curr_zoom = e.scale * pinching.value.old_zoom;
-      let beta = paper.view.zoom / curr_zoom;
-      let pc = viewPosition.subtract(paper.view.center);
-      let a = viewPosition
-        .subtract(pc.multiply(beta))
-        .subtract(paper.view.center);
-      let transform = { zoom: curr_zoom, offset: a };
-      if (transform.zoom < 10 && transform.zoom > 0.01) {
-        image.value.scale = 1 / transform.zoom;
-        paper.view.zoom = transform.zoom;
-        paper.view.center = view.center.add(transform.offset);
-      }
-      return false;
-};
-
-const onWheel = (e) => {
-  e.preventDefault();
-  if (!doneLoading.value) return;
-  const view = paper.view;
-  if (e.ctrlKey) {
-    // Pan up and down
-    const delta = new paper.Point(0, 0.5 * e.deltaY);
-    paper.view.setCenter(view.center.add(delta));
-  } else if (e.shiftKey) {
-    // Pan left and right
-    const delta = new paper.Point(0.5 * e.deltaY, 0);
-    paper.view.setCenter(view.center.add(delta));
-  } else {
-    const viewPosition = view.viewToProject(
-      new paper.Point(e.offsetX, e.offsetY)
-    );
-    const transform = changeZoom(e.deltaY, viewPosition);
-    if (transform.zoom < 10 && transform.zoom > 0.01) {
-      image.value.scale = 1 / transform.zoom;
-      paper.view.zoom = transform.zoom;
-      paper.view.center = view.center.add(transform.offset);
-    }
-  }
-  return false;
-};
-
-const fit = () => {
-  const canvas = getCanvasElement();
-  const parentX = image.value.raster.width;
-  const parentY = image.value.raster.height;
-
-  paper.view.zoom = Math.min(
-    (canvas.width / parentX) * 0.95,
-    (canvas.height / parentY) * 0.8
-  );
-  image.value.scale = 1 / paper.view.zoom;
-  paper.view.setCenter(0, 0);
-};
-
-const changeZoom = (delta, p) => {
-  const oldZoom = paper.view.zoom;
-  const c = paper.view.center;
-  const factor = 1 + zoom.value;
-  const newZoom = delta < 0 ? oldZoom * factor : oldZoom / factor;
-  const beta = oldZoom / newZoom;
-  const pc = p.subtract(c);
-  const a = p.subtract(pc.multiply(beta)).subtract(c);
-  return { zoom: newZoom, offset: a };
-};
-
-/* initCanvas */
-const initCanvas = () => {
-  const process = "Initializing canvas";
-  addProcessToStore(process);
-  setLoadingState(true);
-
-  const canvas = getCanvasElement();
-  setupPaper(canvas);
-  loadImageAndSetupText(process);
-};
-
-// Function to add a process to the store
-const addProcessToStore = (process) => {
-  procStore.addProcess(process);
-};
-
-// Function to set the loading state
-const setLoadingState = (isLoading) => {
-  loading.value.image = isLoading;
-};
-
-// Function to get the canvas element
-const getCanvasElement = () => {
-  return document.getElementById("editor");
-};
-
-// Function to set up Paper.js
-const setupPaper = (canvas) => {
-  paper.setup(canvas);
-  paper.view.viewSize = [paper.view.size.width, window.innerHeight];
-  paper.activate();
-};
-
-// Function to load the image and set up text
-const loadImageAndSetupText = (process) => {
-  image.value.raster = new paper.Raster(image.value.url);
-  image.value.raster.onLoad = () => {
-    handleImageLoad(process);
-  };
-};
-
-// Function to handle image load
-const handleImageLoad = (process) => {
-  const { width, height } = image.value.raster;
-
-  image.value.raster.sendToBack();
-  fit();
-  image.value.ratio = (width * height) / 1000000;
-
-  removeProcessFromStore(process);
-  extractImageData(width, height);
-  createTopLeftText(width, height);
-  createTopRightText(width, height);
-
-  setLoadingState(false);
-};
-
-// Function to remove a process from the store
-const removeProcessFromStore = (process) => {
-  procStore.removeProcess(process);
-};
-
-// Function to extract image data
-const extractImageData = (width, height) => {
-  const tempCtx = document.createElement("canvas").getContext("2d");
-  tempCtx.canvas.width = width;
-  tempCtx.canvas.height = height;
-  tempCtx.drawImage(image.value.raster.image, 0, 0);
-
-  image.value.data = tempCtx.getImageData(0, 0, width, height);
-};
-
-// Function to create top-left text
-const createTopLeftText = (width, height) => {
-  const fontSize = width * 0.025;
-  const positionTopLeft = new paper.Point(-width / 2, -height / 2 - fontSize * 0.5);
-  text.value.topLeft = new paper.PointText(positionTopLeft);
-  text.value.topLeft.fontSize = fontSize;
-  text.value.topLeft.fillColor = "white";
-  text.value.topLeft.content = image.value.filename;
-};
-
-// Function to create top-right text
-const createTopRightText = (width, height) => {
-  const fontSize = width * 0.025;
-  const positionTopRight = new paper.Point(width / 2, -height / 2 - fontSize * 0.4);
-  text.value.topRight = new paper.PointText(positionTopRight);
-  text.value.topRight.justification = "right";
-  text.value.topRight.fontSize = fontSize;
-  text.value.topRight.fillColor = "white";
-  text.value.topRight.content = `${width}x${height}`;
-};
-/* end - initCanvas */
-
 const setPreferences = (preferences) => {
     toolspanel.value.setPreferences(preferences);
     settings.value.setPreferences(preferences.settings || {});
@@ -712,9 +539,7 @@ const handlePreferences = (preferences) => {
 };
 
 const updateUI = () => {
-  if (text.value.topLeft != null) {
-    text.value.topLeft.content = image.value.filename;
-  }
+  updateImageName(image.value.filename);
 
   nextTick(() => {
     showAll();
@@ -821,9 +646,6 @@ const subtractCurrentAnnotation = (compound, simplify = true, undoable = true) =
   currentAnnotationFromList.value.subtract(compound, simplify, undoable);
 };
 
-const getImageRaster = () => {
-  return image.value.raster;
-};
 
 const getCurrentCategory = () => {
   return currentCategoryFromList.value;
@@ -1370,7 +1192,7 @@ onMounted(() => {
 
     procStore.setDataset(null);
 
-    initCanvas();
+    initCanvas("Initializing canvas");
     getData();
 
     console.log('socket:', socket, getCurrentInstance());
