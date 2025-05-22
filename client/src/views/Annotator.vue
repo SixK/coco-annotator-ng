@@ -262,6 +262,7 @@ import useCanvas from '@/composables/useCanvas';
 import useShortcuts from "@/composables/shortcuts";
 import useAxiosRequest from "@/composables/axiosRequest";
 const {axiosReqestError, axiosReqestSuccess} = useAxiosRequest();
+import useDataHandling from '@/composables/useDataHandling';
 
 import { useAuthStore } from "@/store/user";
 const authStore = useAuthStore();
@@ -381,6 +382,8 @@ const {
   getPaper
 } = useCanvas(image, activeTool, current, procStore);
 
+const { save } = useDataHandling(image, categories, dataset, categorylist, toolspanel, settings, procStore, mode, current, activeTool, zoom);
+
 // should try toRef on activeTool, this function could probably be removed 
 const setActiveTool = (tool) => {
     activeTool.value = tool;
@@ -401,84 +404,6 @@ const getImageId = () => {
 const getHover = () => {
     return hover.value;
 };
-  
-
-/* save function */
-const save = (callback) => {
-  const process = "Saving";
-  procStore.addProcess(process);
-
-  try {
-    const data = prepareSaveData();
-    sendDataToServer(data, callback);
-  } finally {
-    procStore.removeProcess(process);
-  }
-};
-
-const prepareSaveData = () => {
-  const data = {
-    mode: mode.value,
-    user: exportUserTools(),
-    dataset: dataset.value,
-    image: exportImageData(),
-    settings: exportSettings(),
-    categories: []
-  };
-
-  if (categorylist.value != null && mode.value === "segment") {
-    populateCategories(data);
-  }
-
-  return data;
-};
-
-const exportUserTools = () => {
-  return { ...toolspanel.value.exportUserTools(), 
-                   settings: settings.value.exportSettings()
-                 } ;
-};
-
-const exportImageData = () => ({
-  id: image.value.id,
-  metadata: settings.value.exportMetadata(),
-  settings: {
-    selectedLayers: current.value
-  },
-  category_ids: []
-});
-
-const exportSettings = () => ({
-  activeTool: activeTool.value,
-  zoom: zoom.value,
-  tools: {}
-});
-
-const populateCategories = (data) => {
-  image.value.categoryIds = [];
-  categorylist.value.forEach((cat) => {
-    const categoryData = cat.exportCategory();
-    data.categories.push(categoryData);
-
-    if (categoryData.annotations.length > 0) {
-      const categoryIds = image.value.categoryIds;
-      if (categoryIds.indexOf(categoryData.id) === -1) {
-        categoryIds.push(categoryData.id);
-      }
-    }
-  });
-
-  data.image.category_ids = image.value.categoryIds;
-};
-
-const sendDataToServer = (data, callback) => {
-  axios
-    .post("/api/annotator/data", JSON.stringify(data))
-    .then(() => {
-      if (callback != null) callback();
-    });
-};
-/* end - save function */
 
 const setPreferences = (preferences) => {
     toolspanel.value.setPreferences(preferences);
