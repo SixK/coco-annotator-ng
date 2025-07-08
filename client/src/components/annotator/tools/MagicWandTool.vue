@@ -73,7 +73,7 @@ const setPreferences = (pref) => {
 const flood = (x, y, thr, rad) => {
   if (imageData.value == null) return;
 
-  let image = {
+  const image = {
     data: imageData.value.data,
     width: width.value,
     height: height.value,
@@ -82,16 +82,16 @@ const flood = (x, y, thr, rad) => {
   let mask = MagicWand.floodFill(image, x, y, thr);
   rad = rad < 1 ? 1 : Math.abs(rad);
   mask = MagicWand.gaussBlurOnlyBorder(mask, rad);
-  let contours = MagicWand.traceContours(mask).filter((x) => !x.inner);
+  const contours = MagicWand.traceContours(mask).filter((x) => !x.inner);
   if (contours[0]) {
-    let centerX = image.width / 2;
-    let centerY = image.height / 2;
+    const centerX = image.width / 2;
+    const centerY = image.height / 2;
     let points = contours[0].points;
     points = points.map((pt) => ({
       x: pt.x + 0.5 - centerX,
       y: pt.y + 0.5 - centerY,
     }));
-    let polygon = new paper.Path(points);
+    const polygon = new paper.Path(points);
     polygon.closed = true;
     return polygon;
   }
@@ -99,8 +99,8 @@ const flood = (x, y, thr, rad) => {
 };
 
 const onMouseDown = (event) => {
-      let x = Math.round(width.value / 2 + event.point.x);
-      let y = Math.round(height.value / 2 + event.point.y);
+      const x = Math.round(width.value / 2 + event.point.x);
+      const y = Math.round(height.value / 2 + event.point.y);
 
       // Check if valid coordinates
       if (x > width.value || y > height.value || x < 0 || y < 0) {
@@ -108,7 +108,7 @@ const onMouseDown = (event) => {
       }
 
       // Create shape and apply to current annotation
-      let path = flood(x, y, wand.value.threshold, wand.value.blur);
+      const path = flood(x, y, wand.value.threshold, wand.value.blur);
 
       if (event.modifiers.shift) {
         // this.$parent.currentAnnotation.subtract(path);

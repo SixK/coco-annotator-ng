@@ -119,7 +119,7 @@ function checkPoints(newPoints) {
             })
           .then((response) => {
             console.log('response:', response.data);
-            let compoundPath = createPath(response.data.segmentaiton, width, height);
+            const compoundPath = createPath(response.data.segmentaiton, width, height);
             currentAnnotation.unite(compoundPath);
           })
           .finally(() => { 
