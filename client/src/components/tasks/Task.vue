@@ -220,8 +220,6 @@ defineExpose({logs, showLogs, highlight, onlyErrors, onlyWarnings});
   max-height: 250px;
   overflow-y: auto;
 
-  -webkit-box-shadow: inset 0px 0px 30px 2px rgba(0, 0, 0, 0.2);
-  -moz-box-shadow: inset 0px 0px 30px 2px rgba(0, 0, 0, 0.2);
   box-shadow: inset 0px 0px 30px 2px rgba(0, 0, 0, 0.2);
   font-family: "Courier New", Courier, monospace;
 }
