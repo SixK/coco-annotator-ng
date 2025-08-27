@@ -923,7 +923,7 @@ const exportCOCO = () => {
     exporting.value.with_empty_images
   )
     .then((response) => {
-      let id = response.data.id;
+      const id = response.data.id;
       exporting.value.id = id;
     })
     .catch((error) => {
@@ -935,7 +935,7 @@ const exportCOCO = () => {
 };
 
 const removeFolder = (folder) => {
-  let index = folders.value.indexOf(folder);
+  const index = folders.value.indexOf(folder);
   folders.value.splice(index + 1, folders.value.length);
 };
 
@@ -951,7 +951,7 @@ const importModal = () => {
 };
 
 const importCOCO = () => {
-  let process = "Loading images from dataset";
+  const process = "Loading images from dataset";
   const uploaded = document.getElementById("coco");
   Dataset.uploadCoco(dataset.value.id, uploaded.files[0])
     .then((response) => {
@@ -974,7 +974,7 @@ const mouseMove = (event) => {
       sidebar.value.drag = pixelsFromSide < 4;
       if (sidebar.value.canResize) {
         event.preventDefault();
-        let max = window.innerWidth * 0.5;
+        const max = window.innerWidth * 0.5;
         sidebar.value.width = Math.min(Math.max(event.x, 150), max);
         localStorage.setItem("dataset/sideWidth", sidebar.value.width);
       }
@@ -991,15 +991,15 @@ const stopDrag = () => {
 };
 
 const queryAnnotated = computed(() => {
-  let showAnnotated = panel.value.showAnnotated;
-  let showNotAnnotated = panel.value.showNotAnnotated;
+  const showAnnotated = panel.value.showAnnotated;
+  const showNotAnnotated = panel.value.showNotAnnotated;
   if (showAnnotated && showNotAnnotated) return null;
   if (!showAnnotated && !showNotAnnotated) return " ";
   return showAnnotated;
 });
 
 const categoryTags = computed(() => {
-  let tags = {};
+  const tags = {};
   categories.value.forEach(c => tags[c.id] = c.name);
   return tags;
 });
