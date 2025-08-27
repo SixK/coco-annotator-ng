@@ -63,7 +63,7 @@
             v-model="search"
             class="search"
             placeholder="Category Search"
-          >
+          />
         </div>
       </div>
 
@@ -224,7 +224,7 @@ import axios from "axios";
 import FileTitle from "@/components/annotator/FileTitle";
 import Category from "@/components/annotator/Category";
 import CLabel from "@/components/annotator/Label";
-import Annotations from "@/models/annotations";
+// import Annotations from "@/models/annotations";
 
 import CopyAnnotationsButton from "@/components/annotator/tools/CopyAnnotationsButton";
 import CenterButton from "@/components/annotator/tools/CenterButton";
@@ -521,7 +521,7 @@ function handleLabeledKeypointSelection(indices) {
         activeTool.value = keypointTool();
       }
       activeTool.value.click();
-}
+};
 
 const onKeypointsComplete = () => {
        /********* Remove me when this.currentAnnotation will not be empty at start ********/ 
