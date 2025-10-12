@@ -336,7 +336,7 @@ const session = ref({
     tools: [],
     milliseconds: 0
 });
-const tagRecomputeCounter = ref(0);
+// const tagRecomputeCounter = ref(0);
 const visibilityOptions = ref(VisibilityOptions);
 
 let annotationSettingsModal = null;
@@ -680,7 +680,7 @@ const addKeypoint = (point, visibility, label) => {
   updateNextLabel(label);
 
   // Increment the tag recomputation counter
-  tagRecomputeCounter.value++;
+  // tagRecomputeCounter.value++;
 };
 
 // Helper Functions
@@ -778,21 +778,24 @@ const deleteKeypoint = (keypoint) => {
       keypoints.value.deleteKeypoint(keypoint);
 };
 
-const unite = (compound, simplify = true, undoable = true, isBBox = false) => {
-  if (compoundPath.value == null) createCompoundPath();
-  const newCompound = compoundPath.value.unite(compound);
+const setCompound = (compound) => {
+  const newCompound = compound;
   newCompound.strokeColor = null;
   newCompound.strokeWidth = 0;
   newCompound.onDoubleClick = compoundPath.value.onDoubleClick;
   newCompound.onClick = compoundPath.value.onClick;
+  return newCompound;
+}
+
+const unite = (compound, simplify = true, undoable = true, isBBox = false) => {
+  if (compoundPath.value == null) createCompoundPath();
+  const newCompound = setCompound(compoundPath.value.unite(compound));
   annotation.value.isbbox = isBBox;
   if (undoable) createUndoAction("Unite");
   compoundPath.value.remove();
   compoundPath.value = newCompound;
   keypoints.value.bringToFront();
-  if (simplify) {
-    simplifyPath();
-  }
+  if (simplify) simplifyPath();
 };
 
 const subtract = (compound, simplify = true, undoable = true) => {
@@ -934,7 +937,7 @@ const isKeypointLabeled = (index) => {
 
 const getKeypointVisibility = (index) => {
     let visibility = 0;
-    if (keypoints.value && keypoints.value._labelled) {
+    if (keypoints.value?._labelled) {
       const labelled = keypoints.value._labelled[index + 1];
       if (labelled) {
         visibility = labelled.visibility;
@@ -960,6 +963,7 @@ const categoryIndex = computed(() => {
       return getCategoryIndex();
 });
 
+/*
 const isCurrent = computed(() => {
   if (index.value === current.value && categoryIsCurrent.value) {
     // if (compoundPath != null) compoundPath.bringToFront();
@@ -971,6 +975,20 @@ const isCurrent = computed(() => {
     return true;
   }
   return false;
+});
+*/
+
+const isCurrent = computed(() => {
+    return index.value === current.value && categoryIsCurrent.value;
+});
+
+watch(isCurrent, (isNowCurrent) => {
+  if (isNowCurrent && keypoints.value) {
+      keypoints.value?.bringToFront();
+    /* nextTick(() => {
+        keypoints.value?.bringToFront();
+      }); */
+  }
 });
 
 const keypointListView = computed(() => {
@@ -1021,7 +1039,7 @@ const darkHSL = computed(() => {
 });
 
 const notUsedKeypointLabels = computed(() => {
-  tagRecomputeCounter;
+  // tagRecomputeCounter;
   const tags = {};
   for (let i = 0; i < keypointLabels.value.length; i++) {
     // Include it tags if it is the current keypoint or not in use.
@@ -1150,7 +1168,7 @@ watch(
   if (id !== -1) {
     currentKeypoint.value = keypoints.value._labelled[id];
   }
-  tagRecomputeCounter.value++;
+  // tagRecomputeCounter.value++;
 });
 
 watch(
@@ -1219,7 +1237,7 @@ defineExpose({annotation, keypoint, notUsedKeypointLabels, onAnnotationKeypointC
                               compoundPath, setColor, isVisible, showKeypoints, 
                               color, metadata, isEmpty, name, uuid, pervious,
                               count, currentKeypoint, sessions, session, 
-                              tagRecomputeCounter, addKeypoint,
+                              addKeypoint,
                               deleteKeypoint, deleteAnnotation, deleteAnnot});
 
 </script>

@@ -273,7 +273,7 @@ const infoStore = useInfoStore();
 
 const socket = inject('socket')
 
-import { onBeforeUpdate, onUpdated, nextTick, toRef, ref, computed, watch, inject, onMounted, provide } from 'vue';
+import { onBeforeUpdate, onUpdated, nextTick, toRef, ref, computed, watch, inject, onMounted, onUnmounted, provide } from 'vue';
 
 const props = defineProps({
   identifier: {
@@ -838,7 +838,7 @@ const deleteKeypoint = (annotation, keypoint) => {
     if (!annotation || !keypoint) return;
 
     annotation.keypoints.deleteKeypoint(keypoint);
-    annotation.tagRecomputeCounter++;
+    // annotation.tagRecomputeCounter++;
     annotation.currentKeypoint = null;
 };
 
@@ -985,14 +985,12 @@ const doneLoading = computed(() => {
 });
 
 const currentAnnotationLength = computed(() => {
-  if (currentCategoryFromList.value == null) return null;
-  return currentCategoryFromList.value.category.annotations.length;
+  return currentCategoryFromList.value.category.annotations.length||0;
 });
 
 const currentKeypointLength = computed(() => {
 
-  if (currentAnnotationFromList.value == null) return null;
-  return currentAnnotationFromList.value.annotation.keypoints.length;
+  return currentAnnotationFromList.value.annotation.keypoints.length||0;
 });
 
 
@@ -1125,6 +1123,10 @@ onMounted(() => {
     getCurrentInstance().ctx.sockets.subscribe('annotating', onAnnotating);
 });
 
+onUnmounted(() => {
+  socket.emit("annotating", { image_id: image.value.id, active: false });
+  getCurrentInstance().ctx.sockets.unsubscribe('annotating', onAnnotating);
+});
 
 onBeforeUpdate(() => {
       categorylist.value = [];
