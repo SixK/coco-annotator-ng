@@ -594,11 +594,8 @@ const simplifyPath = () => {
 // Helper Functions
 
 const shouldDeleteAnnotation = () => {
-    return (
-        compoundPath.value != null &&
-        compoundPath.value.isEmpty() &&
-        keypoints.value.isEmpty()
-    );
+    return compoundPath.value?.isEmpty() &&
+                  keypoints.value.isEmpty();
 };
 
 const cloneAndFlattenCompoundPath = () => {
