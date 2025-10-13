@@ -22,7 +22,9 @@ const execute = () => {
     // Hack to force reload the page
     // Cause keypoints points modifications are not propagated to annotation.keypoints
     // but modifications are saved
-    router.go(0);
+    setTimeout(() => {
+        router.go(0);
+    }, 200); // need to wait axios has finished :(
 }
 
 </script>
