@@ -20,6 +20,7 @@ export class Keypoints extends paper.Group {
     this.categoryName = args.categoryName;
     this.strokeColor = args.strokeColor || "red";
     this.lineWidth = args.strokeWidth || 4;
+    this.fillColor = args.fillColor || "red";
 
     edges = edges || [];
     edges.forEach((e) => this.addEdge(e));
@@ -126,7 +127,7 @@ export class Keypoints extends paper.Group {
     this._color = val;
     this.strokeColor = val;
     this._keypoints.forEach((k) => {
-      k.fillColor = this.colors[k.indexLabel];
+      k.fillColor = this.colors[k.indexLabel]||"red";
       k.strokeColor = val;
     });
     Object.values(this._lines).forEach((l) => (l.strokeColor = val));
