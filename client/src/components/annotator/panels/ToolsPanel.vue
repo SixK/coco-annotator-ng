@@ -84,7 +84,9 @@ import SamTool from "@/components/annotator/tools/SamTool";
 import Sam2Tool from "@/components/annotator/tools/Sam2Tool";
 import ZimTool from "@/components/annotator/tools/ZimTool";
 
-import { ref } from "vue";
+import { ref, inject, watch } from "vue";
+
+const getImageRaster = inject('getImageRaster');
 
 // const activeTool = defineModel('activeTool', { type: String, required: true });
 const image = defineModel('image', { type: Object, required: true });
@@ -117,6 +119,13 @@ const exportUserTools = () => ({
 const setCursor = (newCursor) => {
   emit("setcursor", newCursor);
 };
+
+watch(
+  () => getImageRaster(),
+  (value) => {
+      image.value.raster = value;
+  }
+);
 
 const setPreferences = (preferences) => {
       bbox.value.setPreferences(preferences.bbox || preferences.polygon || {});
