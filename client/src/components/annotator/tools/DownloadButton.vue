@@ -23,7 +23,7 @@ const include = {
       };
 
 const  downloadURI = (uri, exportName) => {
-  let link = document.createElement('a');
+  const link = document.createElement('a');
   link.href = uri;
   link.download = exportName;
   document.body.appendChild(link);
@@ -33,16 +33,16 @@ const  downloadURI = (uri, exportName) => {
 
 const download = () => {
   if (include.image) {
-    let url = '/api/image/' + image.value.id + '?asAttachment=true';
+    const url = '/api/image/' + image.value.id + '?asAttachment=true';
     downloadURI(url, image.value.filename);
   }
   if (include.coco) {
-    let url = '/api/image/' + image.value.id + '/coco';
+    const url = '/api/image/' + image.value.id + '/coco';
     axios.get(url).then((response) => {
-      let dataStr =
+      const dataStr =
         'data:text/json;charset=utf-8,' +
         encodeURIComponent(JSON.stringify(response.data));
-      let filename =
+      const filename =
         image.value.filename.replace(/\.[^/.]+$/, '') + '.json';
       downloadURI(dataStr, filename);
     });
