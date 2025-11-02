@@ -283,7 +283,7 @@ const updatePage = (p) => {
 
 const createDataset = () => {
       if (create.value.name.length < 1) return;
-      let categories = [];
+      const categories = [];
 
       for (let key in create.value.categories) {
         categories.push(create.value.categories[key]);
