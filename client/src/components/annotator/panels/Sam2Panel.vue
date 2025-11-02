@@ -33,7 +33,7 @@ import { ref, inject, watchEffect } from 'vue';
 
 const sam2 = defineModel('sam2', { type: Object, required: true });
 
-const showme = ref('false');
+const showme = ref(false);
 const getActiveTool = inject('getActiveTool');
 
 watchEffect(() => {

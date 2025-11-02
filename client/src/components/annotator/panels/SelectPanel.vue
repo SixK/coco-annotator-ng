@@ -13,7 +13,7 @@ import PanelToggle from "@/components/PanelToggle";
 
 const select = defineModel('select', { type: Object, required: true });
 
-const showme = ref('false');
+const showme = ref(false);
 const getActiveTool = inject('getActiveTool');
 
 watchEffect(() => {

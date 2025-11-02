@@ -28,7 +28,7 @@ const getCurrentAnnotation = inject('getCurrentAnnotation');
 const keypoint = defineModel('keypoint', { type: Object, required: true });
 const currentAnnotation = defineModel('currentAnnotation', { type: Object,  validator: (prop) => typeof prop === 'object' || prop === undefined});
 
-const showme = ref('false');
+const showme = ref(false);
 const getActiveTool = inject('getActiveTool');
 
 watchEffect(() => {
