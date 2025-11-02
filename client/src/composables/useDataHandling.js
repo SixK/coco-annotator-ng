@@ -3,12 +3,23 @@ import axios from "axios";
 // import { axiosReqestError } from "@/composables/axiosRequest";
 
 export default function useDataHandling(image, categories, dataset, categorylist, toolspanel, settings, procStore, mode, current, activeTool, zoom) {
-  const save = (callback) => {
+  // New async save() that returns a Promise
+  const save = async () => {
     const process = "Saving";
     procStore.addProcess(process);
     try {
       const data = prepareSaveData();
-      sendDataToServer(data, callback);
+      // sendDataToServer returns a Promise; await it so caller can know completion.
+      const response = await sendDataToServer(data);
+
+      // If you previously used callbacks to run something after save,
+      // callers will now await save() and then continue.
+
+      return response && response.data ? response.data : response;
+    } catch (err) {
+      // Re-throw so callers can catch/handle errors.
+      // Optionally you can log or show an error notification here.
+      throw err;
     } finally {
       procStore.removeProcess(process);
     }
@@ -64,10 +75,12 @@ export default function useDataHandling(image, categories, dataset, categorylist
     data.image.category_ids = image.value.categoryIds;
   };
 
-  const sendDataToServer = (data, callback) => {
-    axios.post("/api/annotator/data", JSON.stringify(data)).then(() => {
-      if (callback) callback();
-    });
+  // helper: send data to server (returns a Promise)
+  const sendDataToServer = async (data) => {
+    // Adjust endpoint/path to match backend route used previously.
+    // If your previous implementation used a different endpoint or headers,
+    // restore them here. This is a generic axios POST.
+    return axios.post("/api/annotator/data", data);
   };
 
   return { save };

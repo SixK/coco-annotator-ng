@@ -49,8 +49,18 @@ const download = () => {
   }
 };
 
-const execute = () => {
-    save(download);
+const execute = async () => {
+  try {
+    if (typeof save === 'function') {
+      await save();
+    }
+    download();
+  } catch (err) {
+    console.error('Error saving before download:', err);
+    // Optionally show user feedback
+    // Still attempt download in case save failed but download is allowed:
+    download();
+  }
 }
 
 </script>

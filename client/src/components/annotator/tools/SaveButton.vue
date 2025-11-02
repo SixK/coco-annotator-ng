@@ -17,14 +17,19 @@ const save = inject('save');
 const name =  ref("Save");
 const icon = ref("fa-save");
 
-const execute = () => {
-    save();
-    // Hack to force reload the page
-    // Cause keypoints points modifications are not propagated to annotation.keypoints
-    // but modifications are saved
+const execute = async () => {
+  try {
+    if (typeof save === 'function') {
+      await save();
+    }
+    // Force reload after successful save.
     setTimeout(() => {
         router.go(0);
     }, 200); // need to wait axios has finished :(
+  } catch (err) {
+    console.error('Error saving:', err);
+    // Optionally show a notification to user
+  }
 }
 
 </script>

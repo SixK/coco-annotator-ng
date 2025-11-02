@@ -1094,16 +1094,11 @@ const onAnnotating = (data) => {
 };
 
 
-onBeforeRouteLeave((to, from, next) => {
-    current.value.annotation = -1;
-
-    nextTick(() => {
-      socket.io.emit("annotating", {
-        image_id: image.value.id,
-        active: false
-      });
-      save(next);
-    });
+onBeforeRouteLeave(async (to, from) => {
+  current.value.annotation = -1;
+  socket.io.emit("annotating", { image_id: image.value.id, active: false });
+  await save(); // navigation proceeds after this resolves
+  // If you want to cancel: throw or return false
 });
 
 

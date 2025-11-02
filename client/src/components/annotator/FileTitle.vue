@@ -47,16 +47,25 @@ const router = useRouter();
      *
      * @param {Number} identifer id of a file
      */
-const route = (identifier) => {
-      // Make sure we pop the latest session before annotations
-      // this.$parent.current.annotation = -1;
-      updateCurrentAnnotation(-1);
 
-      nextTick(() => {
-        save(() => {
-          router.push({ name: "annotate", params: { identifier } });
-        });
-      });
+const route = async (identifier) => {
+  // Make sure we pop the latest session before annotations
+  updateCurrentAnnotation(-1);
+
+  // keep previous behavior that waited a tick before saving/navigation
+  await nextTick();
+
+  try {
+    // Await the migrated save() which now returns a Promise
+    if (typeof save === 'function') {
+      await save();
+    }
+    router.push({ name: "annotate", params: { identifier } });
+  } catch (err) {
+    console.error('Error while saving before route change:', err);
+    // Fallback: still navigate (or choose not to). Here we navigate anyway.
+    router.push({ name: "annotate", params: { identifier } });
+  }
 };
 
 defineExpose({route});

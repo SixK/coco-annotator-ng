@@ -1,5 +1,6 @@
 import { reactive, ref, onMounted, inject} from "vue";
 import { useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { useProcStore } from "@/store/index";
 
 export default function useShortcuts(moveUp, moveDown, stepIn, stepOut, 
@@ -7,6 +8,7 @@ export default function useShortcuts(moveUp, moveDown, stepIn, stepOut,
                                                                                 setActiveTool, nextImage, previousImage,
                                                                                 fit, save, doShortcutAction) {
   const route = useRoute();
+  const router = useRouter();
   const commands = ref([]);
 
   const procStore = useProcStore();
@@ -15,6 +17,20 @@ export default function useShortcuts(moveUp, moveDown, stepIn, stepOut,
       procStore.doUndo();
   }
   
+  const safeSave = async () => {
+  try {
+    if (typeof save === 'function') {
+      await save();
+    }
+    // Force reload after successful save.
+    setTimeout(() => {
+        router.go(0);
+    }, 200); // need to wait axios has finished :(
+  } catch (err) {
+    console.error('Error saving:', err);
+    // Optionally show a notification to user
+  }
+}
     const annotator = (() =>  {
         return [
         {
@@ -126,7 +142,7 @@ export default function useShortcuts(moveUp, moveDown, stepIn, stepOut,
         {
           default: ["control", "s"],
           name: "Save",
-          function: save,
+          function: safeSave,
         },
         {
           title: "BBox Tool Shortcuts",
