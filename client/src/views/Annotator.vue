@@ -264,12 +264,8 @@ import useAxiosRequest from "@/composables/axiosRequest";
 const {axiosReqestError, axiosReqestSuccess} = useAxiosRequest();
 import useDataHandling from '@/composables/useDataHandling';
 
-import { useAuthStore } from "@/store/user";
-const authStore = useAuthStore();
-import { useProcStore } from "@/store/index";
-const procStore = useProcStore();
-import { useInfoStore } from "@/store/info";
-const infoStore = useInfoStore();
+import useAnnotatorState from '@/composables/useAnnotatorState';
+import useAnnotatorData from '@/composables/useAnnotatorData';
 
 const socket = inject('socket')
 
@@ -282,13 +278,11 @@ const props = defineProps({
   }
 });
 
-const annotations = ref(null);
-const backup = ref(null);
-const refcanvas = ref(null);
-
 // bind all components
 const settings = ref(null);
-const toolspanel  = ref(null);
+const { state, refsForTemplate, helpers, _, user } = useAnnotatorState(props);
+/* expose some tool getters (wrap refs from ToolsPanel) */
+const toolspanel = refsForTemplate.toolspanel;
 
 const bboxTool = () => toolspanel.value?.bbox;
 const polygonTool = () => toolspanel.value?.polygon;
@@ -300,73 +294,11 @@ const keypointTool = () => toolspanel.value?.keypoint;
 const dextrTool = () => toolspanel.value?.dextr;
 const sam2Tool = () => toolspanel.value?.sam2;
 
-// const category = ref(null);
-const annotation = ref(null);
-const filetitle = ref(null);
-
-const updateKeypointPanel = ref(1);
-
-const activeTool = ref("Select");
-const shapeOpacity = ref(0.6);
-const zoom = ref(0.2);
-const cursor = ref("move");
-const mode = ref("segment");
-const simplify = ref(1);
-const panels = ref({
-      show: {
-        left: true,
-        right: true
-      }
-});
-const current = ref({
-      category: -1,
-      annotation: -1,
-      keypoint: -1,
-});
-const hover = ref({
-      category: -1,
-      annotation: -1,
-      keypoint: -1,
-});
-const image = ref({
-      raster: {},
-      scale: 0,
-      metadata: {},
-      ratio: 0,
-      rotate: 0,
-      id: null,
-      url: "",
-      dataset: 0,
-      previous: null,
-      next: null,
-      filename: "",
-      categoryIds: [],
-      data: null
-});
-
-const categories = toRef([]);
-const dataset = ref({
-      annotate_url: ""
-});
-const loading = ref({
-      image: true,
-      data: true,
-      loader: null
-});
-const search = ref("");
-const annotating = ref([]);
-const pinching = ref({
-      old_zoom: 1
-});
-
-const category = ref(null);
-const categorylist = ref([]);
-
-const setCategoryRef = el => {
-      if (el) {
-         categorylist.value.push(el);
-      }
-}
+/* unpack what we need directly for template access */
+const { image, categories, dataset, loading, 
+              panels, mode, current, hover, annotating, 
+              search, shapeOpacity, activeTool, simplify, 
+              cursor, categorylist } =  refsForTemplate;
 
 // need to be declared after image
 const {
@@ -380,9 +312,40 @@ const {
   getImageRaster,
   updateImageName,
   getPaper
-} = useCanvas(image, activeTool, current, procStore);
+} = useCanvas(image, activeTool, current, state.procStore);
 
-const { save } = useDataHandling(image, categories, dataset, categorylist, toolspanel, settings, procStore, mode, current, activeTool, zoom);
+const { getData, fetchData, showAll, hideAll } = useAnnotatorData({ state, axios, router, axiosReqestError, toolspanel, settings, categorylist, image, updateImageName });
+
+
+console.log('image:', image.value.url);
+
+const annotations = ref(null);
+const backup = ref(null);
+const refcanvas = ref(null);
+
+// const category = ref(null);
+const annotation = ref(null);
+const filetitle = ref(null);
+
+const updateKeypointPanel = ref(1);
+
+const pinching = ref({
+      old_zoom: 1
+});
+
+const category = ref(null);
+
+const setCategoryRef = el => {
+      if (el) {
+         categorylist.value.push(el);
+      }
+}
+
+console.log('refsForTemplate.settings:', refsForTemplate.settings, settings.value);
+
+const { save } = useDataHandling(image, categories, dataset, 
+                                  categorylist, refsForTemplate.toolspanel,
+                                  settings, state.procStore, mode, current, activeTool, refsForTemplate.zoom);
 
 // should try toRef on activeTool, this function could probably be removed 
 const setActiveTool = (tool) => {
@@ -405,70 +368,9 @@ const getHover = () => {
     return hover.value;
 };
 
-const setPreferences = (preferences) => {
-    toolspanel.value.setPreferences(preferences);
-    settings.value.setPreferences(preferences.settings || {});
-};
 
 const updateCurrentAnnotation = (value) => {
     current.value.annotation = -1;
-};
-
-/* getData */
-const getData = (callback) => {
-  const process = "Loading annotation data";
-  procStore.addProcess(process);
-
-  try {
-    fetchData()
-      .then((data) => {
-        updateStateWithData(data);
-        handlePreferences(data.preferences);
-        updateUI();
-        if (callback != null) callback();
-      })
-      .catch(handleFetchError)
-      .finally(() => {
-        procStore.removeProcess(process);
-      });
-  } catch (error) {
-    console.error("Unexpected error in getData:", error);
-    procStore.removeProcess(process);
-  }
-};
-
-const fetchData = async () => {
-  loading.value.data = true;
-  try {
-    const response = await axios.get("/api/annotator/data/" + image.value.id);
-    return response.data;
-  } finally {
-    loading.value.data = false;
-  }
-};
-
-const updateStateWithData = (data) => {
-  image.value.metadata = data.image.metadata || {};
-  image.value.filename = data.image.file_name;
-  image.value.next = data.image.next;
-  image.value.previous = data.image.previous;
-  image.value.categoryIds = data.image.category_ids || [];
-  annotating.value = data.image.annotating || [];
-  dataset.value = data.dataset;
-  categories.value = data.categories;
-  procStore.setDataset(dataset.value);
-};
-
-const handlePreferences = (preferences) => {
-  setPreferences(preferences);
-};
-
-const updateUI = () => {
-  updateImageName(image.value.filename);
-
-  nextTick(() => {
-    showAll();
-  });
 };
 
 const handleFetchError = () => {
@@ -483,17 +385,8 @@ const handleFetchError = () => {
 
 
 const onCategoryClick = (indices) => {
-      current.value.annotation = indices.annotation;
-      current.value.category = indices.category;
-
-      if (indices.hasOwnProperty('keypoint')) {
-        current.value.keypoint = indices.keypoint;
-        handleLabeledKeypointSelection(indices);
-      } else {
-        currentAnnotationFromList.value.keypoint.next.label = String(indices.keypoint + 1);
-        activeTool.value = keypointTool();
-        activeTool.value.click();
-      }
+    // delegate to helper to keep template lightweight
+    helpers.onCategoryClick(indices);
 };
 
 function handleLabeledKeypointSelection(indices) {
@@ -524,19 +417,7 @@ function handleLabeledKeypointSelection(indices) {
 };
 
 const onKeypointsComplete = () => {
-       /********* Remove me when this.currentAnnotation will not be empty at start ********/ 
-
-      if(!currentAnnotationFromList.value) {
-          console.log('should remove this condition in onKeypointsComplete()')
-           return
-       }else {
-         currentAnnotationFromList.value.keypoint.next.label = -1;
-       }
-       /********* Remove me when this.currentAnnotation will not be empty at start ********/
-       if ( activeTool.value === 'Keypoints') {
-            activeTool.value = selectTool();
-            activeTool.value.click();
-        }
+  helpers.onKeypointsComplete();
 };
 
 const getCategoryByIndex = (index) => {
@@ -888,22 +769,6 @@ const scrollElement = (element) => {
   }
 };
 
-const showAll = () => {
-      if (categorylist.value == null) return;
-
-      categorylist.value.forEach((cat) => {
-            cat.isVisible = cat.category.annotations.length > 0;
-      });
-};
-
-const hideAll = () => {
-      if (categorylist.value == null) return;
-
-      categorylist.value.forEach((cat) => {
-        cat.isVisible = false;
-        cat.showAnnotations = false;
-      });
-};
 
 const findCategoryByName = (categoryName) => {
       const categoryComponent = categorylist.value.find(
@@ -981,7 +846,7 @@ const activateTools = computed(() => {
 });
 
 const doneLoading = computed(() => {
-  return !loading.value.image && !loading.value.data;
+  return !loading.image && !loading.data;
 });
 
 const currentAnnotationLength = computed(() => {
@@ -989,13 +854,7 @@ const currentAnnotationLength = computed(() => {
 });
 
 const currentKeypointLength = computed(() => {
-
   return currentAnnotationFromList.value.annotation.keypoints.length||0;
-});
-
-
-const user = computed(() => {
-  return authStore.user;
 });
 
 
@@ -1003,8 +862,8 @@ watch(
   () => doneLoading.value, 
   (done) => {
     if (done) {
-        if (loading.value.loader) {
-          loading.value.loader.hide();
+        if (loading.loader) {
+          loading.loader.hide();
         }
     }
 });
@@ -1093,7 +952,6 @@ const onAnnotating = (data) => {
       }
 };
 
-
 onBeforeRouteLeave(async (to, from) => {
   current.value.annotation = -1;
   socket.io.emit("annotating", { image_id: image.value.id, active: false });
@@ -1108,7 +966,8 @@ onMounted(() => {
     image.value.id = parseInt(props.identifier);
     image.value.url = "/api/image/" + image.value.id;
 
-    procStore.setDataset(null);
+    console.log('state:', state, image);
+    state.procStore.setDataset(null);
 
     initCanvas("Initializing canvas");
     getData();
