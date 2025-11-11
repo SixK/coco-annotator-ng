@@ -252,6 +252,8 @@ import SamPanel from "@/components/annotator/panels/SamPanel";
 import Sam2Panel from "@/components/annotator/panels/Sam2Panel";
 import ZimPanel from "@/components/annotator/panels/ZimPanel";
 
+import { onBeforeUpdate, onUpdated, nextTick, toRef, ref, computed, watch, inject, onMounted, onUnmounted, provide } from 'vue';
+
 
 import { getCurrentInstance } from 'vue';
 import { onBeforeRouteLeave, useRouter, useRoute } from 'vue-router';
@@ -264,12 +266,11 @@ import useAxiosRequest from "@/composables/axiosRequest";
 const {axiosReqestError, axiosReqestSuccess} = useAxiosRequest();
 import useDataHandling from '@/composables/useDataHandling';
 
+import useAnnotatorImage from '@/composables/useAnnotatorImage';
 import useAnnotatorState from '@/composables/useAnnotatorState';
 import useAnnotatorData from '@/composables/useAnnotatorData';
 
 const socket = inject('socket')
-
-import { onBeforeUpdate, onUpdated, nextTick, toRef, ref, computed, watch, inject, onMounted, onUnmounted, provide } from 'vue';
 
 const props = defineProps({
   identifier: {
@@ -278,9 +279,11 @@ const props = defineProps({
   }
 });
 
+const filetitle = ref(null);
+const { image, getImageId, nextImage,  previousImage } = useAnnotatorImage(filetitle);
 // bind all components
 const settings = ref(null);
-const { state, refsForTemplate, helpers, _, user } = useAnnotatorState(props);
+const { state, refsForTemplate, helpers, _, user } = useAnnotatorState(props, image);
 /* expose some tool getters (wrap refs from ToolsPanel) */
 const toolspanel = refsForTemplate.toolspanel;
 
@@ -295,7 +298,7 @@ const dextrTool = () => toolspanel.value?.dextr;
 const sam2Tool = () => toolspanel.value?.sam2;
 
 /* unpack what we need directly for template access */
-const { image, categories, dataset, loading, 
+const { categories, dataset, loading, 
               panels, mode, current, hover, annotating, 
               search, shapeOpacity, activeTool, simplify, 
               cursor, categorylist } =  refsForTemplate;
@@ -323,9 +326,7 @@ const annotations = ref(null);
 const backup = ref(null);
 const refcanvas = ref(null);
 
-// const category = ref(null);
 const annotation = ref(null);
-const filetitle = ref(null);
 
 const updateKeypointPanel = ref(1);
 
@@ -360,10 +361,6 @@ const selectLastEditorTool = () => {
   activeTool.value = localStorage.getItem("editorTool") || "Select";
 };
 
-const getImageId = () => {
-    return image.value.id;
-};
-  
 const getHover = () => {
     return hover.value;
 };
@@ -831,14 +828,6 @@ const removeFromAnnotatingList = () => {
   if (index > -1) {
     annotating.value.splice(index, 1);
   }
-}
-
-const nextImage = () => {
-  if (image.value.next != null) filetitle.value.route(image.value.next);
-}
-
-const previousImage = () => {
-  if (image.value.previous != null) filetitle.value.route(image.value.previous);
 }
 
 const activateTools = computed(() => {

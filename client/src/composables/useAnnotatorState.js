@@ -3,28 +3,11 @@ import { useAuthStore } from '@/store/user';
 import { useProcStore } from '@/store/index';
 import { useInfoStore } from '@/store/info';
 
-export default function useAnnotatorState(props = {}) {
+export default function useAnnotatorState(props = {}, image) {
   // stores
   const authStore = useAuthStore();
   const procStore = useProcStore();
   const infoStore = useInfoStore();
-
-  // reactive state (moved from large SFC)
-  const image = ref({
-    raster: {},
-    scale: 0,
-    metadata: {},
-    ratio: 0,
-    rotate: 0,
-    id: null,
-    url: '',
-    dataset: 0,
-    previous: null,
-    next: null,
-    filename: '',
-    categoryIds: [],
-    data: null,
-  });
 
   const categories = ref([]);
   const dataset = ref({ annotate_url: '' });
@@ -85,7 +68,6 @@ export default function useAnnotatorState(props = {}) {
   };
 
   const refsForTemplateProxy = {
-    image,
     categories,
     dataset,
     loading,
