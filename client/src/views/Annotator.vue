@@ -122,55 +122,11 @@
           {{ activeTool }}
         </h6>
 
-        <div
-          class="tool-section"
-          style="max-height: 30%; color: lightgray"
-        >
-          <div v-if="bboxTool() != null">
-            <BBoxPanel :bbox="bboxTool()" />
-          </div>
-          <div v-if="polygonTool() != null">
-            <PolygonPanel :polygon="polygonTool()" />
-          </div>
-
-          <div v-if="selectTool() != null">
-            <SelectPanel :select="selectTool()" />
-          </div>
-
-          <div v-if="magicwandTool() != null">
-            <MagicWandPanel :magicwand="magicwandTool()" />
-          </div>
-
-          <div v-if="brushTool() != null">
-            <BrushPanel :brush="brushTool()" />
-          </div>
-
-          <div v-if="eraserTool() != null">
-            <EraserPanel :eraser="eraserTool()" />
-          </div>
-
-          <div v-if="keypointTool() != null">
-            <KeypointPanel
-              :keypoint="keypointTool()"
-              :current-annotation="currentAnnotation"
-            />
-          </div>
-          <div v-if="dextrTool() != null">
-            <DEXTRPanel :dextr="dextrTool()" />
-          </div>
-          <!--
-          <div v-if="sam != null">
-            <SamPanel :sam="sam" />
-          </div> 
-          -->
-          <div v-if="sam2Tool() != null">
-            <Sam2Panel :sam2="sam2Tool()" />
-          </div>
-          <!--
-          <div v-if="zim != null">
-            <ZimPanel :zim="zim" />
-          </div>
-          -->
+        <div v-if="currentPanel" class="tool-section" style="max-height:30%; color:lightgray">
+            <component
+                    :is="currentPanel"
+                    v-bind="panelProps"
+             />
         </div>
       </div>
     </aside>
@@ -297,6 +253,30 @@ const keypointTool = () => toolspanel.value?.keypoint;
 const dextrTool = () => toolspanel.value?.dextr;
 const sam2Tool = () => toolspanel.value?.sam2;
 
+
+const toolPanelMap = {
+  bbox:      BBoxPanel,
+  polygon:   PolygonPanel,
+  select:    SelectPanel,
+  magicwand: MagicWandPanel,
+  brush:     BrushPanel,
+  eraser:    EraserPanel,
+  keypoint:  KeypointPanel,
+  dextr:     DEXTRPanel,
+  sam2:      Sam2Panel,
+};
+
+/* returns the Vue component that belongs to the active tool */
+const currentPanel = computed(() => {
+  const name = activeTool.value?.toLowerCase();
+  /* do not render at all until the tool instance is ready */
+  if (!name || !toolInst(name)) return null;
+  return toolPanelMap[name];
+});
+
+/* small helper: returns the live tool instance from ToolsPanel */
+const toolInst = name => toolspanel.value?.[name];
+
 /* unpack what we need directly for template access */
 const { categories, dataset, loading, 
               panels, mode, current, hover, annotating, 
@@ -347,6 +327,24 @@ console.log('refsForTemplate.settings:', refsForTemplate.settings, settings.valu
 const { save } = useDataHandling(image, categories, dataset, 
                                   categorylist, refsForTemplate.toolspanel,
                                   settings, state.procStore, mode, current, activeTool, refsForTemplate.zoom);
+
+
+/* props that the active panel needs */
+const panelProps = computed(() => {
+  const tool = activeTool.value?.toLowerCase();
+  if (!tool) return {};
+
+  /* KeypointPanel needs an extra prop */
+  if (tool === 'keypoint') {
+    return {
+      keypoint: toolInst('keypoint'),
+      'current-annotation': currentAnnotation.value,
+    };
+  }
+
+  /* every other panel receives a single prop named after the tool */
+  return { [tool]: toolInst(tool) };
+});
 
 // should try toRef on activeTool, this function could probably be removed 
 const setActiveTool = (tool) => {
