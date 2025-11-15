@@ -225,6 +225,8 @@ import useDataHandling from '@/composables/useDataHandling';
 import useAnnotatorImage from '@/composables/useAnnotatorImage';
 import useAnnotatorState from '@/composables/useAnnotatorState';
 import useAnnotatorData from '@/composables/useAnnotatorData';
+import useAnnotatorMoves from '@/composables/useAnnotatorMoves';
+
 
 const socket = inject('socket')
 
@@ -243,17 +245,6 @@ const { state, refsForTemplate, helpers, _, user } = useAnnotatorState(props, im
 /* expose some tool getters (wrap refs from ToolsPanel) */
 const toolspanel = refsForTemplate.toolspanel;
 
-const bboxTool = () => toolspanel.value?.bbox;
-const polygonTool = () => toolspanel.value?.polygon;
-const eraserTool = () => toolspanel.value?.eraser;
-const brushTool = () => toolspanel.value?.brush;
-const magicwandTool = () => toolspanel.value?.magicwand;
-const selectTool = () => toolspanel.value?.select;
-const keypointTool = () => toolspanel.value?.keypoint;
-const dextrTool = () => toolspanel.value?.dextr;
-const sam2Tool = () => toolspanel.value?.sam2;
-
-
 const toolPanelMap = {
   bbox:      BBoxPanel,
   polygon:   PolygonPanel,
@@ -265,6 +256,8 @@ const toolPanelMap = {
   dextr:     DEXTRPanel,
   sam2:      Sam2Panel,
 };
+
+const getTool = name => toolspanel.value?.[name];
 
 /* returns the Vue component that belongs to the active tool */
 const currentPanel = computed(() => {
@@ -299,21 +292,13 @@ const {
 
 const { getData, fetchData, showAll, hideAll } = useAnnotatorData({ state, axios, router, axiosReqestError, toolspanel, settings, categorylist, image, updateImageName });
 
-
 console.log('image:', image.value.url);
 
-const annotations = ref(null);
-const backup = ref(null);
 const refcanvas = ref(null);
-
 const annotation = ref(null);
-
-const updateKeypointPanel = ref(1);
-
 const pinching = ref({
       old_zoom: 1
 });
-
 const category = ref(null);
 
 const setCategoryRef = el => {
@@ -403,10 +388,10 @@ function handleLabeledKeypointSelection(indices) {
 
       if (label) {
         label.selected = true;
-        activeTool.value = selectTool();
+        activeTool.value = getTool('select');
       } else {
         currentAnnotationFromList.value.keypoint.next.label = indexLabel;
-        activeTool.value = keypointTool();
+        activeTool.value = getTool('keypoint');
       }
       activeTool.value.click();
 };
@@ -416,26 +401,12 @@ const onKeypointsComplete = () => {
 };
 
 const getCategoryByIndex = (index) => {
-      if (index == null) return null;
-      if (index < 0) return null;
-
-      const cat = categorylist.value;
-      if (cat == null) return null;
-      if (cat.length < 1 || index >= cat.length) return null;
-
-      return cat[index];
-};
+  return (categorylist.value?.length > index && index >= 0) ? categorylist.value[index] : null;
+}
 
 const getCategory = (index) => {
-      if (index == null) return null;
-      if (index < 0) return null;
-
-      const cat = category.value;
-      if (cat == null) return null;
-      if (cat.length < 1 || index >= cat.length) return null;
-
-      return cat[index];
-};
+  return (category.value?.length > index && index >= 0) ? category.value[index] : null;
+}
 
 const uniteCurrentAnnotation = (compound, simplify = true, undoable = true, isBBox = false) => {
   if (currentAnnotationFromList.value == null) return;
@@ -511,198 +482,6 @@ const currentKeypoint = computed(() => {
 });
 
 
-const incrementCategory = () => {
-    if (current.value.category >= categories.value.length - 1) {
-      current.value.category = -1;
-    } else {
-      current.value.category += 1;
-    }
-};
-
-const decrementCategory = () => {
-    if (current.value.category <= 0) {
-        current.value.category = categories.value.length - 1;
-    } else {
-        current.value.category -= 1;
-    }
-    
-    handleCategoryAnnotations();
-};
-
-const handleCategoryAnnotations = () => {
-    if (currentCategoryFromList.value) {
-        const annotationCount = currentCategoryFromList.value.category.annotations.length;
-        if (annotationCount > 0) {
-            current.value.annotation = annotationCount - 1;
-        }
-        
-        if (currentCategoryFromList.value.showAnnotations) {
-            const keypointCount = currentAnnotationFromList.value.keypointLabels.length;
-            if (keypointCount > 0) {
-                current.value.keypoint = 0;
-                currentAnnotationFromList.value.onAnnotationKeypointClick(current.value.keypoint);
-            }
-        }
-    }
-};
-
-/* end new decrementCategory */
-
-const incrementAnnotation = () => {
-    if (current.value.annotation === currentCategoryFromList.value.category.annotations.length - 1 ||
-              currentCategoryFromList.value.showAnnotations == false) {
-        incrementCategory();
-        current.value.annotation = -1;
-    } else {
-        current.value.annotation += 1;
-        current.value.keypoint = -1;
-    }
-};
-
-/**/
-const decrementAnnotation = () => {
-  const { annotation } = current.value;
-  const { annotations } = currentCategoryFromList.value.category;
-  const annotationCount = annotations.length;
-
-  // Handle case when annotation is -1
-  if (annotation === -1 && annotationCount > 0) {
-    current.value.annotation = annotationCount - 1;
-    return;
-  }
-
-  if (annotation === 0 || annotationCount === 0 
-       || !currentCategoryFromList.value.showAnnotations) {
-    decrementCategory();
-    return;
-  }
-
-  current.value.annotation -= 1;
-
-  // Handle keypoints
-  if (currentAnnotationFromList.value?.showKeypoints) {
-    current.value.keypoint = 0;
-    currentAnnotationFromList.value.onAnnotationKeypointClick(current.value.keypoint);
-  } else {
-    console.log('move dec cas2');
-    current.value.keypoint = -1;
-  }
-};
-/**/
-
-
-const incrementKeypoint = () => {
-    const keypointCount = currentAnnotationFromList.value.keypointLabels.length;
-    if (current.value.keypoint === keypointCount - 1) {
-      incrementAnnotation();
-    } else {
-      current.value.keypoint += 1;
-      currentAnnotationFromList.value.onAnnotationKeypointClick(current.value.keypoint);
-    }
-  };
-
-const decrementKeypoint = () => {
-    if (current.value.keypoint <= 0) {
-      decrementAnnotation();
-    } else {
-      current.value.keypoint -= 1;
-      if(current.value.keypoint >= 0 ) {
-          currentAnnotationFromList.value.onAnnotationKeypointClick(current.value.keypoint);
-      }
-    }
-};
-
-const moveUp = () => {
-  if (currentCategoryFromList.value == null) {
-    decrementCategory();
-    return;
-  }
-
-  if (currentAnnotationFromList.value == null) {
-    if (current.value.annotation === -1) {
-      decrementAnnotation();
-    } else {
-      decrementCategory();
-    }
-    return;
-  }
-
-  if (currentKeypoint.value != null || 
-      (currentAnnotationFromList.value.showKeypoints && current.value.keypoint >0)) {
-    decrementKeypoint();
-  } else {
-    decrementAnnotation();
-  }
-};
-
-const moveDown = () => {
-  if (currentCategoryFromList.value == null) {
-    incrementCategory();
-    return;
-  }
-
-  if (currentAnnotationFromList.value == null) {
-    if (current.value.annotation === -1) {
-      incrementAnnotation();
-    } else {
-      incrementCategory();
-    }
-    return;
-  }
-
-  if (currentKeypoint.value != null || 
-      (currentAnnotationFromList.value.showKeypoints )) {
-    incrementKeypoint();
-  } else {
-    incrementAnnotation();
-  }
-};
-
-const stepIn = () => {
-
-  if (currentCategoryFromList.value == null) return;
-
-  const { isVisible, showAnnotations } = currentCategoryFromList.value;
-  const annotationExists = currentAnnotationFromList.value != null;
-
-  const hasKeypointLabels = annotationExists && 
-                                                        currentAnnotationFromList.value.keypointLabels && 
-                                                        currentAnnotationFromList.value.keypointLabels.length > 0;
-
-  if (!isVisible && annotationExists) {
-    currentCategoryFromList.value.isVisible = true;
-    current.value.annotation = 0;
-    currentAnnotationFromList.value.showKeypoints = false;
-    current.value.keypoint = -1;
-  } else if (!showAnnotations && currentAnnotationLength.value > 0) {
-    currentCategoryFromList.value.showAnnotations = true;
-    current.value.annotation = 0;
-    currentAnnotationFromList.value.showKeypoints = false;
-    current.value.keypoint = -1;
-  } else if (hasKeypointLabels && !currentAnnotationFromList.value.showKeypoints) {
-    currentAnnotationFromList.value.showKeypoints = true;
-    current.value.keypoint = 0;
-    currentAnnotationFromList.value.onAnnotationKeypointClick(current.value.keypoint);
-  }
-};
-
-const stepOut = () => {
-    if (currentCategoryFromList.value == null) return;
-
-    if (
-      currentAnnotationFromList.value != null &&
-      currentAnnotationFromList.value.showKeypoints
-    ) {
-      currentAnnotationFromList.value.showKeypoints = false;
-      current.value.keypoint = -1;
-    } else if (currentCategoryFromList.value.showAnnotations) {
-      currentCategoryFromList.value.showAnnotations = false;
-      current.value.annotation = -1;
-    } else if (currentCategoryFromList.value.isVisible) {
-      currentCategoryFromList.value.isVisible = false;
-    }
-};
-
 const createAnnotation = () => {
         if (currentCategoryFromList.value) {
           currentCategoryFromList.value.createAnnotation();
@@ -714,7 +493,6 @@ const deleteKeypoint = (annotation, keypoint) => {
     if (!annotation || !keypoint) return;
 
     annotation.keypoints.deleteKeypoint(keypoint);
-    // annotation.tagRecomputeCounter++;
     annotation.currentKeypoint = null;
 };
 
@@ -731,29 +509,16 @@ const deleteAnnotation = () => {
     annotation.deleteAnnotation();
 };
 
-const doShortcutAction = (action) => {
-    switch(action) {
-      case "cancelBbox":
-            bboxTool().deleteBbox();
-      break;
-      case "cancelPolygon":
-            polygonTool().deletePolygon();
-      break;
-      case "eraserIncreaseRadius":
-            eraserTool().increaseRadius();
-      break;
-      case "eraserDecreaseRadius":
-            eraserTool().decreaseRadius();
-      break;
-      case "brushIncreaseRadius":
-            brushTool().increaseRadius();
-      break;
-      case "brushDecreaseRadius":
-            brushTool().decreaseRadius();
-      break;
-      default:
-    }
+
+const actions = {
+  cancelBbox:           () => getTool('bbox').deleteBbox(),
+  cancelPolygon:        () => getTool('polygon').deletePolygon(),
+  eraserIncreaseRadius: () => getTool('eraser').increaseRadius(),
+  eraserDecreaseRadius: () => getTool('eraser').decreaseRadius(),
+  brushIncreaseRadius:  () => getTool('brush').increaseRadius(),
+  brushDecreaseRadius:  () => getTool('brush').decreaseRadius(),
 };
+const doShortcutAction = action => (actions[action] || (() => {}))();
 
 const scrollElement = (element) => {
   if (element != null) {
@@ -844,6 +609,8 @@ const currentKeypointLength = computed(() => {
   return currentAnnotationFromList.value.annotation.keypoints.length||0;
 });
 
+const {moveUp, moveDown, stepIn, stepOut} = useAnnotatorMoves(current, currentAnnotation, currentAnnotationFromList, currentCategory, currentCategoryFromList, currentKeypoint, categories, currentAnnotationLength)
+
 
 watch(
   () => doneLoading.value, 
@@ -871,7 +638,7 @@ watch(
 watch(
   () => currentAnnotationFromList.value, 
   (newElement) => {
-      updateKeypointPanel.value = updateKeypointPanel.value + 1;
+      // updateKeypointPanel.value = updateKeypointPanel.value + 1;
       if (newElement == null) return;
       if (newElement.showAnnotations) {
           const element = newElement.$el;
@@ -904,7 +671,7 @@ watch(
 watch(
   ()=> current.value.keypoint, 
   (sk) => {
-    updateKeypointPanel.value = updateKeypointPanel.value + 1;
+    // updateKeypointPanel.value = updateKeypointPanel.value + 1;
     if (sk < -1) current.value.keypoint = -1;
     if (currentCategoryFromList.value != null) {
       const max = currentAnnotationLength.value;
