@@ -15,7 +15,7 @@ export default defineConfig({
     port: 8080, 
     strictPort: true,
 
-    allowedHosts: ["localhost", "webserver"],
+    allowedHosts: ["localhost", "webserver", "frontend"],
 
     proxy: {
       "/api/model": {
