@@ -23,13 +23,12 @@ import PanelText from '@/components/PanelText';
 import PanelInputDropdown from '@/components/PanelInputDropdown';
 import { VisibilityOptions } from '@/libs/keypoints';
 
-const getCurrentAnnotation = inject('getCurrentAnnotation');
 
 const keypoint = defineModel('keypoint', { type: Object, required: true });
 const currentAnnotation = defineModel('currentAnnotation', { type: Object,  validator: (prop) => typeof prop === 'object' || prop === undefined});
 
 const showme = ref(false);
-const getActiveTool = inject('getActiveTool');
+const { getActiveTool, getCurrentAnnotation } = inject('annotator');
 
 watchEffect(() => {
     showme.value = keypoint.value.name === getActiveTool();

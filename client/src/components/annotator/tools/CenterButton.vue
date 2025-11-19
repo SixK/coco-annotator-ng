@@ -10,7 +10,7 @@ import { useButton } from "@/composables/toolBar/button";
 
 const { iconColor, click } = useButton();
 
-const fit = inject('fit');
+const { fit } = inject('annotator');
 
 const name =  ref("Center Image");
 const icon = ref("fa-align-center");

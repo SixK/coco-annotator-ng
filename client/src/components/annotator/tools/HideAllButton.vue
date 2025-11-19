@@ -10,7 +10,7 @@ import { useButton } from "@/composables/toolBar/button";
 
 const { iconColor, click } = useButton();
 
-const hideAll = inject('hideAll');
+const { hideAll } = inject('annotator');
 
 const name =  ref("Hide All");
 const icon = ref("fa-eye-slash");

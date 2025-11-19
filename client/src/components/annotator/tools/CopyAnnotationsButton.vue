@@ -136,8 +136,7 @@ const removeProcess = (process) => procStore.removeProcess(process);
 const resetUndo = () => procStore.resetUndo();
 
 
-const injectedSave = inject('save')
-const injectedGetData = inject('getData')
+const { save, getData } = inject('annotator');
 
 const imageId = defineModel('imageId', { type: Number, required: true });
 const next = defineModel('next', { type: Number, default: null });
@@ -187,7 +186,7 @@ const copyAnnotations =  () => {
   const process = `Copying annotations from ${fromId.value}`
   const scategories = selectedCategories.value.map((category) => parseInt(category))
 
-  injectedSave(() => {
+  save(() => {
 
     addProcess(process);
     axios
@@ -195,7 +194,7 @@ const copyAnnotations =  () => {
         category_ids: scategories,
       })
       .then(() => {
-        injectedGetData()
+        getData()
       })
       .catch((error) => {
         axiosReqestError('Copying Annotations', error.response.data.message)

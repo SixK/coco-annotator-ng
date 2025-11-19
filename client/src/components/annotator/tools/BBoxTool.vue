@@ -26,10 +26,7 @@ const {
   }= useTools();
 
 
-const uniteCurrentAnnotation = inject('uniteCurrentAnnotation');
-const getCurrentCategory = inject('getCurrentCategory');
-const getCurrentAnnotation = inject('getCurrentAnnotation');
-const getImageRaster = inject('getImageRaster');
+const { uniteCurrentAnnotation, getCurrentCategory, getCurrentAnnotation, getImageRaster } = inject('annotator');
 
 const scale = defineModel('scale', { type: Number, default: 1 });
 const settings = defineModel('settings', { type: [Object, null], default: null });

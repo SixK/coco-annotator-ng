@@ -270,15 +270,14 @@ const procStore = useProcStore();
 
 import MetaData from "@/components/MetaData";
 
-import { nextTick, getCurrentInstance, watchEffect, inject, watch, reactive, ref, computed, onMounted, onUnmounted, toRef } from 'vue';
+import { nextTick, getCurrentInstance, watchEffect, inject, watch, 
+                  reactive, ref, computed, onMounted, onUnmounted, toRef } from 'vue';
 
-const addKeypointEdge = inject('addKeypointEdge');
-const removeKeypointEdge = inject('removeKeypointEdge');
-const categoryIsCurrent = inject('isCurrent');
-const updateAnnotationCategory = inject('updateAnnotationCategory');
-const getCategoryIndex = inject('getCategoryIndex');
-const resetCategorySettings = inject('resetCategorySettings');
-const getShowAnnotations = inject('getShowAnnotations');
+const { categoryIsCurrent, getCategoryIndex, 
+               getShowAnnotations, resetCategorySettings } = inject('category');
+
+const { addKeypointEdge,  removeKeypointEdge,  
+              updateAnnotationCategory } = inject('annotator');
 
 const emit = defineEmits(['set-color', 'keypointsComplete', 'keypoint-click', 'click', 'deleted']);
 
@@ -1126,11 +1125,6 @@ watch(
     updateIsEmptyState();
 });
 
-watch(
-    annotation.value, 
-    () => {
-    initAnnotation();
-});
 
 watch(
   () => isCurrent.value, 

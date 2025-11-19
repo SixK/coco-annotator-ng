@@ -198,9 +198,7 @@ const socket = inject('socket');
 
 const emit = defineEmits(['click', 'keypointsComplete']);
 
-const getImageId = inject('getImageId');
-const scrollElement = inject('scrollElement');
-const selectLastEditorTool = inject('selectLastEditorTool');
+const { getImageId, scrollElement, selectLastEditorTool } = inject('annotator');
 
 const category = defineModel('category', { type: Object, required: true });
 const index = defineModel('index', { type: Number, required: true });
@@ -264,7 +262,7 @@ const getCategoriesList = computed(() => {
   }));
 });
 
-const isCurrent = computed(() => {
+const categoryIsCurrent = computed(() => {
   return current.value.category === index.value;
 });
 
@@ -280,7 +278,7 @@ const backgroundColor = computed(() => {
 });
 
 const borderColor = computed(() => {
-  if (isCurrent.value) return "rgba(255, 255, 255, 0.25)";
+  if (categoryIsCurrent.value) return "rgba(255, 255, 255, 0.25)";
   return "#404552";
 });
 
@@ -470,7 +468,7 @@ const onEyeClick = () => {
     showAnnotations.value = false;
   }
   if (showAnnotations.value) {
-    if (isCurrent.value) {
+    if (categoryIsCurrent.value) {
       emit('click', {
         annotation: selectedAnnotation.value,
         category: index.value,
@@ -614,16 +612,12 @@ defineExpose({category, setColor, getAnnotation, getAnnotationFromIndex,
                               showAnnotations, exportCategory, 
                               createAnnotation, selectedAnnotation,
                               isVisible,  isHover, color, supercategory, search,
-                              isCurrent, addKeypointEdge, removeKeypointEdge,
+                              categoryIsCurrent, addKeypointEdge, removeKeypointEdge,
                               index, name});
 
-provide('addKeypointEdge', addKeypointEdge);
-provide('removeKeypointEdge', removeKeypointEdge);
-provide('isCurrent', isCurrent);
-provide('getCategoryIndex', getCategoryIndex);
-provide('resetCategorySettings', resetCategorySettings);
-provide('getShowAnnotations', getShowAnnotations);
-provide('getAnnotationFromIndex', getAnnotationFromIndex);
+const ctx = { addKeypointEdge, removeKeypointEdge, categoryIsCurrent, getCategoryIndex,
+                         resetCategorySettings, getShowAnnotations, getAnnotationFromIndex };
+provide('category', ctx);
 
 </script>
 

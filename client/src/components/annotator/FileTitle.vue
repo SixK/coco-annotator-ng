@@ -37,9 +37,8 @@ const filename = defineModel('filename', { type: String, required: true });
 const previousimage = defineModel('previousimage', { type: Number, default: null });
 const nextimage = defineModel('nextimage', { type: Number, default: null });
 
-// Provide/Inject mechanism
-const save = inject('save');
-const updateCurrentAnnotation = inject('updateCurrentAnnotation');
+const { save,  updateCurrentAnnotation} = inject('annotator');
+
 const router = useRouter();
 
     /**

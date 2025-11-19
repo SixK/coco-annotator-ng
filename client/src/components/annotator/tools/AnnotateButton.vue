@@ -12,8 +12,7 @@ import useAxiosRequest from "@/composables/axiosRequest";
 
 const {axiosReqestError, axiosReqestSuccess} = useAxiosRequest();
 
-const addAnnotation = inject('addAnnotation');
-const getImageRaster = inject('getImageRaster');
+const { addAnnotation, getImageRaster } = inject('annotator');
 
 const { iconColor, click } = useButton();
 

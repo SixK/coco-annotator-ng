@@ -12,7 +12,7 @@ const router = useRouter();
 
 const { iconColor, click } = useButton();
 
-const save = inject('save');
+const { save } = inject('annotator');
 
 const name =  ref("Save");
 const icon = ref("fa-save");

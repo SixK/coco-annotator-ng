@@ -12,9 +12,7 @@ import { invertColor } from "@/libs/colors";
 import { useTools } from "@/composables/toolBar/tools";
 import { ref, computed, watch, inject, onMounted, provide } from 'vue'
 
-const uniteCurrentAnnotation = inject('uniteCurrentAnnotation');
-const save = inject('save');
-const getImageRaster = inject('getImageRaster');
+const { uniteCurrentAnnotation, save, getImageRaster } = inject('annotator');
 
 import { useProcStore } from "@/store/index";
 const procStore = useProcStore();

@@ -10,10 +10,7 @@ import { useTools } from "@/composables/toolBar/tools";
 import axios from "axios";
 import { ref, computed, watch, inject, onMounted, provide } from 'vue'
 
-const getCurrentAnnotation = inject('getCurrentAnnotation');
-const getImageRaster = inject('getImageRaster');
-const getImageId = inject('getImageId');
-
+const { getCurrentAnnotation, getImageRaster,  getImageId } = inject('annotator');
 
 const {
     click,

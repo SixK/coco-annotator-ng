@@ -12,7 +12,7 @@ import paper from 'paper';
 
 const scale = defineModel('scale', { type: Number, default: 1 });
 
-const getCurrentAnnotation = inject('getCurrentAnnotation');
+const { getCurrentAnnotation } = inject('annotator');
 
 const {
     click,

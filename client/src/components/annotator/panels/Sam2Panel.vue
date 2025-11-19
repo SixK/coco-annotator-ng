@@ -34,7 +34,7 @@ import { ref, inject, watchEffect } from 'vue';
 const sam2 = defineModel('sam2', { type: Object, required: true });
 
 const showme = ref(false);
-const getActiveTool = inject('getActiveTool');
+const { getActiveTool } = inject('annotator');
 
 watchEffect(() => {
     showme.value = sam2.value.name === getActiveTool();

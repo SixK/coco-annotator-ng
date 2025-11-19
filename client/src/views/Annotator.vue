@@ -208,7 +208,7 @@ import SamPanel from "@/components/annotator/panels/SamPanel";
 import Sam2Panel from "@/components/annotator/panels/Sam2Panel";
 import ZimPanel from "@/components/annotator/panels/ZimPanel";
 
-import { onBeforeUpdate, onUpdated, nextTick, toRef, ref, computed, watch, inject, onMounted, onUnmounted, provide } from 'vue';
+import { onBeforeUpdate, onUpdated, nextTick, toRef, ref, computed, watch, inject, onMounted, onUnmounted, provide, watchEffect } from 'vue';
 
 
 import { getCurrentInstance } from 'vue';
@@ -226,7 +226,7 @@ import useAnnotatorImage from '@/composables/useAnnotatorImage';
 import useAnnotatorState from '@/composables/useAnnotatorState';
 import useAnnotatorData from '@/composables/useAnnotatorData';
 import useAnnotatorMoves from '@/composables/useAnnotatorMoves';
-
+import useCurrentEntities from '@/composables/useCurrentEntities';
 
 const socket = inject('socket')
 
@@ -348,11 +348,6 @@ const getHover = () => {
     return hover.value;
 };
 
-
-const updateCurrentAnnotation = (value) => {
-    current.value.annotation = -1;
-};
-
 const handleFetchError = () => {
   axiosReqestError(
     "Could not find requested image",
@@ -408,24 +403,20 @@ const getCategory = (index) => {
   return (category.value?.length > index && index >= 0) ? category.value[index] : null;
 }
 
-const uniteCurrentAnnotation = (compound, simplify = true, undoable = true, isBBox = false) => {
-  if (currentAnnotationFromList.value == null) return;
-  currentAnnotationFromList.value.unite(compound, simplify, undoable, isBBox);
-};
-
-const subtractCurrentAnnotation = (compound, simplify = true, undoable = true) => {
-  if (currentCategoryFromList.value == null) return;
-  currentAnnotationFromList.value.subtract(compound, simplify, undoable);
-};
-
-
-const getCurrentCategory = () => {
-  return currentCategoryFromList.value;
-};
-
-const getCurrentAnnotation = () => {
-        return currentAnnotationFromList.value;
-};
+const {
+    currentCategory,
+    currentAnnotation,
+    currentKeypoint,
+    currentCategoryFromList,
+    currentAnnotationFromList,
+    uniteCurrentAnnotation,
+    subtractCurrentAnnotation,
+    getCurrentCategory,
+    getCurrentAnnotation,
+    currentAnnotationLength,
+    currentKeypointLength,
+    updateCurrentAnnotation
+  } = useCurrentEntities(current, getCategory, getCategoryByIndex);
 
 const setCursor = (newCursor) => {
         // wait for next Dom update before changing cursor
@@ -434,53 +425,6 @@ const setCursor = (newCursor) => {
               cursor.value = newCursor;
         });
 };
-
-const currentCategoryFromList = computed(() => {
-  return getCategoryByIndex(current.value.category);
-});
-
-const currentCategory = computed(() => {
-  return getCategory(current.value.category);
-});
-
-const currentAnnotationFromList = computed(() => {
-  // recursive call in production mode
-
-  if (currentCategoryFromList.value == null) {
-    return null;
-  }
-
-  return currentCategoryFromList.value.getAnnotationFromIndex(current.value.annotation);
-});
-
-const currentAnnotation = computed(() => {
-  if (currentCategory.value == null) {
-    return null;
-  }
-  return currentCategory.value.getAnnotation(current.value.annotation);
-});
-
-const currentKeypoint = computed(() => {
-  if (currentCategory.value == null) {
-    return null;
-  }
-  if (
-    currentAnnotation.value == null ||
-    !currentAnnotation.value.keypointLabels ||
-    currentAnnotation.value.keypointLabels.length === 0 ||
-    !currentAnnotation.value.showKeypoints
-  ) {
-    return null;
-  }
-  if (current.value.keypoint === -1) {
-    return null;
-  }
-  return {
-    label: [String(current.value.keypoint + 1)],
-    visibility: currentAnnotation.value.getKeypointVisibility(current.value.keypoint),
-  };
-});
-
 
 const createAnnotation = () => {
         if (currentCategoryFromList.value) {
@@ -601,16 +545,8 @@ const doneLoading = computed(() => {
   return !loading.image && !loading.data;
 });
 
-const currentAnnotationLength = computed(() => {
-  return currentCategoryFromList.value.category.annotations.length||0;
-});
-
-const currentKeypointLength = computed(() => {
-  return currentAnnotationFromList.value.annotation.keypoints.length||0;
-});
 
 const {moveUp, moveDown, stepIn, stepOut} = useAnnotatorMoves(current, currentAnnotation, currentAnnotationFromList, currentCategory, currentCategoryFromList, currentKeypoint, categories, currentAnnotationLength)
-
 
 watch(
   () => doneLoading.value, 
@@ -646,40 +582,12 @@ watch(
       }
 });
 
-watch(
-  () => current.value.category, 
-  (cc) => {
-      if (cc < -1) current.value.category = -1;
-      const max = categories.value.length;
-      if (cc > max) {
-        current.value.category = -1;
-      }
-});
-
-watch(
-  () => current.value.annotation, 
-  (ca) => {
-      if (ca < -1) current.value.annotation = -1;
-      if (currentCategoryFromList.value != null) {
-        const max = currentAnnotationLength.value;
-        if (ca > max) {
-          current.value.annotation = -1;
-        }
-      }
-});
-
-watch(
-  ()=> current.value.keypoint, 
-  (sk) => {
-    // updateKeypointPanel.value = updateKeypointPanel.value + 1;
-    if (sk < -1) current.value.keypoint = -1;
-    if (currentCategoryFromList.value != null) {
-      const max = currentAnnotationLength.value;
-      if (sk > max) {
-        current.value.keypoint = -1;
-      }
-    }
-});
+const clampIndex = (val, max) => (val < 0 ? -1 : val >= max ? max - 1 : val)
+watchEffect(() => {
+  current.value.category   = clampIndex(current.value.category,   categories.value.length)
+  current.value.annotation = clampIndex(current.value.annotation, currentCategoryFromList.value?.category.annotations.length || 0)
+  current.value.keypoint   = clampIndex(current.value.keypoint,   currentAnnotationFromList.value?.annotation.keypoints.length || 0)
+})
 
 watch(
   () => annotating.value, 
@@ -741,36 +649,15 @@ onBeforeUpdate(() => {
 });
 
 
-// Shoudl try to group all methods in a single provide like this :
-// provide('annotator', { setCursor, updateCurrentAnnotation, ...,updateAnnotationCategory});
-// in each impacted file should be able to inject like this :
-// const { setCursor, updateCurrentAnnotation, ... } = inject('annotations');
-provide('setCursor', setCursor);
-provide('updateCurrentAnnotation', updateCurrentAnnotation);
-provide('save', save);
-provide('getData', getData);
-provide('activateTools', activateTools);
-provide('current', current.value);
-provide('setActiveTool', setActiveTool);
-provide('getActiveTool', getActiveTool);
-provide('uniteCurrentAnnotation', uniteCurrentAnnotation);
-provide('getCurrentAnnotation', getCurrentAnnotation);
-provide('getCurrentCategory', getCurrentCategory);
-provide('imageRaster', image.value.raster);
-provide('getImageRaster', getImageRaster);
-provide('getCategory', getCategory);
-provide('getCategoryByIndex', getCategoryByIndex);
-provide('getPaper', getPaper);
-provide('getHover', getHover);
-provide('getImageId', getImageId);
-provide('addAnnotation', addAnnotation);
-provide('showAll', showAll);
-provide('hideAll', hideAll);
-provide('fit', fit);
-provide('scrollElement', scrollElement);
-provide('selectLastEditorTool', selectLastEditorTool);
-provide('updateAnnotationCategory', updateAnnotationCategory);
+const ctx = {
+ setCursor, updateCurrentAnnotation, save, getData, activateTools, current, setActiveTool, getActiveTool,
+ uniteCurrentAnnotation, getCurrentAnnotation, getCurrentCategory, getImageRaster, getCategory,
+ getCategoryByIndex, getPaper, getHover, getImageId, addAnnotation, showAll, hideAll, fit, scrollElement,
+ selectLastEditorTool, updateAnnotationCategory,
+}
 
+provide('annotator', ctx)
+provide('imageRaster', image.value.raster);
 
 const {commands, undo, annotator} = useShortcuts(moveUp, moveDown, stepIn, stepOut, 
                                                                                                       createAnnotation, deleteAnnotation,

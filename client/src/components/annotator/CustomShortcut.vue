@@ -80,7 +80,7 @@ const myexport = (() => {
 });
 
 const myfunction = ((e) => {
-      let target = e.target.tagName.toLowerCase();
+      const target = e.target.tagName.toLowerCase();
 
       if (target === "input") return;
       if (target === "textarea") return;
@@ -96,8 +96,8 @@ const keyCorrections = ((key) => {
 
 const onKeyup = ((e) => {
       window.addEventListener('keyup: ', e, onKeyup);
-      let key = keyCorrections(e.key.toLowerCase());
-      if (key === " ") key = "space";
+      const key = keyCorrections(e.key.toLowerCase());
+      // if (key === " ") key = "space";
       keysDown.value = keysDown.value.filter((a) => a !== key);
 });
 const onKeydown = ((e) => {
@@ -105,7 +105,7 @@ const onKeydown = ((e) => {
         return;
       }
 
-      let key = keyCorrections(e.key.toLowerCase());
+      const key = keyCorrections(e.key.toLowerCase());
 
       if (keysDown.value.indexOf(key) === -1) {
         keysDown.value.push(key);

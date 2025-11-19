@@ -86,7 +86,7 @@ import ZimTool from "@/components/annotator/tools/ZimTool";
 
 import { ref, inject, watch } from "vue";
 
-const getImageRaster = inject('getImageRaster');
+const { getImageRaster } = inject('annotator');
 
 // const activeTool = defineModel('activeTool', { type: String, required: true });
 const image = defineModel('image', { type: Object, required: true });

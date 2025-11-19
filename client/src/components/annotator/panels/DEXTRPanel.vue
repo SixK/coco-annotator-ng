@@ -26,7 +26,7 @@ import { ref, inject, watchEffect } from 'vue';
 const dextr = defineModel('dextr', { type: Object, required: true });
 
 const showme = ref(false);
-const getActiveTool = inject('getActiveTool');
+const { getActiveTool } = inject('annotator');
 
 watchEffect(() => {
     showme.value = dextr.value.name === getActiveTool();

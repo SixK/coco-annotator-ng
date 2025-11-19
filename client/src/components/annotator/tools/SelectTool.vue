@@ -16,7 +16,7 @@ const authStore = useAuthStore();
 
 import { nextTick, ref, computed, watch, inject, onMounted, provide } from 'vue'
 
-const getPaper = inject('getPaper');
+const { getPaper } = inject('annotator');
 const localPaper = ref(getPaper());
 
 const {

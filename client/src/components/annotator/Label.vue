@@ -43,7 +43,7 @@ const emit = defineEmits(['update']);
 
 
 const show = computed(() => {
-  let searchLower = search.value.toLowerCase();
+  const searchLower = search.value.toLowerCase();
   if (searchLower.length === 0) return true;
   return category.value.name.toLowerCase().includes(searchLower);
 });

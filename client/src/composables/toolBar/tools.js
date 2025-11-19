@@ -3,10 +3,7 @@ import paper from 'paper';
 
 export  function useTools() {
 
-const setCursor = inject('setCursor');
-const getActiveTool = inject('getActiveTool');
-const setActiveTool = inject('setActiveTool');
-const current=inject('current');
+const { setCursor, getActiveTool, setActiveTool, current } = inject('annotator');
 
 const state = reactive({
     isActive: false,

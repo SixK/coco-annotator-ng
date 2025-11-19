@@ -26,7 +26,7 @@ import { ref, inject, watchEffect } from 'vue';
 const magicwand = defineModel('magicwand', { type: Object, required: true });
 
 const showme = ref(false);
-const getActiveTool = inject('getActiveTool');
+const { getActiveTool } = inject('annotator');
 
 watchEffect(() => {
     showme.value = magicwand.value.name === getActiveTool();

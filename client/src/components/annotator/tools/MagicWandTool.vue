@@ -10,7 +10,7 @@ import MagicWand from "./magic-wand";
 import { ref, computed, watch, inject, onMounted, provide } from 'vue'
 import { useTools } from "@/composables/toolBar/tools";
 
-const getCurrentAnnotation = inject('getCurrentAnnotation');
+const { getCurrentAnnotation } = inject('annotator');
 
 const width = defineModel('width', { type: null, required: true });
 const height = defineModel('height', { type: null, required: true });

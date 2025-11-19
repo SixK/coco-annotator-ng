@@ -11,7 +11,7 @@ import { useButton } from "@/composables/toolBar/button";
 
 const { iconColor, click } = useButton();
 
-const save = inject('save');
+const { save } = inject('annotator');
 
 const image = defineModel('image', { type: Object, required: true });
 
