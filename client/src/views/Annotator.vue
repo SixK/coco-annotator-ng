@@ -196,17 +196,6 @@ import AnnotateButton from "@/components/annotator/tools/AnnotateButton";
 
 import ToolsPanel from "@/components/annotator/panels/ToolsPanel.vue";
 
-import PolygonPanel from "@/components/annotator/panels/PolygonPanel";
-import BBoxPanel from "@/components/annotator/panels/BBoxPanel";
-import SelectPanel from "@/components/annotator/panels/SelectPanel";
-import MagicWandPanel from "@/components/annotator/panels/MagicWandPanel";
-import BrushPanel from "@/components/annotator/panels/BrushPanel";
-import EraserPanel from "@/components/annotator/panels/EraserPanel";
-import KeypointPanel from "@/components/annotator/panels/KeypointPanel";
-import DEXTRPanel from "@/components/annotator/panels/DEXTRPanel";
-import SamPanel from "@/components/annotator/panels/SamPanel";
-import Sam2Panel from "@/components/annotator/panels/Sam2Panel";
-import ZimPanel from "@/components/annotator/panels/ZimPanel";
 
 import { onBeforeUpdate, onUpdated, nextTick, toRef, ref, computed, watch, inject, onMounted, onUnmounted, provide, watchEffect } from 'vue';
 
@@ -227,6 +216,7 @@ import useAnnotatorState from '@/composables/useAnnotatorState';
 import useAnnotatorData from '@/composables/useAnnotatorData';
 import useAnnotatorMoves from '@/composables/useAnnotatorMoves';
 import useCurrentEntities from '@/composables/useCurrentEntities';
+import useToolPanel from '@/composables/useToolPanel'
 
 const socket = inject('socket')
 
@@ -244,37 +234,16 @@ const settings = ref(null);
 const { state, refsForTemplate, helpers, _, user } = useAnnotatorState(props, image);
 /* expose some tool getters (wrap refs from ToolsPanel) */
 const toolspanel = refsForTemplate.toolspanel;
-
-const toolPanelMap = {
-  bbox:      BBoxPanel,
-  polygon:   PolygonPanel,
-  select:    SelectPanel,
-  magicwand: MagicWandPanel,
-  brush:     BrushPanel,
-  eraser:    EraserPanel,
-  keypoint:  KeypointPanel,
-  dextr:     DEXTRPanel,
-  sam2:      Sam2Panel,
-};
-
 const getTool = name => toolspanel.value?.[name];
-
-/* returns the Vue component that belongs to the active tool */
-const currentPanel = computed(() => {
-  const name = activeTool.value?.toLowerCase();
-  /* do not render at all until the tool instance is ready */
-  if (!name || !toolInst(name)) return null;
-  return toolPanelMap[name];
-});
-
-/* small helper: returns the live tool instance from ToolsPanel */
-const toolInst = name => toolspanel.value?.[name];
 
 /* unpack what we need directly for template access */
 const { categories, dataset, loading, 
               panels, mode, current, hover, annotating, 
               search, shapeOpacity, activeTool, simplify, 
               cursor, categorylist } =  refsForTemplate;
+
+const { currentPanel, panelProps, toolInst } = useToolPanel(activeTool, toolspanel)
+
 
 // need to be declared after image
 const {
@@ -312,24 +281,6 @@ console.log('refsForTemplate.settings:', refsForTemplate.settings, settings.valu
 const { save } = useDataHandling(image, categories, dataset, 
                                   categorylist, refsForTemplate.toolspanel,
                                   settings, state.procStore, mode, current, activeTool, refsForTemplate.zoom);
-
-
-/* props that the active panel needs */
-const panelProps = computed(() => {
-  const tool = activeTool.value?.toLowerCase();
-  if (!tool) return {};
-
-  /* KeypointPanel needs an extra prop */
-  if (tool === 'keypoint') {
-    return {
-      keypoint: toolInst('keypoint'),
-      'current-annotation': currentAnnotation.value,
-    };
-  }
-
-  /* every other panel receives a single prop named after the tool */
-  return { [tool]: toolInst(tool) };
-});
 
 // should try toRef on activeTool, this function could probably be removed 
 const setActiveTool = (tool) => {

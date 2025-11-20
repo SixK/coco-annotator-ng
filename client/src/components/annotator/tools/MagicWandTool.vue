@@ -27,7 +27,7 @@ const {
     cursor
   }= useTools();
 
-name.value = 'Magic Wand';
+name.value = 'MagicWand';
 cursor.value = 'crosshair';
 
 const icon = ref('fa-magic');

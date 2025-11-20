@@ -107,7 +107,7 @@ export default function useShortcuts(moveUp, moveDown, stepIn, stepOut,
           name: "Magic Wand Tool",
           function: () => {
             // if (!$refs.magicwand.isDisabled)
-              setActiveTool("Magic Wand");
+              setActiveTool("MagicWand");
           },
         },
         {
