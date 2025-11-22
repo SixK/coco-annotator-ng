@@ -1,6 +1,9 @@
 import { computed } from 'vue';
+import { useAnnotationStore } from '@/store/annotation';
 
 export default function useCurrentEntities(current, getCategory, getCategoryByIndex) {
+  const store = useAnnotationStore();
+  
   const updateCurrentAnnotation = (value) => {
     current.value.annotation = -1;
   };
@@ -29,22 +32,29 @@ export default function useCurrentEntities(current, getCategory, getCategoryByIn
   });
 
   const currentCategory = computed(() => {
-    return getCategory(current.value.category);
+    return getCategoryByIndex(current.value.category);
   });
 
   const currentAnnotationFromList = computed(() => {
     if (currentCategoryFromList.value == null) {
+      store.setAnnotation(null);
       return null;
     }
-
+    store.setAnnotation(currentCategoryFromList.value.getAnnotationFromIndex(current.value.annotation));
     return currentCategoryFromList.value.getAnnotationFromIndex(current.value.annotation);
   });
 
+  const getCurrentAnnotationRef = () => {
+      return currentAnnotation.value;
+  }
+
   const currentAnnotation = computed(() => {
     if (currentCategory.value == null) {
+      store.setAnnotation(null);
       return null;
     }
-    return currentCategory.value.getAnnotation(current.value.annotation);
+    store.setAnnotation(currentCategory.value.getAnnotationFromIndex(current.value.annotation));
+    return currentCategory.value.getAnnotationFromIndex(current.value.annotation);
   });
 
   const currentKeypoint = computed(() => {
@@ -86,6 +96,7 @@ export default function useCurrentEntities(current, getCategory, getCategoryByIn
     subtractCurrentAnnotation,
     getCurrentCategory,
     getCurrentAnnotation,
+    getCurrentAnnotationRef,
     currentAnnotationLength,
     currentKeypointLength,
     updateCurrentAnnotation

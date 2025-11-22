@@ -273,11 +273,10 @@ import MetaData from "@/components/MetaData";
 import { nextTick, getCurrentInstance, watchEffect, inject, watch, 
                   reactive, ref, computed, onMounted, onUnmounted, toRef } from 'vue';
 
-const { categoryIsCurrent, getCategoryIndex, 
+const { removeKeypointEdge,  addKeypointEdge, categoryIsCurrent, getCategoryIndex, 
                getShowAnnotations, resetCategorySettings } = inject('category');
 
-const { addKeypointEdge,  removeKeypointEdge,  
-              updateAnnotationCategory } = inject('annotator');
+const { updateAnnotationCategory } = inject('annotator');
 
 const emit = defineEmits(['set-color', 'keypointsComplete', 'keypoint-click', 'click', 'deleted']);
 
@@ -684,7 +683,7 @@ const addKeypoint = (point, visibility, label) => {
 const createKeypoint = (point, visibility, label) => {
   return new Keypoint(point.x, point.y, {
     visibility: visibility || 0,
-    indexLabel: label || -1,
+    indexLabel: label || 1,
     fillColor: keypointColors[label - 1],
     radius: scale.value * 6,
     onClick: handleKeypointClick,
@@ -694,7 +693,7 @@ const createKeypoint = (point, visibility, label) => {
 };
 
 const handleKeypointClick = (event) => {
-  if (!['Select', 'Keypoints'].includes(activeTool.value)) return;
+  if (!['Select', 'Keypoint'].includes(activeTool.value)) return;
 
   const targetKeypoint = event.target.keypoint;
 
@@ -726,7 +725,7 @@ const handleKeypointClick = (event) => {
 
 const handleKeypointDoubleClick = (event) => {
   if (!categoryIsCurrent.value) return;
-  if (!['Select', 'Keypoints'].includes(activeTool.value)) return;
+  if (!['Select', 'Keypoint'].includes(activeTool.value)) return;
 
   currentKeypoint.value = event.target.keypoint;
 
@@ -738,7 +737,7 @@ const handleKeypointDoubleClick = (event) => {
 };
 
 const handleKeypointMouseDrag = (event) => {
-  if (!['Select', 'Keypoints'].includes(activeTool.value)) return;
+  if (!['Select', 'Keypoint'].includes(activeTool.value)) return;
 
   const targetKeypoint = event.target.keypoint;
   keypoints.value.moveKeypoint(event.point, targetKeypoint);
@@ -911,7 +910,6 @@ const exportSessions = (annotationData) => {
 const emitModify = () => {
   const uuid = Math.random().toString(36).replace(/[^a-z]+/g, "");
   annotation.value.paper_object = compoundPath.value.exportJSON({ asString: false, precision: 1 });
-  // app.__vue_app__.config.globalProperties.$socket.emit("annotation", {
   socket.io.emit("annotation", {
     uuid: uuid,
     action: "modify",
@@ -1053,12 +1051,13 @@ watch(
 
     session.value.tools.push(tool);
 
-    if (tool === "Keypoints") {
+    if (tool === "Keypoint") {
       handleKeypointsTool(tool);
     }
   }
 );
 
+// called on KeypointTool click
 function handleKeypointsTool(tool) {
   if (!showKeypoints.value) {
     showKeypoints.value = true;
@@ -1228,7 +1227,7 @@ defineExpose({annotation, keypoint, notUsedKeypointLabels, onAnnotationKeypointC
                               compoundPath, setColor, isVisible, showKeypoints, 
                               color, metadata, isEmpty, name, uuid, pervious,
                               count, currentKeypoint, sessions, session, 
-                              addKeypoint,
+                              addKeypoint, getKeypointVisibility,
                               deleteKeypoint, deleteAnnotation, deleteAnnot});
 
 </script>

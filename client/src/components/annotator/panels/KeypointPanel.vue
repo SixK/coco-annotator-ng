@@ -34,6 +34,7 @@ watchEffect(() => {
     showme.value = keypoint.value.name === getActiveTool();
 });
 
+const localCurrentAnnotation=ref('');
 
 
 const visibility = ref(2);
@@ -46,12 +47,12 @@ const updateOrder = (newOrder) => {
 
 const keypointLabel = computed(() => {
   let localAnnot = null;
-  if(!currentAnnotation.value) { 
+  if(!localCurrentAnnotation.value) { 
       //hack since currentAnnotation is not propagated to props !?
        console.log("Still need to hack !");
       localAnnot = getCurrentAnnotation();
   } else { 
-      localAnnot = currentAnnotation.value;
+      localAnnot = localCurrentAnnotation.value;
       console.log("Seem's this hack is not necessary anymore, remove me !");
   }
   if (!localAnnot) return {};
@@ -65,6 +66,13 @@ const keypointLabel = computed(() => {
   }
   return labels[labelIndex];
 });
+
+watch(
+  () => getCurrentAnnotation(),
+  (value) => {
+      localCurrentAnnotation.value=value;
+  }
+);
 
 </script>
 <style scoped>

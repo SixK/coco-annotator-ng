@@ -28,7 +28,7 @@ const isActive = computed(() => {
 
 const scale = defineModel('scale', { type: Number, default: 1 });
 
-name.value = "Keypoints";
+name.value = "Keypoint";
 cursor.value = "cell";
 const icon = ref("fa-map-marker");
 const localCurrentAnnotation=ref('');

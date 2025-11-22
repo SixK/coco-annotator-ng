@@ -310,11 +310,6 @@ const handleFetchError = () => {
 
 
 
-const onCategoryClick = (indices) => {
-    // delegate to helper to keep template lightweight
-    helpers.onCategoryClick(indices);
-};
-
 function handleLabeledKeypointSelection(indices) {
       if(indices.keypoint === -1) return
       
@@ -364,10 +359,21 @@ const {
     subtractCurrentAnnotation,
     getCurrentCategory,
     getCurrentAnnotation,
+    getCurrentAnnotationRef,
     currentAnnotationLength,
     currentKeypointLength,
     updateCurrentAnnotation
   } = useCurrentEntities(current, getCategory, getCategoryByIndex);
+
+const onCategoryClick = (indices) => {
+    // delegate to helper to keep template lightweight
+    // console.log('onCategoryClick:', indices);
+    helpers.onCategoryClick(indices);
+    
+    if (indices.hasOwnProperty('keypoint')) {
+        handleLabeledKeypointSelection(indices);
+    }
+};
 
 const setCursor = (newCursor) => {
         // wait for next Dom update before changing cursor
@@ -535,9 +541,9 @@ watch(
 
 const clampIndex = (val, max) => (val < 0 ? -1 : val >= max ? max - 1 : val)
 watchEffect(() => {
-  current.value.category   = clampIndex(current.value.category,   categories.value.length)
-  current.value.annotation = clampIndex(current.value.annotation, currentCategoryFromList.value?.category.annotations.length || 0)
-  current.value.keypoint   = clampIndex(current.value.keypoint,   currentAnnotationFromList.value?.annotation.keypoints.length || 0)
+  current.value.category   = clampIndex(current.value.category,   categories.value.length);
+  current.value.annotation = clampIndex(current.value.annotation, currentCategoryFromList.value?.category.annotations.length || 0);
+  current.value.keypoint   = clampIndex(current.value.keypoint,   currentAnnotationFromList?.value?.keypointLabels.length || 0);
 })
 
 watch(

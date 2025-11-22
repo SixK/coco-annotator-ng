@@ -60,7 +60,7 @@ export default function useAnnotatorState(props = {}, image) {
 
     onKeypointsComplete: () => {
       // keep minimal logic here
-      if (activeTool.value === 'Keypoints') {
+      if (activeTool.value === 'Keypoint') {
         // switch to select if appropriate
         activeTool.value = 'Select';
       }
