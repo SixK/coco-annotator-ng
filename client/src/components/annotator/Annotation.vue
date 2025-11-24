@@ -307,6 +307,7 @@ const activeTool = defineModel('activeTool', { type: String, required: true });
 const allCategories = defineModel('allCategories', { type: Array, default: () => [] });
 
 const keypointEdges = toRef(props.keypointEdges);
+const keypointsCompleted = ref(false);
 
 const isVisible = ref(true);
 const showKeypoints = ref(false);
@@ -651,16 +652,23 @@ const undoCompound = () => {
 /* addKeypoint */
 const addKeypoint = (point, visibility, label) => {
   // Early exit if the point already exists and no label is provided
+  
+  if (keypointsCompleted.value === true) {
+      console.log('keypoints completed, do nothing...');
+      return;
+  }
+  if(keypointLabels.value.length == 0) return;
   if (label == null && keypoints.value.contains(point)) return;
-   
-   // uncomment to prevent creating keypoint as annotation
-   // if(keypoint.value.next.label === -1) return;
    
    console.log('keypoint:', keypoint.value);
 
   // Set default visibility and label if not provided
   visibility = visibility || parseInt(keypoint.value.next.visibility);
   label = label || parseInt(keypoint.value.next.label);
+
+  if (label == -1 ) label = 1; // fix case adding keypoint without selecting a keypoint first.
+
+  console.log('addKeypoint:', point, visibility, label);
 
   // Create a new keypoint
   const newKeypoint = createKeypoint(point, visibility, label);
@@ -673,9 +681,6 @@ const addKeypoint = (point, visibility, label) => {
 
   // Update the next available label
   updateNextLabel(label);
-
-  // Increment the tag recomputation counter
-  // tagRecomputeCounter.value++;
 };
 
 // Helper Functions
@@ -761,8 +766,10 @@ const updateNextLabel = (currentLabel) => {
       }
     }
     keypoint.value.next.label = nextLabel;
+    keypointsCompleted.value = false;
   } else {
     keypoint.value.next.label = -1;
+    keypointsCompleted.value = true;
     emit("keypointsComplete");
   }
 };

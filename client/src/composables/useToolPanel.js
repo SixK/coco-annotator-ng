@@ -39,7 +39,7 @@ const panelMap = {
   })
 
   const panelProps = computed(() => {
-    const tool = activeToolRef.value?.toLowerCase();
+    const tool = activeToolRef.value.toLowerCase();
     if (!tool) return {}
 
     if (tool === 'keypoint') {

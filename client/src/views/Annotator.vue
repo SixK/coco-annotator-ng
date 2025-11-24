@@ -327,14 +327,17 @@ function handleLabeledKeypointSelection(indices) {
       const indexLabel = String(indices.keypoint + 1);
       const label = keypoints._labelled[indexLabel];
 
+      const tool = ref('');
       if (label) {
         label.selected = true;
-        activeTool.value = getTool('select');
+        tool.value = getTool('select');
+        activeTool.value = 'Select';
       } else {
         currentAnnotationFromList.value.keypoint.next.label = indexLabel;
-        activeTool.value = getTool('keypoint');
+        tool.value = getTool('keypoint');
+        activeTool.value = 'Keypoint';
       }
-      activeTool.value.click();
+      tool.value.click();
 };
 
 const onKeypointsComplete = () => {
