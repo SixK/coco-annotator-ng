@@ -440,7 +440,7 @@ const loadAnnotationKeypoints = () => {
       const y = annotationKeypoints[i + 1] - height / 2;
       const v = annotationKeypoints[i + 2];
 
-      if (x === 0 && y === 0 && v === 0) continue;
+      if (annotationKeypoints[i] === 0 && annotationKeypoints[i + 1] === 0 && v === 0) continue;
 
       addKeypoint(new paper.Point(x, y), v, i / 3 + 1);
     }
@@ -778,6 +778,7 @@ const updateNextLabel = (currentLabel) => {
 
 const deleteKeypoint = (keypoint) => {
       keypoints.value.deleteKeypoint(keypoint);
+      keypointsCompleted.value = false;
 };
 
 const setCompound = (compound) => {

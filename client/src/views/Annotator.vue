@@ -309,7 +309,6 @@ const handleFetchError = () => {
 /* end - getData */
 
 
-
 function handleLabeledKeypointSelection(indices) {
       if(indices.keypoint === -1) return
       
@@ -348,11 +347,9 @@ const getCategoryByIndex = (index) => {
   return (categorylist.value?.length > index && index >= 0) ? categorylist.value[index] : null;
 }
 
-const getCategory = (index) => {
-  return (category.value?.length > index && index >= 0) ? category.value[index] : null;
-}
 
 const {
+    activateTools,
     currentCategory,
     currentAnnotation,
     currentKeypoint,
@@ -366,7 +363,7 @@ const {
     currentAnnotationLength,
     currentKeypointLength,
     updateCurrentAnnotation
-  } = useCurrentEntities(current, getCategory, getCategoryByIndex);
+  } = useCurrentEntities(current, getCategoryByIndex);
 
 const onCategoryClick = (indices) => {
     // delegate to helper to keep template lightweight
@@ -391,7 +388,6 @@ const createAnnotation = () => {
           currentCategoryFromList.value.createAnnotation();
         }
 };
-
 
 const deleteKeypoint = (annotation, keypoint) => {
     if (!annotation || !keypoint) return;
@@ -497,9 +493,6 @@ const removeFromAnnotatingList = () => {
   }
 }
 
-const activateTools = computed(() => {
-  return current.value.annotation !== -1;
-});
 
 const doneLoading = computed(() => {
   return !loading.image && !loading.data;
@@ -534,7 +527,6 @@ watch(
 watch(
   () => currentAnnotationFromList.value, 
   (newElement) => {
-      // updateKeypointPanel.value = updateKeypointPanel.value + 1;
       if (newElement == null) return;
       if (newElement.showAnnotations) {
           const element = newElement.$el;
@@ -611,7 +603,7 @@ onBeforeUpdate(() => {
 
 const ctx = {
  setCursor, updateCurrentAnnotation, save, getData, activateTools, current, setActiveTool, getActiveTool,
- uniteCurrentAnnotation, getCurrentAnnotation, getCurrentCategory, getImageRaster, getCategory,
+ uniteCurrentAnnotation, getCurrentAnnotation, getCurrentCategory, getImageRaster, // getCategory,
  getCategoryByIndex, getPaper, getHover, getImageId, addAnnotation, showAll, hideAll, fit, scrollElement,
  selectLastEditorTool, updateAnnotationCategory,
 }

@@ -1,7 +1,7 @@
 import { computed } from 'vue';
 import { useAnnotationStore } from '@/store/annotation';
 
-export default function useCurrentEntities(current, getCategory, getCategoryByIndex) {
+export default function useCurrentEntities(current, getCategoryByIndex) {
   const store = useAnnotationStore();
   
   const updateCurrentAnnotation = (value) => {
@@ -86,7 +86,12 @@ export default function useCurrentEntities(current, getCategory, getCategoryByIn
     return currentAnnotationFromList.value.annotation.keypoints.length||0;
   });
 
+  const activateTools = computed(() => {
+    return current.value.annotation !== -1;
+  });
+
   return {
+    activateTools,
     currentCategory,
     currentAnnotation,
     currentKeypoint,

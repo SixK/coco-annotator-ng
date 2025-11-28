@@ -116,19 +116,9 @@ import TagsInput from "@/components/TagsInput";
 import { watch, computed, ref, inject, onMounted, toRefs, reactive, watchEffect } from 'vue'
 
 import useAxiosRequest from "@/composables/axiosRequest";
-/*
-import { useStore } from 'vuex';
-const store = useStore();
-*/
 
 import { useProcStore } from "@/store/index";
 const procStore = useProcStore();
-/*
-import { useAuthStore } from "@/store/user";
-const authStore = useAuthStore();
-import { useInfoStore } from "@/store/info";
-const infoStore = useInfoStore();
-*/
 
 const {axiosReqestError, axiosReqestSuccess} = useAxiosRequest();
 const addProcess = (process) => procStore.addProcess(process);
@@ -143,27 +133,6 @@ const next = defineModel('next', { type: Number, default: null });
 const previous = defineModel('previous', { type: Number, default: null });
 const categories = defineModel('categories', { type: Array, required: true });
 
-/*
-const props = defineProps({
-  imageId: {
-    type: Number,
-    required: true,
-  },
-  next: {
-    type: Number,
-    default: null,
-  },
-  previous: {
-    type: Number,
-    default: null,
-  },
-  categories: {
-    type: Array,
-    required: true,
-  },
-  
-});
-*/
 
 const name = 'Copy Annotations';
 const fromId = ref('');
@@ -171,7 +140,6 @@ const selectedCategories = ref([]);
 const visible = ref(false);
 const isVisible = ref(false);
 
-// const imageId = ref(props.imageId);
 const localCategories = ref([]);
 
 let modal = ref(null);
@@ -187,7 +155,6 @@ const copyAnnotations =  () => {
   const scategories = selectedCategories.value.map((category) => parseInt(category))
 
   save(() => {
-
     addProcess(process);
     axios
       .post(`/api/image/copy/${fromId.value}/${imageId.value}/annotations`, {
