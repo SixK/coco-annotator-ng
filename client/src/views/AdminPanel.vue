@@ -210,12 +210,8 @@ import AdminPanel from "@/models/admin";
 import useAxiosRequest from "@/composables/axiosRequest";
 import { ref, computed, watch, inject, onMounted, provide } from 'vue';
 
-import { useAuthStore } from "@/store/user";
-const authStore = useAuthStore();
 import { useProcStore } from "@/store/index";
 const procStore = useProcStore();
-import { useInfoStore } from "@/store/info";
-const infoStore = useInfoStore();
 
 const {axiosReqestError, axiosReqestSuccess} = useAxiosRequest();
 

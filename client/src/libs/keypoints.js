@@ -30,27 +30,6 @@ export class Keypoints extends paper.Group {
     return this._keypoints.length === 0;
   }
 
-  // setKeypointIndex(keypoint, newIndex) {
-  //   let oldIndex = keypoint.indexLabel;
-  //   if (newIndex == oldIndex) return;
-
-  //   keypoint.indexLabel = parseInt(newIndex);
-
-  //   if (oldIndex >= 0) {
-  //     delete this._labelled[oldIndex];
-
-  //     let otherIndices = this._edges[oldIndex];
-  //     if (otherIndices) {
-  //       otherIndices.forEach(i => this.removeLine([i, oldIndex]));
-  //     }
-  //     // TODO: Remove assoicated lines
-  //   }
-  //   if (newIndex >= 0) {
-  //     this._labelled[newIndex] = keypoint;
-  //     this._drawLines(keypoint);
-  //   }
-  // }
-
   bringToFront() {
     super.bringToFront();
     Object.values(this._lines).forEach((l) => l.bringToFront());
@@ -159,11 +138,8 @@ export class Keypoints extends paper.Group {
 
   exportJSON(labels, width, height) {
     let array = [];
-    for (let i = 0; i < labels.length; i++) {
-      let j = i * 3;
-      array[j] = 0;
-      array[j + 1] = 0;
-      array[j + 2] = 0;
+    for (let i = 0; i < labels.length * 3; i++) {
+        array[i] = 0;
     }
 
     this._keypoints.forEach((k) => {

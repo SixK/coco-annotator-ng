@@ -960,25 +960,9 @@ const getKeypointBackgroundColor = (index) => {
     return "#383c4a";
 };
 
-
 const categoryIndex = computed(() => {
       return getCategoryIndex();
 });
-
-/*
-const isCurrent = computed(() => {
-  if (index.value === current.value && categoryIsCurrent.value) {
-    // if (compoundPath != null) compoundPath.bringToFront();
-    // need NextTick to avoid infinite loop this seem's to generate infinite loop
-    // not sure about what bringToFront() do, seem's to change nothing 
-    // but it could be done elsewhere
-    if (keypoints.value != null) nextTick(() => {keypoints.value.bringToFront()});
-    // if (keypoints.value != null) keypoints.value.bringToFront();
-    return true;
-  }
-  return false;
-});
-*/
 
 const isCurrent = computed(() => {
     return index.value === current.value && categoryIsCurrent.value;
@@ -1041,7 +1025,6 @@ const darkHSL = computed(() => {
 });
 
 const notUsedKeypointLabels = computed(() => {
-  // tagRecomputeCounter;
   const tags = {};
   for (let i = 0; i < keypointLabels.value.length; i++) {
     // Include it tags if it is the current keypoint or not in use.
@@ -1166,7 +1149,6 @@ watch(
   if (id !== -1) {
     currentKeypoint.value = keypoints.value._labelled[id];
   }
-  // tagRecomputeCounter.value++;
 });
 
 watch(

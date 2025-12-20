@@ -9,8 +9,6 @@
 import paper from "paper";
 import { useTools } from "@/composables/toolBar/tools";
 
-import { useProcStore } from "@/store/index";
-const procStore = useProcStore();
 import { useAuthStore } from "@/store/user";
 const authStore = useAuthStore();
 

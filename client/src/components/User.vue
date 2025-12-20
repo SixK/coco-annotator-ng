@@ -62,36 +62,34 @@ import { useRouter, useRoute } from 'vue-router';
 
 import { useAuthStore } from "@/store/user";
 const authStore = useAuthStore();
-import { useInfoStore } from "@/store/info";
-const infoStore = useInfoStore();
 
-    const router = useRouter();
-    const route = useRoute();
+const router = useRouter();
+const route = useRoute();
     
-    const logout = () => {
-      authStore.logout()
-    };
+const logout = () => {
+  authStore.logout()
+};
     
-    const logoutButton = () => {
-      if (route.name === "annotate") {
-        // alert('Need to fix behaviour here');
+const logoutButton = () => {
+  if (route.name === "annotate") {
+    // alert('Need to fix behaviour here');
 
-        router.replace({ name: "datasets" }, logout);
-        return;
-      }
-      logout();
-    };
-    const user = computed(() => {
-      return authStore.user;
-    });
-    const display = computed(() => {
-      if (!user.value) return "";
-      return user.value.name.length === 0
-        ? user.value.username
-        : user.value.name;
-    });
+    router.replace({ name: "datasets" }, logout);
+    return;
+  }
+  logout();
+};
+const user = computed(() => {
+  return authStore.user;
+});
+const display = computed(() => {
+  if (!user.value) return "";
+  return user.value.name.length === 0
+    ? user.value.username
+    : user.value.name;
+});
     
-    defineExpose({logoutButton, user, display});
+defineExpose({logoutButton, user, display});
 
 </script>
 

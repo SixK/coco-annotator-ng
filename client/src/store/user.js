@@ -1,23 +1,21 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 
-// const pinia = createPinia();
-
 import { ref } from 'vue';
 
 export const useAuthStore = defineStore('auth', () => {
-  const isAuthenticated = ref(true);
-  const isAuthenticatePending = ref(true);
-  const isLogoutPending = ref(false);
-  const error = ref(null);
-  const user  = ref(null);
+    const isAuthenticated = ref(true);
+    const isAuthenticatePending = ref(true);
+    const isLogoutPending = ref(false);
+    const error = ref(null);
+    const user  = ref(null);
   
-  function isAdmin() {
+    function isAdmin() {
       if (!user.value) return false;
       return user.value.is_admin;
     };
     
-   function loginEnabled() {
+    function loginEnabled() {
       if (!user.value) return false;
       if (!user.value.anonymous) return true;
       return user.value.anonymous;
@@ -59,9 +57,9 @@ export const useAuthStore = defineStore('auth', () => {
         const response = await axios.get('/api/user/');
         user.value = response.data.user;
         isAuthenticated.value = true;
-        isAuthenticatePending.value = false;
       } catch (error) {
         isAuthenticated.value = false;
+      } finally {
         isAuthenticatePending.value = false;
       }
     };

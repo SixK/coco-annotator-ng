@@ -9,12 +9,8 @@
 import { computed, ref, watch } from "vue";
 import { useButton } from "@/composables/toolBar/button";
 
-import { useAuthStore } from "@/store/user";
-const authStore = useAuthStore();
 import { useProcStore } from "@/store/index";
 const procStore = useProcStore();
-import { useInfoStore } from "@/store/info";
-const infoStore = useInfoStore();
 
 const { iconColor, click } = useButton();
 
@@ -32,7 +28,6 @@ const name = computed(() => {
   return "Undo (Last Action: " + last.name + " " + last.action + ")";
 });
 const execute = () => {
-  // store.commit("undo");
   procStore.doUndo();
 };
 
@@ -40,10 +35,6 @@ watch(
   undoList.value,
   () => {
     disabled.value = undoList.value.length === 0;
-    /*
-    iconColor.value = disabled.value
-      ? color.disabled
-      : color.enabled;*/
   },
   { immediate: true }
   );
