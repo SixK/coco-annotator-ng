@@ -21,10 +21,8 @@ const route = useRoute();
 
 const localsocket  = inject('socket');
 
-import { useInfoStore } from "@/store/info";
-const infoStore = useInfoStore();
-import { useAuthStore } from "@/store/user";
-const authStore = useAuthStore();
+import { useStores } from "@/composables/useStores"
+const { auth, info } = useStores();
 
 import {useLoading} from 'vue-loading-overlay'
 const $loading = useLoading({});
@@ -41,11 +39,11 @@ const showNavBar = computed(() => {
 });
 
 const isAuthenticated = computed(() => {
-      return authStore.isAuthenticated;
+      return auth.isAuthenticated;
 });
 
 const isAuthenticatePending = computed(() => {
-      return authStore.isAuthenticatePending;
+      return auth.isAuthenticatePending;
 });
 
 const loginRequired = computed(() => {
@@ -55,10 +53,10 @@ const loginRequired = computed(() => {
       return !isAuthenticated.value;
 });
 
-const { loading, getLoadingStatus } = storeToRefs(infoStore);
+const { loading, getLoadingStatus } = storeToRefs(info);
 
 const socketConnection = computed(() => {
-      return infoStore.socket;
+      return info.socket;
 });
 
 watch(
@@ -106,11 +104,11 @@ onMounted(() => {
         height: 100
       });
       
-    authStore.setUserInfo();
-    infoStore.getServerInfo();
+    auth.setUserInfo();
+    info.getServerInfo();
     
     // dunno why, but app.__vue_app__ is undefined here, let's consider socket are alaways connected
-    infoStore.setSocket(true);
+    info.setSocket(true);
 });
 
 </script>

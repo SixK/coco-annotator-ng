@@ -1,13 +1,9 @@
 import { ref, computed, reactive, onMounted } from 'vue';
 import { useAuthStore } from '@/store/user';
-import { useProcStore } from '@/store/index';
-import { useInfoStore } from '@/store/info';
 
 export default function useAnnotatorState(props = {}, image) {
   // stores
   const authStore = useAuthStore();
-  const procStore = useProcStore();
-  const infoStore = useInfoStore();
 
   const categories = ref([]);
   const dataset = ref({ annotate_url: '' });
@@ -93,10 +89,9 @@ export default function useAnnotatorState(props = {}, image) {
   const user = computed(() => authStore.user);
 
   return {
-    state: { image, categories, dataset, loading, panels, current, hover, annotating, procStore },
+    state: { image, categories, dataset, loading, panels, current, hover, annotating },
     refsForTemplate: refsForTemplateProxy,
     helpers,
-    procStore,
     user,
   };
 }

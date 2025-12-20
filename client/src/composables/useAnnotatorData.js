@@ -2,7 +2,7 @@
 
 import { ref, nextTick } from 'vue';
 
-export default function useAnnotatorData({ state, axios, router, axiosReqestError, toolspanel, settings, categorylist,image, updateImageName }) {
+export default function useAnnotatorData({ state, axios, router, axiosReqestError, toolspanel, settings, categorylist,image, updateImageName, procStore }) {
   // state: expects (image, categories, dataset, loading, annotating, procStore) in state object
   
   const showAll = () => {
@@ -25,7 +25,7 @@ export default function useAnnotatorData({ state, axios, router, axiosReqestErro
   const getData = async (callback) => {
     const process = 'Loading annotation data';
     try {
-      state.procStore.addProcess(process);
+      procStore.addProcess(process);
       const data = await fetchData();
       updateStateWithData(data);
       console.log('data.prefs:', data.preferences);
@@ -42,7 +42,7 @@ export default function useAnnotatorData({ state, axios, router, axiosReqestErro
     } catch (err) {
       handleFetchError(err);
     } finally {
-      state.procStore.removeProcess(process);
+      procStore.removeProcess(process);
     }
   };
 
@@ -66,7 +66,7 @@ export default function useAnnotatorData({ state, axios, router, axiosReqestErro
     state.annotating.value = data.image?.annotating || [];
     state.dataset.value = data.dataset || {};
     state.categories.value = data.categories || [];
-    state.procStore.setDataset(state.dataset.value);
+    procStore.setDataset(state.dataset.value);
   };
 
   const handleFetchError = () => {

@@ -218,6 +218,9 @@ import useAnnotatorMoves from '@/composables/useAnnotatorMoves';
 import useCurrentEntities from '@/composables/useCurrentEntities';
 import useToolPanel from '@/composables/useToolPanel'
 
+import { useProcStore } from "@/store/index";
+const procStore = useProcStore();
+
 const socket = inject('socket')
 
 const props = defineProps({
@@ -257,9 +260,9 @@ const {
   getImageRaster,
   updateImageName,
   getPaper
-} = useCanvas(image, activeTool, current, state.procStore);
+} = useCanvas(image, activeTool, current, procStore);
 
-const { getData, fetchData, showAll, hideAll } = useAnnotatorData({ state, axios, router, axiosReqestError, toolspanel, settings, categorylist, image, updateImageName });
+const { getData, fetchData, showAll, hideAll } = useAnnotatorData({ state, axios, router, axiosReqestError, toolspanel, settings, categorylist, image, updateImageName, procStore });
 
 console.log('image:', image.value.url);
 
@@ -280,7 +283,7 @@ console.log('refsForTemplate.settings:', refsForTemplate.settings, settings.valu
 
 const { save } = useDataHandling(image, categories, dataset, 
                                   categorylist, refsForTemplate.toolspanel,
-                                  settings, state.procStore, mode, current, activeTool, refsForTemplate.zoom);
+                                  settings, procStore, mode, current, activeTool, refsForTemplate.zoom);
 
 // should try toRef on activeTool, this function could probably be removed 
 const setActiveTool = (tool) => {
@@ -581,7 +584,7 @@ onMounted(() => {
     image.value.url = "/api/image/" + image.value.id;
 
     console.log('state:', state, image);
-    state.procStore.setDataset(null);
+    procStore.setDataset(null);
 
     initCanvas("Initializing canvas");
     getData();

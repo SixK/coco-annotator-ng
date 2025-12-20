@@ -33,10 +33,8 @@ import { ref, computed, watch, inject, onMounted, provide } from 'vue';
 
 import { useRoute } from 'vue-router';
 
-import { useAuthStore } from "@/store/user";
-const authStore = useAuthStore();
-import { useProcStore } from "@/store/index";
-const procStore = useProcStore();
+import { useStores } from "@/composables/useStores"
+const { auth, proc } = useStores();
 
 const route = useRoute();
 
@@ -45,7 +43,7 @@ const tasks = ref([]);
 
 const updatePage = () => {
   let process = "Loading tasks";
-  procStore.addProcess(process);
+  proc.addProcess(process);
 
   Tasks.all().then(response => {
         tasks.value = response.data;
@@ -53,7 +51,7 @@ const updatePage = () => {
           showTask(taskToShow.value);
         }
   }).finally (() => {
-      procStore.removeProcess(process);
+      proc.removeProcess(process);
   });
 };
 
@@ -71,7 +69,7 @@ const taskToShow = computed(() => {
 });
 
 const user = computed(() => {
-      return authStore.user;
+      return auth.user;
 });
 
 const groups = computed(() => {

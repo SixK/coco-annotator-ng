@@ -38,7 +38,7 @@ export const useInfoStore = defineStore('info', () => {
         totalUsers.value = data.total_users;
       } catch (error) {
         loading.value = false;
-        success.value = true;
+        success.value = false;
         version.value = 'unknown';
       }
     };

@@ -210,12 +210,8 @@ import { ref, computed, watch, inject, onMounted, provide } from 'vue';
 import { useRouter } from 'vue-router';
 import {useLoading} from 'vue-loading-overlay'
 
-import { useAuthStore } from "@/store/user";
-const authStore = useAuthStore();
-import { useProcStore } from "@/store/index";
-const procStore = useProcStore();
-import { useInfoStore } from "@/store/info";
-const infoStore = useInfoStore();
+import { useStores } from "@/composables/useStores"
+const { auth, proc, info } = useStores();
 
 const {axiosReqestError, axiosReqestSuccess} = useAxiosRequest();
 const router = useRouter();
@@ -259,14 +255,14 @@ const registerUser = () => {
     user: registerForm.value,
     successCallback: () => {
       loader.hide();
-      infoStore.incrementUserCount();
+      info.incrementUserCount();
       router.push(redirect.value);
     },
     errorCallback: (error) =>
       axiosReqestError("User Registration", error.response.data.message)
   };
   console.log('zzzzzzzzz - try to register...');
-  authStore.register(data);
+  auth.register(data);
 };
 
 const loginUser = () => {
@@ -286,7 +282,7 @@ const loginUser = () => {
     errorCallback: (error) =>
       axiosReqestError("User Login", error.response.data.message),
   };
-  authStore.login(data);
+  auth.login(data);
 };
 
 const validUsername = (username) => {
@@ -316,11 +312,11 @@ const inputPasswordClasses = (password) => {
 };
 
 const totalUsers = computed(() => {
-    return infoStore.totalUsers;
+    return info.totalUsers;
 });
 
 const allowRegistration = computed(() => {
-    return infoStore.allowRegistration;
+    return info.allowRegistration;
 });
 
 const showRegistrationForm = computed(() => {
@@ -328,7 +324,7 @@ const showRegistrationForm = computed(() => {
 });
   
 const isAuthenticatePending = computed(() => {
-    return infoStore.isAuthenticatePending;
+    return info.isAuthenticatePending;
 });
 
 const registerValid = computed(() => {

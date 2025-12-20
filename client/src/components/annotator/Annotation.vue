@@ -546,16 +546,12 @@ const onMouseLeave = () => {
 };
 
 const getCompoundPath = () => {
-  if (compoundPath.value == null) {
-    createCompoundPath();
-  }
+  ensureCompoundPathExists();
   return compoundPath.value;
 };
 
 const createUndoAction = (actionName) => {
-      if (compoundPath.value == null) {
-        createCompoundPath();
-      }
+      ensureCompoundPathExists();
 
       const copy = compoundPath.value.clone();
       copy.fullySelected = false;
@@ -791,7 +787,7 @@ const setCompound = (compound) => {
 }
 
 const unite = (compound, simplify = true, undoable = true, isBBox = false) => {
-  if (compoundPath.value == null) createCompoundPath();
+  ensureCompoundPathExists();
   const newCompound = setCompound(compoundPath.value.unite(compound));
   annotation.value.isbbox = isBBox;
   if (undoable) createUndoAction("Unite");
@@ -802,7 +798,7 @@ const unite = (compound, simplify = true, undoable = true, isBBox = false) => {
 };
 
 const subtract = (compound, simplify = true, undoable = true) => {
-  if (compoundPath.value == null) createCompoundPath();
+  ensureCompoundPathExists();
   const newCompound = compoundPath.value.subtract(compound);
   newCompound.onDoubleClick = compoundPath.value.onDoubleClick;
   if (undoable) createUndoAction("Subtract");

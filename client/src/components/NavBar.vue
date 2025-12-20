@@ -90,7 +90,7 @@
           </RouterLink>
         </li>
         <li
-          v-show="authStore.isAdmin"
+          v-show="auth.isAdmin"
           class="nav-item"
           :class="{ active: $route.name === 'admin' }"
         >
@@ -129,22 +129,18 @@ import { computed, watch, ref } from 'vue';
 import User from '@/components/User';
 import Status from '@/components/Status';
 
-import { useProcStore } from "@/store/index";
-const procStore = useProcStore();
-import { useAuthStore } from "@/store/user";
-const authStore = useAuthStore();
-import { useInfoStore } from "@/store/info";
-const infoStore = useInfoStore();
+import { useStores } from "@/composables/useStores"
+const { auth, info, proc } = useStores();
 
 const color = ref('white');
 const backendStatus = ref('Connection unknown');
 
-const version = computed(() => infoStore.version);
-const loginEnabled = computed(() => infoStore.loginEnabled);
-const name = computed(() => infoStore.name);
-const socket = computed(() => infoStore.socket);
+const version = computed(() => info.version);
+const loginEnabled = computed(() => info.loginEnabled);
+const name = computed(() => info.name);
+const socket = computed(() => info.socket);
 const dataset = computed(() => {
-  let dataset = procStore.dataset;
+  let dataset = proc.dataset;
   if (dataset == null) return { name: '', id: '' };
   return dataset;
 });

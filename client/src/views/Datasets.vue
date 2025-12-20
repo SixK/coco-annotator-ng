@@ -234,10 +234,8 @@ import { ref, computed, watch, inject, onMounted, provide } from 'vue';
 
 const {axiosReqestError, axiosReqestSuccess} = useAxiosRequest();
 
-import { useAuthStore } from "@/store/user";
-const authStore = useAuthStore();
-import { useProcStore } from "@/store/index";
-const procStore = useProcStore();
+import { useStores } from "@/composables/useStores"
+const { auth, proc } = useStores();
 
 const pages = ref(1);
 const limit = ref(52);
@@ -257,7 +255,7 @@ const getUsers = () => {
 
 const updatePage = (p) => {
       let process = "Loading datasets";
-      procStore.addProcess(process);
+      proc.addProcess(process);
 
       p = p || page.value;
       page.value = p;
@@ -277,7 +275,7 @@ const updatePage = (p) => {
           });
         })
         .finally(() => { 
-            procStore.removeProcess(process);
+            proc.removeProcess(process);
         });
 };
 
@@ -321,7 +319,7 @@ const validDatasetName = computed(() => {
 });
 
 const user = computed(() => {
-  return authStore.user;
+  return auth.user;
 });
 
 watch(
