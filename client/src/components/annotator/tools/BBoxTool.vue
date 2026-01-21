@@ -179,8 +179,8 @@ const onMouseMove = (event) => {
 
 const undoPoints = (args) => {
   if (polygon.value.path === null) return;
-  let points = args.points;
-  let length = polygon.value.path.segments.length;
+  const points = args.points;
+  const length = polygon.value.path.segments.length;
   polygon.value.path.removeSegments(length - points, length);
 };
 

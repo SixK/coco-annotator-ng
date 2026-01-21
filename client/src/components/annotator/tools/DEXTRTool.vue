@@ -54,7 +54,7 @@ watch(
 );
 
 function createPoint(point) {
-      let paperPoint = new paper.Path.Circle(point, 5);
+      const paperPoint = new paper.Path.Circle(point, 5);
       paperPoint.fillColor = localCurrentAnnotation.value.color;
       paperPoint.data.point = point;
       paperPoints.push(paperPoint);
@@ -88,20 +88,20 @@ function createPath(segments, width, height) {
 // so we call function directly
 function checkPoints(newPoints) {
   if (newPoints.length == 4) {
-    let currentAnnotation = localCurrentAnnotation.value;
-    let pointsList = [];
-    let width = localImageRaster.value.width / 2;
-    let height = localImageRaster.value.height / 2;
+    const currentAnnotation = localCurrentAnnotation.value;
+    const pointsList = [];
+    const width = localImageRaster.value.width / 2;
+    const height = localImageRaster.value.height / 2;
     newPoints.forEach((point) => {
-      let pt = point.position;
+      const pt = point.position;
       pointsList.push([
         Math.round(width + pt.x),
         Math.round(height + pt.y),
       ]);
     });
 
-    let  canvas = getImageRaster().canvas;
-    let data = new FormData();
+    const  canvas = getImageRaster().canvas;
+    const data = new FormData();
 
     data.append('data', JSON.stringify({ 'points': pointsList,
             ...settings.value}));
@@ -116,7 +116,7 @@ function checkPoints(newPoints) {
                 }
             })
           .then((response) => {
-            let compoundPath = createPath(response.data.segmentaiton, width, height);
+            const compoundPath = createPath(response.data.segmentaiton, width, height);
             currentAnnotation.unite(compoundPath);
           })
           .finally(() => { 

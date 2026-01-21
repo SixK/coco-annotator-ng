@@ -41,7 +41,7 @@ watch(
   () => brush.value.pathOptions.radius,
   () => {
     if (brush.value.path == null) return;
-    let position = brush.value.path.position;
+    const position = brush.value.path.position;
     brush.value.path.remove();
     createBrush(position);
   }
@@ -76,7 +76,7 @@ watch(
 );
 
 const draw = () => {
-      let newSelection = selection.value.unite(brush.value.path);
+      const newSelection = selection.value.unite(brush.value.path);
 
       selection.value.remove();
       selection.value = newSelection;

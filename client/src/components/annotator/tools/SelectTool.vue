@@ -97,7 +97,7 @@ watch(
           (hover.value.text.bounds.bottomRight.x -
             hover.value.text.bounds.bottomLeft.x) /
           2;
-        let totalShift = hover.value.shift + hover.value.textShift;
+        const totalShift = hover.value.shift + hover.value.textShift;
         hover.value.text.position = hover.value.position.add(totalShift, 0);
         hover.value.box.bounds = hover.value.text.bounds;
   }

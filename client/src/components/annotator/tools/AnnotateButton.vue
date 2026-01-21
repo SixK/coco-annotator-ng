@@ -61,10 +61,10 @@ const execute = () => {
             },
           })
           .then((response) => {
-            let coco = response.data.coco || {};
-            let images = coco.images || [];
-            let categories = coco.categories || [];
-            let annotations = coco.annotations || [];
+            const coco = response.data.coco || {};
+            const images = coco.images || [];
+            const categories = coco.categories || [];
+            const annotations = coco.annotations || [];
 
             if (
               images.length == 0 ||
@@ -75,16 +75,16 @@ const execute = () => {
               return;
             }
             // Index categoires
-            let indexedCategories = {};
+            const indexedCategories = {};
             categories.forEach((category) => {
               indexedCategories[category.id] = category;
             });
 
             annotations.forEach((annotation) => {
-              let keypoints = annotation.keypoints || [];
-              let segmentation = annotation.segmentation || [];
-              let category = indexedCategories[annotation.category_id];
-              let isbbox = annotation.isbbox || false;
+              const keypoints = annotation.keypoints || [];
+              const segmentation = annotation.segmentation || [];
+              const category = indexedCategories[annotation.category_id];
+              const isbbox = annotation.isbbox || false;
 
               addAnnotation(
                 category.name,

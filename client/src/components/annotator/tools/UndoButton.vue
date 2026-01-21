@@ -19,12 +19,12 @@ const disabled = ref(true);
 const undoList = computed(() => procStore.undo);
 
 const name = computed(() => {
-  let length = undoList.value.length;
+  const length = undoList.value.length;
   if (length == 0) {
     return "Nothing to undo";
   }
 
-  let last = undoList.value[length - 1];
+  const last = undoList.value[length - 1];
   return "Undo (Last Action: " + last.name + " " + last.action + ")";
 });
 const execute = () => {

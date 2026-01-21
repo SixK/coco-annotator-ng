@@ -151,7 +151,7 @@ const onMouseDown = (event) => {
 
 const onMouseUp = () => {
   if (polygon.value.path == null) return;
-  let action = new UndoAction({
+  const action = new UndoAction({
     name: name,
     action: actionTypes.ADD_POINTS,
     func: undoPoints,
@@ -177,7 +177,7 @@ const onMouseMove = (event) => {
  */
 const undoPoints = (args) => {
   if (polygon.value.path == null) return;
-  let points = args.points;
+  const points = args.points;
   let length = polygon.value.path.segments.length;
   if (polygon.value.guidance) {
     length -= 1;
@@ -188,9 +188,9 @@ const undoPoints = (args) => {
 const autoComplete = (minCompleteLength) => {
   if (polygon.value.path == null) return false;
   if (polygon.value.path.segments.length < minCompleteLength) return false;
-  let last = polygon.value.path.lastSegment.point;
-  let first = polygon.value.path.firstSegment.point;
-  let completeDistance = polygon.value.completeDistance;
+  const last = polygon.value.path.lastSegment.point;
+  const first = polygon.value.path.firstSegment.point;
+  const completeDistance = polygon.value.completeDistance;
   if (last.isClose(first, completeDistance)) {
     return complete();
   }

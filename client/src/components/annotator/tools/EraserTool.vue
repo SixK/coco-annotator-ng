@@ -50,7 +50,7 @@ watch(
   () => eraser.value.pathOptions.radius,
   () => {
     if (eraser.value.brush == null) return;
-    let position = eraser.value.brush.position;
+    const position = eraser.value.brush.position;
     eraser.value.brush.remove();
     createBrush(position);
   }
