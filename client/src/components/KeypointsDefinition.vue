@@ -192,8 +192,8 @@ const exportKeypoints = () => {
   }
 
   keypointsDef.value.edges.forEach((edge) => {
-    let label0 = edge[0] - 1;
-    let label1 = edge[0] - 1;
+    const label0 = edge[0] - 1;
+    const label1 = edge[0] - 1;
     newKeypoints[label0].edges.push(keypointsDef.value.labels[label1]);
     newKeypoints[label1].edges.push(keypointsDef.value.labels[label0]);
   });
@@ -210,7 +210,7 @@ const createKeypoints = () => {
 };
 
 const keypointsFromProp = () => {
-      let keypointsArr = [];
+      const keypointsArr = [];
       
       if (
         keypointsDef.value != null &&
@@ -218,7 +218,7 @@ const keypointsFromProp = () => {
         keypointsDef.value.labels.length
       ) {
         for (let i = 0; i < keypointsDef.value.labels.length; ++i) {
-          let label = keypointsDef.value.labels[i];
+          const label = keypointsDef.value.labels[i];
           if (label.length > 0) {
             keypointsArr.push({
               label,
@@ -230,8 +230,8 @@ const keypointsFromProp = () => {
         }
 
         keypointsDef.value.edges.forEach((edge) => {
-          let label0 = Math.max(0, edge[0] - 1);
-          let label1 = Math.max(0, edge[1] - 1);
+          const label0 = Math.max(0, edge[0] - 1);
+          const label1 = Math.max(0, edge[1] - 1);
 
           if (label0 < keypointsArr.length && label1 < keypointsArr.length) {
             keypointsArr[label0].edges.push(keypointsDef.value.labels[label1]);
@@ -257,14 +257,14 @@ const  colorUpdated = (index, color) => {
 };
 
 const keypointLabelUpdated = (index, label) => {
-      let current_kp = keypoints.value[index];
-      let previous_label = current_kp.label;
+      const current_kp = keypoints.value[index];
+      const previous_label = current_kp.label;
 
       current_kp.label_error = "";
       if (label !== "") {
         for (let i = 0; i < keypoints.value.length; ++i) {
           if (i !== index) {
-            let kp = keypoints.value[i];
+            const kp = keypoints.value[i];
             if (label === kp.label) {
               current_kp.label_error = "Duplicate keypoint label";
               kp.label_error = current_kp.label_error;
@@ -285,7 +285,7 @@ const keypointLabelUpdated = (index, label) => {
         if (label !== "") {
           for (let i = 0; i < keypoints.value.length; ++i) {
             if (i !== index) {
-              let kp = keypoints.value[i];
+              const kp = keypoints.value[i];
               kp.edges = kp.edges.map((edge) => {
                 return edge === previous_label ? label : edge;
               });
@@ -297,7 +297,7 @@ const keypointLabelUpdated = (index, label) => {
       } else if (label !== "") {
         for (let i = 0; i < keypoints.value.length; ++i) {
           if (i !== index) {
-            let kp = keypoints.value[i];
+            const kp = keypoints.value[i];
             kp.edges = kp.edges.filter((edge) => {
               return edge != previous_label;
             });
@@ -307,12 +307,12 @@ const keypointLabelUpdated = (index, label) => {
 };
 
 const keypointEdgesUpdated = (index, edges) => {
-  let new_edges = new Set(edges);
-  let current_kp = keypoints.value[index];
+  const new_edges = new Set(edges);
+  const current_kp = keypoints.value[index];
 
   keypoints.value.forEach((kp) => {
     if (kp.label !== current_kp.label) {
-      let kp_edges = new Set(kp.edges);
+      const kp_edges = new Set(kp.edges);
       if (!new_edges.has(kp.label) && kp_edges.has(current_kp.label)) {
         kp_edges.delete(current_kp.label);
         kp.edges = Array.from(kp_edges);

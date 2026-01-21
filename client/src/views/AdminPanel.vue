@@ -226,7 +226,7 @@ const create = ref({
 });
 
 const updatePage = () => {
-  let process = "Loading users";
+  const process = "Loading users";
   procStore.addProcess(process);
 
   AdminPanel.getUsers(limit.value)
@@ -247,7 +247,7 @@ const createUser = (event) => {
 };
 
 const deleteUser = (user) => {
-  let yes = confirm(
+  const yes = confirm(
     `Are you sure you want to delete ${user.username}. This action cannot be undone.`
   );
   if (!yes) return;

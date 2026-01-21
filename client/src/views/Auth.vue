@@ -294,7 +294,7 @@ const validPassword = (password) => {
 };
 
 const inputUsernameClasses = (username) => {
-      let isValid = validUsername(username);
+      const isValid = validUsername(username);
 
       return {
         "is-invalid": !isValid && username.length != 0,
@@ -303,7 +303,7 @@ const inputUsernameClasses = (username) => {
 };
 
 const inputPasswordClasses = (password) => {
-      let isValid = password.length > 4;
+      const isValid = password.length > 4;
 
       return {
         "is-invalid": !isValid && password.length != 0,

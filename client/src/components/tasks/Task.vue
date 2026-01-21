@@ -89,7 +89,7 @@ const onlyErrors = ref(false);
 const onlyWarnings = ref(false);
 
 const warnings = computed(() => {
-      let warnings = task.value.warnings;
+      const warnings = task.value.warnings;
 
       if (warnings == null) return 0;
 
@@ -97,7 +97,7 @@ const warnings = computed(() => {
 });
 
 const errors = computed(() => {
-      let errors = task.value.errors;
+      const errors = task.value.errors;
 
       if (errors == null) return 0;
 
@@ -105,7 +105,7 @@ const errors = computed(() => {
 });
 
 const displayLogs = computed(() => {
-      let local_logs = logs.value;
+      const local_logs = logs.value;
 
       if (onlyErrors.value)
         return local_logs.filter((t) => t.includes("[ERROR]"));
@@ -164,7 +164,7 @@ onMounted( () => {
     getCurrentInstance().ctx.sockets.subscribe('taskProgress', onTaskProgress);
 
     
-    let show = task.value.show;
+    const show = task.value.show;
     if (show !== null) {
         showLogs.value = show;
         if (show) {

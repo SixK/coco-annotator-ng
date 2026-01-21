@@ -127,7 +127,7 @@ const showAnnotations = ref(true);
 import loaderUrl from "@/assets/loader.gif";
 
 const imageUrl = computed(() => {
-      let d = new Date();
+      const d = new Date();
       if (showAnnotations.value) {
         return `/api/image/${image.value.id}?width=250&thumbnail=true&dummy=${d.getTime()}`;
       } else {
@@ -141,7 +141,7 @@ const annotated = computed(() => {
 });
 
 const downloadURI = (uri, exportName) => {
-  let link = document.createElement("a");
+  const link = document.createElement("a");
   link.href = uri;
   link.download = exportName;
   document.body.appendChild(link);
@@ -160,7 +160,7 @@ const onDownloadClick = () => {
   downloadURI("/api/image/" + image.value.id + "?asAttachment=true", image.value.file_name);
   
   axios.get("/api/image/" + image.value.id + "/coco").then(response => {
-    let dataStr =
+    const dataStr =
       "data:text/json;charset=utf-8," +
       encodeURIComponent(JSON.stringify(response.data));
     downloadURI(

@@ -272,7 +272,7 @@ watch(
 
 
 const onImageClick = () => {
-  let identifier = dataset.value.id;
+  const identifier = dataset.value.id;
   router.push({ name: 'dataset', params: { identifier } });
 };
 
@@ -331,7 +331,7 @@ const onSave = () => {
 };
 
 const downloadURI = (uri, exportName) => {
-  let link = document.createElement("a");
+  const link = document.createElement("a");
   link.href = uri;
   link.download = exportName;
   document.body.appendChild(link);
@@ -365,12 +365,12 @@ const imageUrl = computed(() => {
 
 // const listCategories = computed(() => {
 const listCategories = computed(() => {
-  let list = [];
+  const list = [];
   if (!dataset.value.hasOwnProperty("categories")) return [];
   if (dataset.value.categories.length === 0) return [];
   
   dataset.value.categories.forEach((category) => {
-    let elements = categories.value.filter(
+    const elements = categories.value.filter(
       // quick and dirty fix for categories initiated with id and returned by TagsInput as name
       // (element) => element.id === category
       (element) => element.id === category || element.name === category
@@ -383,7 +383,7 @@ const listCategories = computed(() => {
 });
 
 const categoryTags = computed(() => {
-  let tags = {};
+  const tags = {};
   categories.value.forEach((category) => {
     tags[category.name] = category.name;
   });
@@ -391,7 +391,7 @@ const categoryTags = computed(() => {
 });
 
 const users = computed(() => {
-  let users = {};
+  const users = {};
   // this.$parent.users.forEach((user) => {
   localUsers.value.forEach((user) => {
     users[user.username] = user.username;
