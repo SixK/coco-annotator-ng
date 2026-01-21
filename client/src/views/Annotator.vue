@@ -123,10 +123,10 @@
         </h6>
 
         <div v-if="currentPanel" class="tool-section" style="max-height:30%; color:lightgray">
-            <component
-                    :is="currentPanel"
-                    v-bind="panelProps"
-             />
+          <component
+            :is="currentPanel"
+            v-bind="panelProps"
+          />
         </div>
       </div>
     </aside>
@@ -216,7 +216,8 @@ import useAnnotatorState from '@/composables/useAnnotatorState';
 import useAnnotatorData from '@/composables/useAnnotatorData';
 import useAnnotatorMoves from '@/composables/useAnnotatorMoves';
 import useCurrentEntities from '@/composables/useCurrentEntities';
-import useToolPanel from '@/composables/useToolPanel'
+import useToolPanel from '@/composables/useToolPanel';
+import useAnnotations from '@/composables/useAnnotations';
 
 import { useProcStore } from "@/store/index";
 const procStore = useProcStore();
@@ -234,7 +235,7 @@ const filetitle = ref(null);
 const { image, getImageId, nextImage,  previousImage } = useAnnotatorImage(filetitle);
 // bind all components
 const settings = ref(null);
-const { state, refsForTemplate, helpers, _, user } = useAnnotatorState(props, image);
+const { state, refsForTemplate, helpers, _, user } = useAnnotatorState(image);
 /* expose some tool getters (wrap refs from ToolsPanel) */
 const toolspanel = refsForTemplate.toolspanel;
 const getTool = name => toolspanel.value?.[name];
@@ -386,31 +387,26 @@ const setCursor = (newCursor) => {
         });
 };
 
-const createAnnotation = () => {
-        if (currentCategoryFromList.value) {
-          currentCategoryFromList.value.createAnnotation();
-        }
-};
-
-const deleteKeypoint = (annotation, keypoint) => {
-    if (!annotation || !keypoint) return;
-
-    annotation.keypoints.deleteKeypoint(keypoint);
-    annotation.currentKeypoint = null;
-};
-
-const deleteAnnotation = () => {
-    const annotation = currentAnnotationFromList.value;
-    if (!annotation) return;
-
-    const currentKeypoint = annotation.currentKeypoint;
-    if (currentKeypoint) {
-        deleteKeypoint(annotation, currentKeypoint);
-        return;
-    }
-
-    annotation.deleteAnnotation();
-};
+const {
+  findCategoryByName,
+  addAnnotation,
+  createAnnotation,
+  deleteAnnotation,
+  deleteKeypoint,
+  updateAnnotationCategory,
+  selectAnnotation,
+  scrollToElement,
+} = useAnnotations({
+        image,
+        categories,
+        categorylist,
+        current,
+        axiosReqestError,
+        procStore,
+        router,
+        currentCategoryFromList,
+        currentAnnotationFromList,
+});
 
 
 const actions = {
@@ -422,70 +418,6 @@ const actions = {
   brushDecreaseRadius:  () => getTool('brush').decreaseRadius(),
 };
 const doShortcutAction = action => (actions[action] || (() => {}))();
-
-const scrollElement = (element) => {
-  if (element != null) {
-        element.scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-        });
-  }
-};
-
-
-const findCategoryByName = (categoryName) => {
-      const categoryComponent = categorylist.value.find(
-        (cat) =>
-          cat.category.name.toLowerCase() === categoryName.toLowerCase()
-      );
-      if (!categoryComponent) return null;
-      return categoryComponent.category;
-};
-
-const addAnnotation = (categoryName, segments, keypoints, isbbox = false) => {
-      segments = segments || [];
-      keypoints = keypoints || [];
-
-      if (keypoints.length == 0 && segments.length == 0) return;
-
-      const localcategory = findCategoryByName(categoryName);
-      if (localcategory == null) return;
-
-      Annotations.create({
-        image_id: image.value.id,
-        category_id: localcategory.id,
-        segmentation: segments,
-        keypoints: keypoints,
-        isbbox: isbbox,
-      }).then((response) => {
-        const localannotation = response.data;
-        localcategory.annotations.push(localannotation);
-      });
-};
-
-const updateAnnotationCategory = (annotation, oldCategory, newCategoryName) => {
-  const newCategory = findCategoryByName(newCategoryName);
-  
-  if (!newCategory || !annotation) return;
-
-  currentAnnotationFromList.value.deleteAnnot(annotation.id);
-  Annotations.update(annotation.id, { category_id: newCategory.id }).then(
-    (response) => {
-      const newAnnotation = {
-        ...response.data,
-        ...annotation,
-        metadata: response.data.metadata,
-        category_id: newCategory.id
-      };
-      if (newAnnotation) {
-        oldCategory.annotations = oldCategory.annotations.filter(
-          (a) => a.id !== annotation.id
-        );
-        newCategory.annotations.push(newAnnotation);
-      }
-    }
-  );
-};
 
 const removeFromAnnotatingList = () => {
   if (user.value == null) return;
@@ -514,28 +446,6 @@ watch(
     }
 });
 
-watch(
-  () => currentCategoryFromList.value, 
-  (newCategory) => {
-      if (newCategory == null) return;
-      if (
-          currentAnnotationFromList.value == null ||
-          !newCategory.showAnnotations
-      ) {
-          const element = newCategory.$el;
-          scrollElement(element);
-      }
-});
-
-watch(
-  () => currentAnnotationFromList.value, 
-  (newElement) => {
-      if (newElement == null) return;
-      if (newElement.showAnnotations) {
-          const element = newElement.$el;
-          scrollElement(element);
-      }
-});
 
 const clampIndex = (val, max) => (val < 0 ? -1 : val >= max ? max - 1 : val)
 watchEffect(() => {
@@ -607,7 +517,7 @@ onBeforeUpdate(() => {
 const ctx = {
  setCursor, updateCurrentAnnotation, save, getData, activateTools, current, setActiveTool, getActiveTool,
  uniteCurrentAnnotation, getCurrentAnnotation, getCurrentCategory, getImageRaster, // getCategory,
- getCategoryByIndex, getPaper, getHover, getImageId, addAnnotation, showAll, hideAll, fit, scrollElement,
+ getCategoryByIndex, getPaper, getHover, getImageId, addAnnotation, showAll, hideAll, fit, scrollToElement,
  selectLastEditorTool, updateAnnotationCategory,
 }
 

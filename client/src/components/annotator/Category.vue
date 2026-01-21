@@ -198,7 +198,7 @@ const socket = inject('socket');
 
 const emit = defineEmits(['click', 'keypointsComplete']);
 
-const { getImageId, scrollElement, selectLastEditorTool } = inject('annotator');
+const { getImageId, scrollToElement, selectLastEditorTool } = inject('annotator');
 
 const category = defineModel('category', { type: Object, required: true });
 const index = defineModel('index', { type: Number, required: true });
@@ -406,9 +406,9 @@ const createAnnotation = () => {
         
         if (tmp_annotation == null) {
           const element = document.getElementById(`heading' + category.id`);
-          scrollElement(element);
+          scrollToElement(element);
         } else {
-          scrollElement(tmp_annotation.$el);
+          scrollToElement(tmp_annotation.$el);
         }
       });
 };

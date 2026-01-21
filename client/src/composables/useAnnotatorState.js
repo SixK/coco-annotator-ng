@@ -1,7 +1,7 @@
 import { ref, computed, reactive, onMounted } from 'vue';
 import { useAuthStore } from '@/store/user';
 
-export default function useAnnotatorState(props = {}, image) {
+export default function useAnnotatorState(image) {
   // stores
   const authStore = useAuthStore();
 
