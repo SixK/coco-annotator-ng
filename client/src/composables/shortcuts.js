@@ -6,7 +6,7 @@ import { useProcStore } from "@/store/index";
 export default function useShortcuts(moveUp, moveDown, stepIn, stepOut, 
                                                                                 createAnnotation, deleteAnnotation,
                                                                                 setActiveTool, nextImage, previousImage,
-                                                                                fit, save, doShortcutAction) {
+                                                                                fit, save, getTool){
   const route = useRoute();
   const router = useRouter();
   const commands = ref([]);
@@ -16,23 +16,34 @@ export default function useShortcuts(moveUp, moveDown, stepIn, stepOut,
   const undo = () => {
       procStore.doUndo();
   }
+
+  const actions = {
+    cancelBbox:           () => getTool('bbox').deleteBbox(),
+    cancelPolygon:        () => getTool('polygon').deletePolygon(),
+    eraserIncreaseRadius: () => getTool('eraser').increaseRadius(),
+    eraserDecreaseRadius: () => getTool('eraser').decreaseRadius(),
+    brushIncreaseRadius:  () => getTool('brush').increaseRadius(),
+    brushDecreaseRadius:  () => getTool('brush').decreaseRadius(),
+  };
+  const doShortcutAction = action => (actions[action] || (() => {}))();
   
   const safeSave = async () => {
-  try {
-    if (typeof save === 'function') {
-      await save();
-    }
-    // Force reload after successful save.
-    setTimeout(() => {
-        router.go(0);
-    }, 200); // need to wait axios has finished :(
-  } catch (err) {
-    console.error('Error saving:', err);
-    // Optionally show a notification to user
+      try {
+        if (typeof save === 'function') {
+          await save();
+        }
+        // Force reload after successful save.
+        setTimeout(() => {
+            router.go(0);
+        }, 200); // need to wait axios has finished :(
+      } catch (err) {
+        console.error('Error saving:', err);
+        // Optionally show a notification to user
+      }
   }
-}
-    const annotator = (() =>  {
-        return [
+
+  const annotator = (() =>  {
+    return [
         {
             title: "General",
             default: ["arrowup"],
@@ -196,15 +207,14 @@ export default function useShortcuts(moveUp, moveDown, stepIn, stepOut,
           name: "Subtract Selection",
           readonly: true,
         },
-        ];
-      });
+    ];
+  });
 
-    
-    onMounted(() => {
+  onMounted(() => {
         if (route.name === "annotate") {
             commands.value = annotator();
         }
-    });
+  });
     
   return {
     commands,

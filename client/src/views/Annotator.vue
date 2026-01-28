@@ -409,16 +409,6 @@ const {
 });
 
 
-const actions = {
-  cancelBbox:           () => getTool('bbox').deleteBbox(),
-  cancelPolygon:        () => getTool('polygon').deletePolygon(),
-  eraserIncreaseRadius: () => getTool('eraser').increaseRadius(),
-  eraserDecreaseRadius: () => getTool('eraser').decreaseRadius(),
-  brushIncreaseRadius:  () => getTool('brush').increaseRadius(),
-  brushDecreaseRadius:  () => getTool('brush').decreaseRadius(),
-};
-const doShortcutAction = action => (actions[action] || (() => {}))();
-
 const removeFromAnnotatingList = () => {
   if (user.value == null) return;
   const index = annotating.value.indexOf(user.value.username);
@@ -429,22 +419,8 @@ const removeFromAnnotatingList = () => {
 }
 
 
-const doneLoading = computed(() => {
-  return !loading.image && !loading.data;
-});
-
 
 const {moveUp, moveDown, stepIn, stepOut} = useAnnotatorMoves(current, currentAnnotation, currentAnnotationFromList, currentCategory, currentCategoryFromList, currentKeypoint, categories, currentAnnotationLength)
-
-watch(
-  () => doneLoading.value, 
-  (done) => {
-    if (done) {
-        if (loading.loader) {
-          loading.loader.hide();
-        }
-    }
-});
 
 
 const clampIndex = (val, max) => (val < 0 ? -1 : val >= max ? max - 1 : val)
@@ -527,11 +503,10 @@ provide('imageRaster', image.value.raster);
 const {commands, undo, annotator} = useShortcuts(moveUp, moveDown, stepIn, stepOut, 
                                                                                                       createAnnotation, deleteAnnotation,
                                                                                                       setActiveTool, nextImage, previousImage,
-                                                                                                      fit, save, doShortcutAction);
+                                                                                                      fit, save, getTool);
 
 // defineExpose({simplify, dataset, bbox, select, category});
 defineExpose({simplify, dataset, category});
-
 
 
 </script>
