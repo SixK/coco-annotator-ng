@@ -90,7 +90,7 @@ const execute = () => {
                 category.name,
                 segmentation,
                 keypoints,
-                isbbox=isbbox
+                isbbox
               );
             });
           })
