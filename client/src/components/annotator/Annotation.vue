@@ -676,7 +676,7 @@ const createKeypoint = (point, visibility, label) => {
   return new Keypoint(point.x, point.y, {
     visibility: visibility || 0,
     indexLabel: label || 1,
-    fillColor: keypointColors[label - 1],
+    fillColor: keypointColors.value[label - 1],
     radius: scale.value * 6,
     onClick: handleKeypointClick,
     onDoubleClick: handleKeypointDoubleClick,
