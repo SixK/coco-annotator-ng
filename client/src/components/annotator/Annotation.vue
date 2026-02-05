@@ -280,12 +280,6 @@ const { updateAnnotationCategory } = inject('annotator');
 
 const emit = defineEmits(['set-color', 'keypointsComplete', 'keypoint-click', 'click', 'deleted']);
 
-const props = defineProps({
-    keypointEdges: {
-      type: Array,
-      required: true
-    },
-});
 
 const socket = inject('socket');
 
@@ -300,13 +294,12 @@ const opacity = defineModel('opacity', { type: Number, required: true });
 const scale = defineModel('scale', { type: Number, default: 1 });
 const search = defineModel('search', { type: String, default: "" });
 const simplify = defineModel('simplify', { type: Number, default: 1 });
-// const keypointEdges = defineModel('keypointEdges', { type: Array, required: true });
+const keypointEdges = defineModel('keypointEdges', { type: Array, required: true });
 const keypointLabels = defineModel('keypointLabels', { type: Array, required: true });
 const keypointColors = defineModel('keypointColors', { type: Array, required: true });
 const activeTool = defineModel('activeTool', { type: String, required: true });
 const allCategories = defineModel('allCategories', { type: Array, default: () => [] });
 
-const keypointEdges = toRef(props.keypointEdges);
 const keypointsCompleted = ref(false);
 
 const isVisible = ref(true);
@@ -335,13 +328,17 @@ const session = ref({
     tools: [],
     milliseconds: 0
 });
-// const tagRecomputeCounter = ref(0);
 const visibilityOptions = ref(VisibilityOptions);
 
 let annotationSettingsModal = null;
 let keypointSettingsModal = null;
 
-
+const cleanCompoundPath = () => {
+    if (compoundPath.value !== null) {
+        compoundPath.value.remove();
+        compoundPath.value = null;
+    }
+}
 
 const initAnnotation = () => {
     const metaName = annotation.value.metadata.name;
@@ -351,11 +348,7 @@ const initAnnotation = () => {
         delete annotation.value.metadata["name"];
     }
 
-    if (compoundPath.value !== null) {
-        compoundPath.value.remove();
-        compoundPath.value = null;
-    }
-
+    cleanCompoundPath();
     createCompoundPath(annotation.value.paper_object, annotation.value.segmentation);
 };
 
@@ -664,8 +657,6 @@ const addKeypoint = (point, visibility, label) => {
 
   if (label == -1 ) label = 1; // fix case adding keypoint without selecting a keypoint first.
 
-  console.log('addKeypoint:', point, visibility, label);
-
   // Create a new keypoint
   const newKeypoint = createKeypoint(point, visibility, label);
 
@@ -973,26 +964,22 @@ watch(isCurrent, (isNowCurrent) => {
   }
 });
 
-const keypointListView = computed(() => {
-  const listView = [];
-  for (let i = 0; i < keypointLabels.value.length; ++i) {
-    const visibility = getKeypointVisibility(i);
-    let iconColor = "rgb(40, 42, 49)";
-
-    if (visibility == 1) {
-      iconColor = "lightgray";
-    } else if (visibility == 2) {
-      iconColor = keypointColors.value[i];
-    }
-    listView.push({
-      label: keypointLabels.value[i],
-      visibility,
-      iconColor,
-      backgroundColor: getKeypointBackgroundColor(i),
-    });
+const getKeypointIconColor = (visibility, index) => {
+  switch (visibility) {
+    case 2: return keypointColors.value[index];
+    case 1: return "lightgray";
+    default: return "rgb(40, 42, 49)";
   }
-  return listView;
-});
+};
+
+const keypointListView = computed(() => 
+  keypointLabels.value.map((label, i) => ({
+    label,
+    visibility: getKeypointVisibility(i),
+    iconColor: getKeypointIconColor(getKeypointVisibility(i), i),
+    backgroundColor: getKeypointBackgroundColor(i),
+  }))
+);
 
 const isHover = computed(() => {
   return index.value === hover.value;
@@ -1022,12 +1009,12 @@ const darkHSL = computed(() => {
 
 const notUsedKeypointLabels = computed(() => {
   const tags = {};
-  for (let i = 0; i < keypointLabels.value.length; i++) {
+  keypointLabels.value.forEach((kpLabel, i) => {
     // Include it tags if it is the current keypoint or not in use.
     if (keypoints.value && !keypoints.value._labelled[i + 1]) {
-      tags[i + 1] = keypointLabels.value[i];
+      tags[i + 1] = kpLabel;
     }
-  }
+  });
   return tags;
 });
 
@@ -1154,12 +1141,6 @@ watch(
   currentKeypoint.value.visibility = newVal;
 });
 
-watch(
-  () => keypointEdges.value, 
-  (newEdges) => {
-  keypoints.value.color = darkHSL.value;
-  newEdges.forEach((e) => keypoints.value.addEdge(e));
-});
 
 watch(
   () => scale.value, 
