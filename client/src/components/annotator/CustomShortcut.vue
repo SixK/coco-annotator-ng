@@ -97,9 +97,7 @@ const onKeyup = ((e) => {
       keysDown.value = keysDown.value.filter((a) => a !== key);
 });
 const onKeydown = ((e) => {
-      if (readonly.value) {
-        return;
-      }
+      if (readonly.value) return;
 
       const key = keyCorrections(e.key.toLowerCase());
 

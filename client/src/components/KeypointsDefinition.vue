@@ -210,35 +210,33 @@ const createKeypoints = () => {
 };
 
 const keypointsFromProp = () => {
+      const kdef = keypointsDef.value;
+      if (!kdef?.labels?.length) return [];
+
       const keypointsArr = [];
       
-      if (
-        keypointsDef.value != null &&
-        keypointsDef.value.labels != null &&
-        keypointsDef.value.labels.length
-      ) {
-        for (let i = 0; i < keypointsDef.value.labels.length; ++i) {
-          const label = keypointsDef.value.labels[i];
-          if (label.length > 0) {
-            keypointsArr.push({
-              label,
-              label_error: "",
-              edges: [],
-              color: keypointsDef.value.colors[i] || "#000",
-            });
-          }
+      for (let i = 0; i < kdef.labels.length; ++i) {
+        const label = kdef.labels[i];
+        if (label.length > 0) {
+          keypointsArr.push({
+            label,
+            label_error: "",
+            edges: [],
+            color: kdef.colors[i] || "#000",
+          });
         }
-
-        keypointsDef.value.edges.forEach((edge) => {
-          const label0 = Math.max(0, edge[0] - 1);
-          const label1 = Math.max(0, edge[1] - 1);
-
-          if (label0 < keypointsArr.length && label1 < keypointsArr.length) {
-            keypointsArr[label0].edges.push(keypointsDef.value.labels[label1]);
-            keypointsArr[label1].edges.push(keypointsDef.value.labels[label0]);
-          }
-        });
       }
+
+      kdef.edges.forEach((edge) => {
+        const label0 = Math.max(0, edge[0] - 1);
+        const label1 = Math.max(0, edge[1] - 1);
+
+        if (label0 < keypointsArr.length && label1 < keypointsArr.length) {
+          keypointsArr[label0].edges.push(kdef.labels[label1]);
+          keypointsArr[label1].edges.push(kdef.labels[label0]);
+        }
+      });
+
       return keypointsArr;
 };
 
@@ -256,83 +254,70 @@ const  colorUpdated = (index, color) => {
         emit('update:keypoints-def', hiddenValue.value);
 };
 
-const keypointLabelUpdated = (index, label) => {
-      const current_kp = keypoints.value[index];
-      const previous_label = current_kp.label;
+const keypointLabelUpdated = (index, newLabel) => {
+  const kps = keypoints.value;
+  const current = kps[index];
+  const oldLabel = current.label;
 
-      current_kp.label_error = "";
-      if (label !== "") {
-        for (let i = 0; i < keypoints.value.length; ++i) {
-          if (i !== index) {
-            const kp = keypoints.value[i];
-            if (label === kp.label) {
-              current_kp.label_error = "Duplicate keypoint label";
-              kp.label_error = current_kp.label_error;
-            } else if (
-              previous_label === kp.label &&
-              kp.label_error.length !== 0
-            ) {
-              kp.label_error = "";
-            }
-          }
-        }
-      } else if (current_kp.edges.length !== 0) {
-        current_kp.label_error = "Label is required";
-      }
+  // Validation
+  const isEmpty = newLabel === "";
+  const hasEdges = current.edges.length > 0;
+  const duplicate = kps.find((kp, i) => i !== index && kp.label === newLabel);
 
-      current_kp.label = label;
-      if (current_kp.label_error === "") {
-        if (label !== "") {
-          for (let i = 0; i < keypoints.value.length; ++i) {
-            if (i !== index) {
-              const kp = keypoints.value[i];
-              kp.edges = kp.edges.map((edge) => {
-                return edge === previous_label ? label : edge;
-              });
-            }
-          }
-        }
-        hiddenValue.value = propFomKeypoints();
-        emit('update:keypoints-def', hiddenValue.value);
-      } else if (label !== "") {
-        for (let i = 0; i < keypoints.value.length; ++i) {
-          if (i !== index) {
-            const kp = keypoints.value[i];
-            kp.edges = kp.edges.filter((edge) => {
-              return edge != previous_label;
-            });
-          }
-        }
-      }
-};
-
-const keypointEdgesUpdated = (index, edges) => {
-  const new_edges = new Set(edges);
-  const current_kp = keypoints.value[index];
-
-  keypoints.value.forEach((kp) => {
-    if (kp.label !== current_kp.label) {
-      const kp_edges = new Set(kp.edges);
-      if (!new_edges.has(kp.label) && kp_edges.has(current_kp.label)) {
-        kp_edges.delete(current_kp.label);
-        kp.edges = Array.from(kp_edges);
-      } else if (
-        new_edges.has(kp.label) &&
-        !kp_edges.has(current_kp.label)
-      ) {
-        kp_edges.add(current_kp.label);
-        kp.edges = Array.from(kp_edges);
-      }
-      if (
-        kp.edges.length === 0 &&
-        kp.label.length === 0 &&
-        kp.label_error
-      ) {
-        kp.label_error = "";
-      }
+  current.label_error = isEmpty 
+    ? (hasEdges ? "Label is required" : "")
+    : (duplicate ? "Duplicate keypoint label" : "");
+  
+  if (duplicate) duplicate.label_error = current.label_error;
+  
+  // Apply label
+  current.label = newLabel;
+  
+  // Edge management
+  kps.forEach((kp, i) => {
+    if (i === index) return;
+    
+    if (current.label_error && !isEmpty) {
+      // Remove broken edges on validation fail
+      kp.edges = kp.edges.filter(e => e !== oldLabel);
+    } else {
+      // Update references and clear stale errors
+      if (kp.label === oldLabel) kp.label_error = "";
+      kp.edges = kp.edges.map(e => e === oldLabel ? newLabel : e);
     }
   });
-  keypoints.value[index].edges = edges;
+  
+  // Emit on success
+  if (!current.label_error) {
+    hiddenValue.value = propFomKeypoints();
+    emit('update:keypoints-def', hiddenValue.value);
+  }
+};
+
+
+const keypointEdgesUpdated = (index, newEdges) => {
+  const current = keypoints.value[index];
+  const targets = new Set(newEdges);
+  
+  // Mutate others
+  keypoints.value.forEach((kp, i) => {
+    if (i === index || kp.label === current.label) return;
+    
+    const needsEdge = targets.has(kp.label);
+    const hasEdge = kp.edges.includes(current.label);
+    
+    if (needsEdge === hasEdge) return;
+    
+    kp.edges = needsEdge 
+      ? [...kp.edges, current.label]
+      : kp.edges.filter(e => e !== current.label);
+      
+    if (!kp.edges.length && !kp.label && kp.label_error) {
+      kp.label_error = "";
+    }
+  });
+  
+  current.edges = newEdges;
   hiddenValue.value = propFomKeypoints();
   emit('update:keypoints-def', hiddenValue.value);
 };
@@ -341,6 +326,8 @@ const propFomKeypoints = () => {
   let edge_labels = {};
   let labels = [];
   let colors = [];
+  let edges = [];
+
   keypoints.value.forEach (kp => {
     if (kp.label.length > 0) {
       labels.push(kp.label);
@@ -357,7 +344,6 @@ const propFomKeypoints = () => {
       }
     });
   });
-  let edges = [];
   for (const label in edge_labels) {
     let label_index = labels.indexOf(label) + 1;
     edge_labels[label].forEach((edge) => {
@@ -369,14 +355,14 @@ const propFomKeypoints = () => {
 };
 
 const otherKeypointLabels = (current_label) => {
+  if (!keypoints.value) return [];
+
   const labels = {};
-  if (keypoints.value != null) {
-    keypoints.value.forEach((keypoint) => {
+  keypoints.value.forEach((keypoint) => {
       if (keypoint.label !== "" && keypoint.label !== current_label) {
         labels[keypoint.label] = keypoint.label;
       }
-    });
-  }
+  });
   return labels;
 };
 
