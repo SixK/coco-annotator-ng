@@ -285,8 +285,6 @@ const onShare = () => {
     })
     .then(() => {
           emit('updatePage');
-
-      // $parent.updatePage();
     });
 };
 
@@ -310,7 +308,6 @@ const onCocoDownloadClick = () => {
 const onDeleteClick = () => {
   try {
     axios.delete(`/api/dataset/${dataset.value.id}`);
-    // $parent.updatePage();
     emit('updatePage');
   } catch (error) {
     console.error(error);
@@ -363,7 +360,6 @@ const imageUrl = computed(() => {
   return noImageUrl;
 });
 
-// const listCategories = computed(() => {
 const listCategories = computed(() => {
   const list = [];
   if (!dataset.value.hasOwnProperty("categories")) return [];
@@ -392,7 +388,6 @@ const categoryTags = computed(() => {
 
 const users = computed(() => {
   const users = {};
-  // this.$parent.users.forEach((user) => {
   localUsers.value.forEach((user) => {
     users[user.username] = user.username;
   });

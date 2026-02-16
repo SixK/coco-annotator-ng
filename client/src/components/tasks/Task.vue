@@ -72,15 +72,6 @@ const tasksUpdatePage = inject('tasksUpdatePage');
 
 const task = defineModel('task', { type: Object, required: true });
 
-/*
-const props = defineProps({
-  task: {
-    type: Object,
-    required: true,
-  },
-});
-const task = toRef(props, 'task');
-*/
 
 const logs = ref(["Loading logs"]);
 const showLogs = ref(false);
@@ -160,10 +151,8 @@ const onTaskProgress = (data) => {
 };
 
 onMounted( () => {
-    // app.__vue_app__._instance.ctx.sockets.subscribe('taskProgress', onTaskProgress);
     getCurrentInstance().ctx.sockets.subscribe('taskProgress', onTaskProgress);
 
-    
     const show = task.value.show;
     if (show !== null) {
         showLogs.value = show;
@@ -183,7 +172,6 @@ onMounted( () => {
 });
 
 onUnmounted(() => {
-    // app.__vue_app__._instance.ctx.sockets.unsubscribe('taskProgress');
     getCurrentInstance().ctx.sockets.unsubscribe('taskProgress');
 });
 

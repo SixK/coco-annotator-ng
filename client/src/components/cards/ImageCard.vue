@@ -176,7 +176,6 @@ const onDownloadSegmentedClick = () => {
 
 const onDeleteClick = () => {
   axios.delete(`/api/image/${image.value.id}`);
-  // $parent.updatePage();
   emit('updatePage');
 };
 

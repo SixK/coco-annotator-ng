@@ -146,12 +146,6 @@ export default function useAnnotations(options = {}) {
     });
   };
 
-  // Cleanup function
-  /*
-  const cleanup = () => {
-    stopCategoryWatcher();
-    stopAnnotationWatcher();
-  };*/
 
   // Return public API
   return {

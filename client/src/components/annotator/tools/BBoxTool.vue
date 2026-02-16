@@ -131,7 +131,7 @@ const autoStrokeColor = (point) => {
   if (polygon.value.path == null) return;
   if (!color.value.auto) return;
   color.value.circle.position = point;
-  // let raster = $parent.image.raster;
+
   let raster = localImageRaster.value;
   let averageColor = raster.getAverageColor(color.value.circle);
 
@@ -147,9 +147,6 @@ const checkAnnotationExist = computed(() => {
   return (
   !!localCurrentAnnotation.value &&
   !!localCurrentAnnotation.value.annotation.paper_object.length
-  /*
-    !!$parent.currentAnnotation &&
-    !!$parent.currentAnnotation.annotation.paper_object.length*/
   );
 });
 
@@ -157,7 +154,6 @@ const checkAnnotationExist = computed(() => {
 const onMouseDown = (event) => {
   if (polygon.value.path === null && checkAnnotationExist.value) {
     localCurrentCategory.value.createAnnotation();
-    // $parent.currentCategory.createAnnotation();
   }
   if (polygon.value.path === null) {
     createBBox(event);
@@ -189,15 +185,12 @@ function completeBBox() {
   polygon.value.path.fillColor = "black";
   polygon.value.path.closePath();
   uniteCurrentAnnotation(polygon.value.path, true, true, true);
-  // $parent.uniteCurrentAnnotation(polygon.value.path, true, true, true);
   polygon.value.path.remove();
   polygon.value.path = null;
   if (color.value.circle) {
     color.value.circle.remove();
     color.value.circle = null;
   }
-  // removeUndos(actionTypes.ADD_POINTS);
-  // store.commit('removeUndos', actionTypes.ADD_POINTS);
   procStore.removeUndos(actionTypes.ADD_POINTS);
   return true;
 };
