@@ -745,13 +745,9 @@ const updateNextLabel = (currentLabel) => {
 
   const unusedLabelKeys = Object.keys(unusedLabels);
   if (unusedLabelKeys.length > 0) {
-    let nextLabel = unusedLabelKeys[0];
-    for (let ul in unusedLabels) {
-      if (ul > currentLabel) {
-        nextLabel = ul;
-        break;
-      }
-    }
+    const nextLabel = unusedLabelKeys
+                          .find(ul => ul > currentLabel) 
+                              ?? unusedLabelKeys[0];
     keypoint.value.next.label = nextLabel;
     keypointsCompleted.value = false;
   } else {
@@ -1028,8 +1024,7 @@ watch(
     if (tool === "Keypoint") {
       handleKeypointsTool(tool);
     }
-  }
-);
+});
 
 // called on KeypointTool click
 function handleKeypointsTool(tool) {
@@ -1046,108 +1041,104 @@ function handleKeypointsTool(tool) {
 }
 
 function findLabelIndex() {
-  let labelIndex = -1;
-  for (let i =  0; i < keypointLabels.value.length; ++i) {
-    if (isKeypointLabeled(i)) {
-      if (labelIndex <  0) {
-        labelIndex = i;
-      }
-    } else {
-      labelIndex = i;
-      break;
-    }
+  const labels = keypointLabels.value;
+  const len = labels.length;
+  
+  for (let i = 0; i < len; i++) {
+    if (!isKeypointLabeled(i)) return i;
   }
-  return labelIndex;
+  
+  return len - 1; 
 }
 
 
 watch(
     () => opacity.value, 
     (newOpacity) => {
-    compoundPath.value.opacity = newOpacity;
+        compoundPath.value.opacity = newOpacity;
 });
 
 
 watch(
     () => color.value, 
     () => {
-    setColor();
+        setColor();
 });
 
 watch(
     () => isVisible.value, 
     (newVisible) => {
-    if (compoundPath.value == null) return;
-    compoundPath.value.visible = newVisible;
-    keypoints.value.visible = newVisible;
+        if (compoundPath.value == null) return;
+        compoundPath.value.visible = newVisible;
+        keypoints.value.visible = newVisible;
 });
 
 watch(
     () => compoundPath.value, 
     () => {
-    if (compoundPath.value == null) return;
-    compoundPath.value.visible = isVisible.value;
-    setColor();
-    updateIsEmptyState();
-}
+        if (compoundPath.value == null) return;
+        compoundPath.value.visible = isVisible.value;
+        setColor();
+        updateIsEmptyState();
+    }
 );
 
 watch(
     () => keypoints.value, 
     () => {
-    updateIsEmptyState();
+        updateIsEmptyState();
 });
 
 
 watch(
   () => isCurrent.value, 
   (newcurrent, wasCurrent) => {
-  if (newcurrent) {
-    // Start new session
-    session.value.start = Date.now();
-    session.value.tools = [activeTool.value];
-  } else {
-    currentKeypoint.value = null;
-  }
-  if (wasCurrent) {
-    // Close session
-    session.value.milliseconds = Date.now() - session.value.start;
-    sessions.value.push(session.value);
-  }
-  if (compoundPath.value == null) return;
-  compoundPath.value.fullySelected = newcurrent;
+      if (newcurrent) {
+        // Start new session
+        session.value.start = Date.now();
+        session.value.tools = [activeTool.value];
+      } else {
+        currentKeypoint.value = null;
+      }
+      if (wasCurrent) {
+        // Close session
+        session.value.milliseconds = Date.now() - session.value.start;
+        sessions.value.push(session.value);
+      }
+      if (compoundPath.value == null) return;
+      compoundPath.value.fullySelected = newcurrent;
 });
 
 watch(
   () => currentKeypoint.value, 
   (point, old) => {
-  if (old) old.selected = false;
-  if (point) point.selected = true;
+      if (old) old.selected = false;
+      if (point) point.selected = true;
 });
 
 watch(
   () => keypoint.value.tag, 
   (newVal) => {
-  const id = newVal.length === 0 ? -1 : newVal[0];
-  if (id !== -1) {
-    currentKeypoint.value = keypoints.value._labelled[id];
-  }
+      const id = newVal.length === 0 ? -1 : newVal[0];
+      if (id !== -1) {
+        currentKeypoint.value = keypoints.value._labelled[id];
+      }
 });
 
 watch(
   () => keypoint.value.visibility, 
   (newVal) => {
-  if (!currentKeypoint.value) return;
-  currentKeypoint.value.visibility = newVal;
+      if (!currentKeypoint.value) return;
+      currentKeypoint.value.visibility = newVal;
 });
 
 
 watch(
   () => scale.value, 
   (newScale) => {
-  if (!keypoints.value) return;
-  keypoints.value.radius = newScale * 6;
-  keypoints.value.lineWidth = newScale * 2;
+      if (!keypoints.value) return;
+      keypoints.value.radius = newScale * 6;
+      keypoints.value.lineWidth = newScale * 2;
 }, { immediate: true });
 
 const onAnnotation = (data) => {
