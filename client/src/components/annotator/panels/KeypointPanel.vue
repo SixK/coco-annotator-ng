@@ -57,10 +57,9 @@ const keypointLabel = computed(() => {
   }
   if (!localAnnot) return {};
   if(!localAnnot.keypoint) return {};
-  let labelIndex = localAnnot.keypoint.next.label;
-  let labels = localAnnot.notUsedKeypointLabels;
-
-  let labelKeys = Object.keys(labels);
+  const labelIndex = localAnnot.keypoint.next.label;
+  const labels = localAnnot.notUsedKeypointLabels;
+  const labelKeys = Object.keys(labels);
   if ((labelIndex < 0 || labelIndex > labels) && labelKeys.length > 0) {
     return labels[labelKeys[0]];
   }

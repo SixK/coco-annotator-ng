@@ -77,11 +77,11 @@ const groups = computed(() => {
 });
 
 const groupping = computed(() => {
-    let groupping = {};
+    const groupping = {};
 
     tasks.value.forEach((task) => {
         if (task.hasOwnProperty("group")) {
-              let group = task.group;
+              const group = task.group;
               if (!groupping.hasOwnProperty(group)) groupping[group] = [];
               groupping[group].push(task);
         }

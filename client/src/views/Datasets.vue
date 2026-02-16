@@ -281,11 +281,8 @@ const updatePage = (p) => {
 
 const createDataset = () => {
       if (create.value.name.length < 1) return;
-      const categories = [];
 
-      for (let key in create.value.categories) {
-        categories.push(create.value.categories[key]);
-      }
+      const categories = [...create.value.categories];
       Datasets.create(create.value.name, categories)
         .then(() => {
           create.value.name = "";
@@ -301,12 +298,12 @@ const createDataset = () => {
 };
 
 const directory = computed(() => {
-  let closing = create.value.name.length > 0 ? "/" : "";
+  const closing = create.value.name.length > 0 ? "/" : "";
   return "/datasets/" + create.value.name + closing;
 });
 
 const categoryTags = computed(() => {
-  let tags = {};
+  const tags = {};
   categories.value.forEach((category) => {
     tags[category.name] = category.name;
   });

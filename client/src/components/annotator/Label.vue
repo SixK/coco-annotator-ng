@@ -52,7 +52,7 @@ const isSelected = computed(() => {
   return categoryIds.value.indexOf(category.value.id) > -1;
 });
 const click = () => {
-  let copy = categoryIds.value.slice();
+  const copy = categoryIds.value.slice();
   if (!isSelected.value) {
     copy.push(category.value.id);
   } else {

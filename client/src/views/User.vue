@@ -106,7 +106,7 @@ const changeUserPassword = () => {
 };
 
 const inputPasswordClasses = (password) => {
-      let isValid  = validPassword(password);
+      const isValid  = validPassword(password);
 
       return {
         "is-invalid": !isValid && password.length != 0,
