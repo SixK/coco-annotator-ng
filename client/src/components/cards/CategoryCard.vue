@@ -262,11 +262,11 @@ const onUpdateClick = () => {
         emit('updatePage');
       } catch (error) {
           console.error('Error updating category:',    error.message);
-        axiosReqestError(
-          'Updating Category',
-          error.message
-        );
-        emit('updatePage');
+          axiosReqestError(
+            'Updating Category',
+            error.message
+          );
+          emit('updatePage');
       }
 };
 </script>
