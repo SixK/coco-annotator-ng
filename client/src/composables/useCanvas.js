@@ -14,7 +14,7 @@ export default function useCanvas(image, activeTool, current, procStore) {
   };
 
   function updateImageName(filename) {
-    if (textElements.topLeft != null) {
+    if(textElements.topLeft) {
       textElements.topLeft.content = filename;
     }
   };
@@ -95,9 +95,7 @@ function extractImageData(width, height){
 
   // Create top-left text overlay (filename)
   function createTopLeftText(width, height) {
-    if (textElements.topLeft) {
-      textElements.topLeft.remove();
-    }
+    textElements.topLeft?.remove();
 
     const fontSize = width * 0.025;
     const position = new paper.Point(-width / 2, -height / 2 - fontSize * 0.5);
@@ -111,9 +109,7 @@ function extractImageData(width, height){
 
   // Create top-right text overlay (image dimensions)
   function createTopRightText(width, height) {
-    if (textElements.topRight) {
-      textElements.topRight.remove();
-    }
+    textElements.topRight?.remove();
 
     const fontSize = width * 0.025;
     const position = new paper.Point(width / 2, -height / 2 - fontSize * 0.4);

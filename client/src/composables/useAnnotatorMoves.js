@@ -20,18 +20,18 @@ const decrementCategory = () => {
 };
 
 const handleCategoryAnnotations = () => {
-    if (currentCategoryFromList.value) {
-        const annotationCount = currentCategoryFromList.value.category.annotations.length;
-        if (annotationCount > 0) {
-            current.value.annotation = annotationCount - 1;
-        }
+    if (!currentCategoryFromList.value) return;
         
-        if (currentCategoryFromList.value.showAnnotations) {
-            const keypointCount = currentAnnotationFromList.value.keypointLabels.length;
-            if (keypointCount > 0) {
-                current.value.keypoint = 0;
-                currentAnnotationFromList.value.onAnnotationKeypointClick(current.value.keypoint);
-            }
+    const annotationCount = currentCategoryFromList.value.category.annotations.length;
+    if (annotationCount > 0) {
+        current.value.annotation = annotationCount - 1;
+    }
+
+    if (currentCategoryFromList.value.showAnnotations) {
+        const keypointCount = currentAnnotationFromList.value.keypointLabels.length;
+        if (keypointCount > 0) {
+            current.value.keypoint = 0;
+            currentAnnotationFromList.value.onAnnotationKeypointClick(current.value.keypoint);
         }
     }
 };
@@ -149,12 +149,10 @@ const moveDown = () => {
 };
 
 const stepIn = () => {
-
   if (currentCategoryFromList.value == null) return;
 
   const { isVisible, showAnnotations } = currentCategoryFromList.value;
   const annotationExists = currentAnnotationFromList.value != null;
-
   const hasKeypointLabels = annotationExists && 
                                                         currentAnnotationFromList.value.keypointLabels && 
                                                         currentAnnotationFromList.value.keypointLabels.length > 0;
