@@ -84,7 +84,7 @@
         >
           <Category
             v-for="(category, index) in categories"
-            :ref="setCategoryRef"
+            ref="categorylist"
             :key="category.id + '-category-'+image.id"
             :simplify="simplify"
             :categorysearch="search"
@@ -273,12 +273,6 @@ const pinching = ref({
       old_zoom: 1
 });
 const category = ref(null);
-
-const setCategoryRef = el => {
-      if (el) {
-         categorylist.value.push(el);
-      }
-}
 
 console.log('refsForTemplate.settings:', refsForTemplate.settings, settings.value);
 
@@ -483,10 +477,6 @@ onMounted(() => {
 onUnmounted(() => {
   socket.emit("annotating", { image_id: image.value.id, active: false });
   getCurrentInstance().ctx.sockets.unsubscribe('annotating', onAnnotating);
-});
-
-onBeforeUpdate(() => {
-      categorylist.value = [];
 });
 
 

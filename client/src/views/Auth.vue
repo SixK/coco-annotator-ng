@@ -114,7 +114,7 @@
                   type="submit"
                   class="btn btn-primary btn-block"
                   :class="{ disabled: !loginValid }"
-                  @click.prevent="loginUser"
+                  @click.prevent="handleLogin"
                 >
                   Login
                 </button>
@@ -179,9 +179,7 @@
                   <input
                     v-model="registerForm.confirmPassword"
                     :class="{
-                      'is-valid':
-                        registerForm.confirmPassword.length > 0 &&
-                        registerForm.confirmPassword === registerForm.password,
+                      'is-valid': isValidRegister()
                     }"
                     type="password"
                     class="form-control"
@@ -191,7 +189,7 @@
                   type="submit"
                   class="btn btn-primary btn-block"
                   :class="{ disabled: !registerValid }"
-                  @click.prevent="registerUser"
+                  @click.prevent="handleRegister"
                 >
                   Register
                 </button>
@@ -205,7 +203,6 @@
 </template>
 
 <script setup>
-import useAxiosRequest from "@/composables/axiosRequest";
 import { ref, computed, watch, inject, onMounted, provide } from 'vue';
 import { useRouter } from 'vue-router';
 import {useLoading} from 'vue-loading-overlay'
@@ -213,7 +210,6 @@ import {useLoading} from 'vue-loading-overlay'
 import { useStores } from "@/composables/useStores"
 const { auth, proc, info } = useStores();
 
-const {axiosReqestError, axiosReqestSuccess} = useAxiosRequest();
 const router = useRouter();
 const $loading = useLoading({});
 
@@ -244,45 +240,23 @@ const loginForm = ref({
     password: ""
 });
 
-const registerUser = () => {
-  if (!registerValid.value) return;
-  const loader = $loading.show({
-    container: registerFormContainer.value,
-    color: "#383c4a"
-  });
-
-  const data = {
-    user: registerForm.value,
-    successCallback: () => {
-      loader.hide();
-      info.incrementUserCount();
-      router.push(redirect.value);
-    },
-    errorCallback: (error) =>
-      axiosReqestError("User Registration", error.response.data.message)
-  };
-  console.log('zzzzzzzzz - try to register...');
-  auth.register(data);
+const handleRegister = async () => {
+  const result = await auth.register(registerForm.value);
+  if (result.success) {
+    router.push({ name: 'datasets' });
+  }
 };
 
-const loginUser = () => {
-  if (!loginValid.value) return;
+const isValidRegister = () => {
+    return registerForm.value.confirmPassword?.length > 0 &&
+                        registerForm.value.confirmPassword === registerForm.value.password
+}
 
-  const loader = $loading.show({
-    container: registerFormContainer.value,
-    color: "#383c4a"
-  });
-
-  const data = {
-    user: loginForm.value,
-    successCallback: () => {
-      loader.hide();
-      router.push(redirect.value);
-    },
-    errorCallback: (error) =>
-      axiosReqestError("User Login", error.response.data.message),
-  };
-  auth.login(data);
+const handleLogin = async () => {
+  const result = await auth.login(loginForm.value);
+  if (result.success) {
+    router.push({ name: 'datasets' });
+  }
 };
 
 const validUsername = (username) => {
@@ -349,15 +323,6 @@ watch(
       }
 });
 
-watch(
-  () => isAuthenticatePending.value, 
-  (pending) => {
-      if (pending) {
-        router.push({
-          name: 'datasets'
-        });
-      }
-}, { immediate: true });
 
 </script>
 

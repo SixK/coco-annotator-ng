@@ -95,7 +95,7 @@
       </div>
 
       <div
-        v-show="auth.loginEnabled()"
+        v-show="auth.loginEnabled"
         class="card-footer text-muted"
       >
         Created by {{ dataset.owner }}

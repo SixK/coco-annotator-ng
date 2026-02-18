@@ -42,10 +42,7 @@
               <input
                 v-model="changePassword.confirm_password"
                 :class="{
-                  'is-valid':
-                    changePassword.confirm_password.length > 0 &&
-                    changePassword.confirm_password ===
-                      changePassword.new_password
+                  'is-valid': isValidPassword()
                 }"
                 type="password"
                 class="form-control"
@@ -54,7 +51,7 @@
             <button
               type="submit"
               class="btn btn-primary btn-block"
-              @click.prevent="changeUserPassword"
+              @click.prevent="handleChangePassword"
             >
               Submit
             </button>
@@ -66,9 +63,6 @@
 </template>
 
 <script setup>
-import axios from "axios";
-import useAxiosRequest from "@/composables/axiosRequest";
-const { axiosReqestError, axiosReqestSuccess } = useAxiosRequest();
 
 import { ref, watch, computed } from "vue";
 
@@ -86,23 +80,22 @@ const validPassword = (password) => {
       return password.length > 4;
 };
 
-const changeUserPassword = () => {
-      if (!validPassword(changePassword.value.new_password)) return;
-      if (changePassword.value.password.length === 0) return;
-      axios
-        .post("/api/user/password", { ...changePassword.value })
-        .then(() => {
-          axiosReqestSuccess(
-            "Changing Password",
-            "Password has been changed"
-          );
-        })
-        .catch((error) => {
-          axiosReqestError(
-            "Changing Password",
-            error.response.data.message
-          );
-        });
+const isValidPassword = () => {
+       return changePassword.value.confirm_password?.length > 0 &&
+                    changePassword.value.confirm_password ===
+                      changePassword.value.new_password
+}
+
+const handleChangePassword = async () => {
+  const result = await authStore.changePassword(
+    changePassword.value.password,
+    changePassword.value.new_password,
+    changePassword.value.confirm_password
+  );
+
+  if (result.success) {     // Success
+    changePassword.value = { password: '', new_password: '', confirmPassword: '' };
+  }
 };
 
 const inputPasswordClasses = (password) => {
@@ -116,7 +109,7 @@ const inputPasswordClasses = (password) => {
 
 const user = computed(() => {
     return authStore.user;
-    });
+});
 
 const displayName = computed(() => {
   if (!user.value) return '';

@@ -72,8 +72,6 @@ const logout = () => {
     
 const logoutButton = () => {
   if (route.name === "annotate") {
-    // alert('Need to fix behaviour here');
-
     router.replace({ name: "datasets" }, logout);
     return;
   }

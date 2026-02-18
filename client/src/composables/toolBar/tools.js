@@ -28,7 +28,6 @@ export  function useTools() {
 
 
   watchEffect(() => {
-      console.log('active tool:',getActiveTool(), name.value);
       if (name.value !== getActiveTool()) {
           state.isActive = false;
       }else{
@@ -61,7 +60,6 @@ export  function useTools() {
   );
 
   watchEffect(() => {
-        console.log('lol:', current.value.annotation);
         state.isDisabled = current.value.annotation === -1;
         if(state.isDisabled) {
             state.isActive = false;

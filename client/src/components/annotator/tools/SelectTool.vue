@@ -161,7 +161,8 @@ const generateTitle = () => {
     string += "ID: " + id + " \n";
     string += "Category: " + localcategory + " \n";
   }
-  if (authStore.loginEnabled()) {
+
+  if (authStore.loginEnabled) {
     const creator = hover.value.annotation.creator;
     if (creator != null) {
       string += "Created by " + creator + "\n\n";

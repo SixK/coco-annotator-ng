@@ -60,7 +60,7 @@
       </div>
 
       <div
-        v-show="authStore.loginEnabled()"
+        v-show="authStore.loginEnabled"
         class="card-footer text-muted"
       >
         Created by {{ category.creator }}

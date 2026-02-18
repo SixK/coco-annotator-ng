@@ -6,9 +6,9 @@
 </template>
 
 <script setup>
-import NavBar from "@/components/NavBar";
+import { computed, watch, onMounted, inject } from 'vue';
 
-import { computed, watch, onMounted, inject, getCurrentInstance } from 'vue';
+import NavBar from "@/components/NavBar";
 
 import {useToast} from 'vue-toast-notification';
 const $toast = useToast();
@@ -38,19 +38,11 @@ const showNavBar = computed(() => {
       return notShow.indexOf(route.name) === -1;
 });
 
-const isAuthenticated = computed(() => {
-      return auth.isAuthenticated;
-});
-
-const isAuthenticatePending = computed(() => {
-      return auth.isAuthenticatePending;
-});
-
 const loginRequired = computed(() => {
-      if (isAuthenticatePending.value) {
-        return false;
+      if (auth.isAuthenticated == false && auth.isAuthenticatePending) {
+        return true;
       }
-      return !isAuthenticated.value;
+      return !auth.isAuthenticated;
 });
 
 const { loading, getLoadingStatus } = storeToRefs(info);
@@ -86,25 +78,20 @@ watch(
 });
 
 watch(
-  () => loginRequired.value,
-  (newValue) => {
+() => loginRequired.value,
+(newValue) => {
     if (newValue) {
       toAuthPage();
-    } else {
-      if (router.name === 'authentication') {
-        router.push({ name: 'datasets' });
-      }
     }
-  },
-  { immediate: true }
-);
+});
 
-onMounted(() => {
+onMounted(async () => {
     loader = $loading.show({
         height: 100
       });
       
-    auth.setUserInfo();
+    //auth.setUserInfo();
+    await auth.initializeAuth();
     info.getServerInfo();
     
     // dunno why, but app.__vue_app__ is undefined here, let's consider socket are alaways connected
