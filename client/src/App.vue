@@ -83,7 +83,7 @@ watch(
     if (newValue) {
       toAuthPage();
     }
-});
+}, { immediate: true });
 
 onMounted(async () => {
     loader = $loading.show({
