@@ -7,7 +7,7 @@ import { ref, computed } from 'vue';
 export const useAuthStore = defineStore('auth', () => {
   // ============ STATE ============
   const isAuthenticated = ref(false);
-  const isAuthenticatePending = ref(true);
+  const isAuthenticatePending = ref(false);
   const isLogoutPending = ref(false);
   const error = ref(null);
   const user = ref(null);

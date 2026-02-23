@@ -83,15 +83,16 @@ watch(
     if (newValue) {
       toAuthPage();
     }
-}, { immediate: true });
+});
 
 onMounted(async () => {
     loader = $loading.show({
         height: 100
       });
       
-    //auth.setUserInfo();
-    await auth.initializeAuth();
+    // auth.setUserInfo();
+    const authed = await auth.initializeAuth();
+    if(authed == false) toAuthPage();
     info.getServerInfo();
     
     // dunno why, but app.__vue_app__ is undefined here, let's consider socket are alaways connected
