@@ -1,5 +1,5 @@
 <template>
-  <div v-show="showme">
+  <div>
     <PanelText name="Settings for next Keypoint" />
     <div class="input-group tool-input-group">
       <div class="input-group-prepend tool-option-pre">
@@ -18,24 +18,17 @@
   </div>
 </template>
 <script setup>
-import { watch, ref, inject, watchEffect, computed } from 'vue';
+import { watch, ref, inject, computed } from 'vue';
 import PanelText from '@/components/PanelText';
 import PanelInputDropdown from '@/components/PanelInputDropdown';
 import { VisibilityOptions } from '@/libs/keypoints';
 
-
 const keypoint = defineModel('keypoint', { type: Object, required: true });
 const currentAnnotation = defineModel('currentAnnotation', { type: Object,  validator: (prop) => typeof prop === 'object' || prop === undefined});
 
-const showme = ref(false);
-const { getActiveTool, getCurrentAnnotation } = inject('annotator');
-
-watchEffect(() => {
-    showme.value = keypoint.value.name === getActiveTool();
-});
+const { getCurrentAnnotation } = inject('annotator');
 
 const localCurrentAnnotation=ref('');
-
 
 const visibility = ref(2);
 const label = ref(-1);

@@ -1,5 +1,5 @@
 <template>
-  <div v-show="showme">
+  <div>
     <PanelButton
       name="Delete BBox"
       @click="bbox.deleteBbox"
@@ -24,15 +24,7 @@
 import PanelButton from "@/components/PanelButton";
 import PanelToggle from "@/components/PanelToggle";
 import PanelInputString from "@/components/PanelInputString";
-import { ref, inject, watchEffect } from 'vue';
 
 const bbox = defineModel('bbox', { type: Object, required: true });
-
-const showme = ref(false);
-const { getActiveTool } = inject('annotator');
-
-watchEffect(() => {
-    showme.value = bbox.value.name === getActiveTool();
-});
 
 </script>

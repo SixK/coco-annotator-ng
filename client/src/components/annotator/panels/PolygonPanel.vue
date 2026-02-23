@@ -1,5 +1,5 @@
 <template>
-  <div v-show="showme">
+  <div>
     <PanelButton
       name="Close Polygon"
       @click="polygon.complete"
@@ -49,15 +49,7 @@ import PanelButton from "@/components/PanelButton";
 import PanelToggle from "@/components/PanelToggle";
 import PanelInputString from "@/components/PanelInputString";
 import PanelInputNumber from "@/components/PanelInputNumber";
-import { ref, inject, watchEffect } from 'vue';
 
 const polygon = defineModel('polygon', { type: Object, required: true });
-
-const showme = ref(false);
-const { getActiveTool } = inject('annotator');
-
-watchEffect(() => {
-    showme.value = polygon.value.name === getActiveTool();
-});
 
 </script>

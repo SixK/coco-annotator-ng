@@ -1,5 +1,5 @@
 <template>
-  <div v-show="showme">
+  <div>
     <PanelInputNumber
       v-model:value="sam2.settings.threshold"
       name="Threshold"
@@ -29,15 +29,7 @@
 
 <script setup>
 import PanelInputNumber from "@/components/PanelInputNumber";
-import { ref, inject, watchEffect } from 'vue';
 
 const sam2 = defineModel('sam2', { type: Object, required: true });
-
-const showme = ref(false);
-const { getActiveTool } = inject('annotator');
-
-watchEffect(() => {
-    showme.value = sam2.value.name === getActiveTool();
-});
 
 </script>

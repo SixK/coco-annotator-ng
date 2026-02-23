@@ -8,16 +8,8 @@
 </template>
 
 <script setup>
-import { ref, inject, watchEffect } from 'vue';
 import PanelToggle from "@/components/PanelToggle";
 
 const select = defineModel('select', { type: Object, required: true });
-
-const showme = ref(false);
-const { getActiveTool } = inject('annotator');
-
-watchEffect(() => {
-    showme.value = select.value.name === getActiveTool();
-});
 
 </script>

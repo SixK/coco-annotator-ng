@@ -1,5 +1,5 @@
 <template>
-  <div v-show="showme">
+  <div>
     <PanelInputNumber
       v-model:value="sam.settings.padding"
       name="Padding"
@@ -21,15 +21,7 @@
 
 <script setup>
 import PanelInputNumber from "@/components/PanelInputNumber";
-import { ref, inject, watchEffect } from 'vue';
 
 const sam = defineModel('sam', { type: Object, required: true });
-
-const showme = ref(false);
-const { getActiveTool } = inject('annotator');
-
-watchEffect(() => {
-    showme.value = sam.value.name === getActiveTool();
-});
 
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div v-show="showme">
+  <div>
     <PanelInputNumber
       v-model:value="brush.brush.pathOptions.radius"
       name="Radius"
@@ -18,15 +18,7 @@
 <script setup>
 import PanelInputString from "@/components/PanelInputString";
 import PanelInputNumber from "@/components/PanelInputNumber";
-import { ref, inject, watchEffect } from 'vue';
 
 const brush = defineModel('brush', { type: Object, required: true });
-
-const showme = ref(false);
-const { getActiveTool } = inject('annotator');
-
-watchEffect(() => {
-    showme.value = brush.value.name === getActiveTool();
-});
 
 </script>
