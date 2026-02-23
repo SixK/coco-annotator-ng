@@ -1,5 +1,5 @@
 <template>
-  <div v-show="showme">
+  <div>
     <PanelToggle
       v-model:show-text="select.hover.showText"
       name="Show Hover Text"
