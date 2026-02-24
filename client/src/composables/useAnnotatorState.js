@@ -22,7 +22,6 @@ export default function useAnnotatorState(image) {
   const shapeOpacity = ref(0.6);
   const simplify = ref(1);
   const cursor = ref('move');
-  const activeTool = ref('Select');
 
   // refs for template components (exposed)
   const refsForTemplate = {
@@ -52,15 +51,7 @@ export default function useAnnotatorState(image) {
         current.value.keypoint = indices.keypoint;
         // to keep the composable lean, consumers can watch current and react
       }
-    },
-
-    onKeypointsComplete: () => {
-      // keep minimal logic here
-      if (activeTool.value === 'Keypoint') {
-        // switch to select if appropriate
-        activeTool.value = 'Select';
-      }
-    },
+    }
   };
 
   const refsForTemplateProxy = {
@@ -74,7 +65,6 @@ export default function useAnnotatorState(image) {
     annotating,
     search,
     shapeOpacity,
-    activeTool,
     simplify,
     cursor,
     categorylist: refsForTemplate.categorylist,

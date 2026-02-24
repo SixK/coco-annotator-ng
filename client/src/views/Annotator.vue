@@ -94,10 +94,9 @@
             :hover="hover"
             :index="index"
             :current="current"
-            :active-tool="activeTool"
             :scale="image.scale"
             @click="onCategoryClick"
-            @keypoints-complete="onKeypointsComplete"
+            @keypoints-complete="toolStore.onKeypointsComplete"
           />
         </div>
 
@@ -119,7 +118,7 @@
       <div v-show="mode == 'segment'">
         <hr>
         <h6 class="sidebar-title text-center">
-          {{ activeTool }}
+          {{ toolStore.activeTool }}
         </h6>
 
         <div v-if="currentPanel" class="tool-section" style="max-height:30%; color:lightgray">
@@ -222,6 +221,9 @@ import useAnnotations from '@/composables/useAnnotations';
 import { useProcStore } from "@/store/index";
 const procStore = useProcStore();
 
+import { useToolStore } from '@/store/toolStore';
+const toolStore = useToolStore();
+
 const socket = inject('socket')
 
 const props = defineProps({
@@ -243,10 +245,10 @@ const getTool = name => toolspanel.value?.[name];
 /* unpack what we need directly for template access */
 const { categories, dataset, loading, 
               panels, mode, current, hover, annotating, 
-              search, shapeOpacity, activeTool, simplify, 
+              search, shapeOpacity, simplify, 
               cursor, categorylist } =  refsForTemplate;
 
-const { currentPanel, panelProps, toolInst } = useToolPanel(activeTool, toolspanel)
+const { currentPanel, panelProps, toolInst } = useToolPanel(toolspanel)
 
 
 // need to be declared after image
@@ -261,7 +263,7 @@ const {
   getImageRaster,
   updateImageName,
   getPaper
-} = useCanvas(image, activeTool, current, procStore);
+} = useCanvas(image, current, procStore);
 
 const { getData, fetchData, showAll, hideAll } = useAnnotatorData({ state, axios, router, axiosReqestError, toolspanel, settings, categorylist, image, updateImageName, procStore });
 
@@ -278,20 +280,7 @@ console.log('refsForTemplate.settings:', refsForTemplate.settings, settings.valu
 
 const { save } = useDataHandling(image, categories, dataset, 
                                   categorylist, refsForTemplate.toolspanel,
-                                  settings, procStore, mode, current, activeTool, refsForTemplate.zoom);
-
-// should try toRef on activeTool, this function could probably be removed 
-const setActiveTool = (tool) => {
-    activeTool.value = tool;
-};
-
-const getActiveTool = () => {
-    return activeTool.value;
-};
-
-const selectLastEditorTool = () => {
-  activeTool.value = localStorage.getItem("editorTool") || "Select";
-};
+                                  settings, procStore, mode, current, refsForTemplate.zoom);
 
 const getHover = () => {
     return hover.value;
@@ -328,23 +317,18 @@ function handleLabeledKeypointSelection(indices) {
       if (label) {
         label.selected = true;
         tool = getTool('select');
-        activeTool.value = 'Select';
+        toolStore.setActiveTool('Select');
       } else {
         currentAnnotationFromList.value.keypoint.next.label = indexLabel;
         tool = getTool('keypoint');
-        activeTool.value = 'Keypoint';
+        toolStore.setActiveTool('Keypoint');
       }
       tool.click();
-};
-
-const onKeypointsComplete = () => {
-  helpers.onKeypointsComplete();
 };
 
 const getCategoryByIndex = (index) => {
   return (categorylist.value?.length > index && index >= 0) ? categorylist.value[index] : null;
 }
-
 
 const {
     activateTools,
@@ -481,10 +465,10 @@ onUnmounted(() => {
 
 
 const ctx = {
- setCursor, updateCurrentAnnotation, save, getData, activateTools, current, setActiveTool, getActiveTool,
- uniteCurrentAnnotation, getCurrentAnnotation, getCurrentCategory, getImageRaster, // getCategory,
+ setCursor, updateCurrentAnnotation, save, getData, activateTools, current, 
+ uniteCurrentAnnotation, getCurrentAnnotation, getCurrentCategory, getImageRaster, 
  getCategoryByIndex, getPaper, getHover, getImageId, addAnnotation, showAll, hideAll, fit, scrollToElement,
- selectLastEditorTool, updateAnnotationCategory,
+ updateAnnotationCategory,
 }
 
 provide('annotator', ctx)
@@ -492,7 +476,7 @@ provide('imageRaster', image.value.raster);
 
 const {commands, undo, annotator} = useShortcuts(moveUp, moveDown, stepIn, stepOut, 
                                                                                                       createAnnotation, deleteAnnotation,
-                                                                                                      setActiveTool, nextImage, previousImage,
+                                                                                                      toolStore.setActiveTool, nextImage, previousImage,
                                                                                                       fit, save, getTool);
 
 // defineExpose({simplify, dataset, bbox, select, category});

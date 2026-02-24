@@ -1,9 +1,12 @@
 import { ref, watch, onMounted, reactive,computed, inject, watchEffect } from 'vue';
 import paper from 'paper';
 
-export  function useTools() {
+import { useToolStore } from '@/store/toolStore';
 
-  const { setCursor, getActiveTool, setActiveTool, current } = inject('annotator');
+export  function useTools() {
+  const toolStore = useToolStore();
+
+  const { setCursor,  current } = inject('annotator');
 
   const state = reactive({
       isActive: false,
@@ -28,12 +31,12 @@ export  function useTools() {
 
 
   watchEffect(() => {
-      if (name.value !== getActiveTool()) {
+      if (name.value !== toolStore.getActiveTool()) {
           state.isActive = false;
       }else{
           if(!state.isDisabled){
              setCursor(cursor.value);
-             setActiveTool(name.value);
+             toolStore.setActiveTool(name.value);
              state.isActive = true;
           }
       } 
@@ -47,14 +50,14 @@ export  function useTools() {
          if (disabled && name.value === "Select") {
              state.isActive = true;
              setCursor(cursor.value);
-             setActiveTool('Select');
+             toolStore.setActiveTool('Select');
          }
 
          let tool = localStorage.getItem("editorTool") || "Select";
          if (!disabled && name.value === tool) {
              state.isActive = true;
              setCursor(cursor.value);
-             setActiveTool(tool);
+             toolStore.setActiveTool(tool);
          }
      }
   );
@@ -66,7 +69,7 @@ export  function useTools() {
 
             if(name.value === 'Select') {
                   setCursor(cursor.value);
-                  setActiveTool('Select');
+                  toolStore.setActiveTool('Select');
                   // emit('update', 'Select');
             }
         } 
@@ -82,7 +85,7 @@ export  function useTools() {
       if (state.isDisabled) return
       selected.value = name.value;
       setCursor(cursor.value);
-      setActiveTool(name.value);
+      toolStore.setActiveTool(name.value);
       state.isActive = true;
       state.isDisabled = false;
       console.log('active in tool', state.isActive, name.value);
@@ -91,7 +94,6 @@ export  function useTools() {
       
 
   const iconColor = computed(() => {
-      console.log('change color:', name.value, state.isDisabled, state.isActive);
       if (state.isDisabled) return color.disabled
       // next line disabled isToggled seem's defined nowhere
       // if (props.isToggled) return props.color.toggle;
@@ -109,8 +111,6 @@ export  function useTools() {
   watch(
       () => state.isDisabled,
       (disabled) => {
-        console.log('disabled !!! :', disabled, state.isActive, name.value);
-        
         if (disabled && name.value === 'Select') {
               console.log('need to emit isDisabled...:', name.value);
         }

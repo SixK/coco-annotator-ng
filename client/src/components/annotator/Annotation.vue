@@ -268,6 +268,9 @@ import UndoAction from "@/undo";
 import { useProcStore } from "@/store/index";
 const procStore = useProcStore();
 
+import { useToolStore } from '@/store/toolStore';
+const toolStore = useToolStore();
+
 import MetaData from "@/components/MetaData";
 
 import { nextTick, getCurrentInstance, watchEffect, inject, watch, 
@@ -297,7 +300,6 @@ const simplify = defineModel('simplify', { type: Number, default: 1 });
 const keypointEdges = defineModel('keypointEdges', { type: Array, required: true });
 const keypointLabels = defineModel('keypointLabels', { type: Array, required: true });
 const keypointColors = defineModel('keypointColors', { type: Array, required: true });
-const activeTool = defineModel('activeTool', { type: String, required: true });
 const allCategories = defineModel('allCategories', { type: Array, default: () => [] });
 
 const keypointsCompleted = ref(false);
@@ -404,7 +406,7 @@ const createNewCompoundPath = () => {
 };
 
 const handleDoubleClick = () => {
-  if (activeTool.value !== 'Select') return;
+  if (toolStore.activeTool !== 'Select') return;
   annotationSettingsModal.show();
 };
 
@@ -685,7 +687,7 @@ const createKeypoint = (point, visibility, label) => {
 };
 
 const handleKeypointClick = (event) => {
-  if (!['Select', 'Keypoint'].includes(activeTool.value)) return;
+  if (!['Select', 'Keypoint'].includes(toolStore.activeTool)) return;
 
   const targetKeypoint = event.target.keypoint;
 
@@ -717,7 +719,7 @@ const handleKeypointClick = (event) => {
 
 const handleKeypointDoubleClick = (event) => {
   if (!categoryIsCurrent.value) return;
-  if (!['Select', 'Keypoint'].includes(activeTool.value)) return;
+  if (!['Select', 'Keypoint'].includes(toolStore.activeTool)) return;
 
   currentKeypoint.value = event.target.keypoint;
 
@@ -729,7 +731,7 @@ const handleKeypointDoubleClick = (event) => {
 };
 
 const handleKeypointMouseDrag = (event) => {
-  if (!['Select', 'Keypoint'].includes(activeTool.value)) return;
+  if (!['Select', 'Keypoint'].includes(toolStore.activeTool)) return;
 
   const targetKeypoint = event.target.keypoint;
   keypoints.value.moveKeypoint(event.point, targetKeypoint);
@@ -936,7 +938,7 @@ const getKeypointBackgroundColor = (index) => {
     // if (keypoint.tag == index + 1) return "#4b624c";
     let activeIndex = keypoint.value.next.label;
 
-    if (activeTool.value === "Select") {
+    if (toolStore.activeTool === "Select") {
       activeIndex = keypoint.value.tag[0];
     }
     if (isCurrent.value && activeIndex == index + 1) return "rgb(30, 86, 36)";
@@ -1015,7 +1017,7 @@ const notUsedKeypointLabels = computed(() => {
 });
 
 watch(
-  () => activeTool.value,
+  () => toolStore.activeTool,
   (tool) => {
     if (!isCurrent.value) return;
 
@@ -1096,7 +1098,7 @@ watch(
       if (newcurrent) {
         // Start new session
         session.value.start = Date.now();
-        session.value.tools = [activeTool.value];
+        session.value.tools = [toolStore.activeTool];
       } else {
         currentKeypoint.value = null;
       }

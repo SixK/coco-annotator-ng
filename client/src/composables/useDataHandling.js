@@ -1,8 +1,10 @@
 import axios from "axios";
 // import { useProcStore } from "@/store/index";
 // import { axiosReqestError } from "@/composables/axiosRequest";
+import { useToolStore } from '@/store/toolStore';
 
-export default function useDataHandling(image, categories, dataset, categorylist, toolspanel, settings, procStore, mode, current, activeTool, zoom) {
+export default function useDataHandling(image, categories, dataset, categorylist, toolspanel, settings, procStore, mode, current, zoom) {
+    const toolStore = useToolStore();
   // New async save() that returns a Promise
   const save = async () => {
     const process = "Saving";
@@ -55,7 +57,7 @@ export default function useDataHandling(image, categories, dataset, categorylist
   });
 
   const exportSettings = () => ({
-    activeTool: activeTool.value,
+    activeTool: toolStore.activeTool,
     zoom: zoom.value,
     tools: {}
   });

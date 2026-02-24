@@ -13,9 +13,11 @@ import Sam2Panel      from '@/components/annotator/panels/Sam2Panel.vue'
 
 import { useAnnotationStore } from '@/store/annotation';
 
+import { useToolStore } from '@/store/toolStore';
 
-export default function useToolPanel(activeToolRef, toolspanelRef) {
+export default function useToolPanel(toolspanelRef) {
   /* ---------- panel map ---------- */
+const toolStore = useToolStore();
 const store = useAnnotationStore();
 
 const panelMap = {
@@ -33,13 +35,13 @@ const panelMap = {
   const toolInst = name => toolspanelRef.value?.[name]
 
   const currentPanel = computed(() => {
-    const name = activeToolRef.value?.toLowerCase();
+    const name = toolStore.activeTool?.toLowerCase();
     if (!name || !toolInst(name)) return null
     return panelMap[name]
   })
 
   const panelProps = computed(() => {
-    const tool = activeToolRef.value.toLowerCase();
+    const tool = toolStore.activeTool?.toLowerCase();
     if (!tool) return {}
 
     if (tool === 'keypoint') {

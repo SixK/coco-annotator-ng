@@ -126,14 +126,12 @@ export default function useAnnotations(options = {}) {
   const stopCategoryWatcher = watch(currentCategoryFromList, (newCategory) => {
     if (!newCategory) return;
     if (currentAnnotationFromList.value == null || !newCategory.showAnnotations) {
-      console.log('watcher scroll category');
       scrollToElement(newCategory.$el);
     }
   });
 
   const stopAnnotationWatcher = watch(currentAnnotationFromList, (newElement) => {
     if (!newElement?.showAnnotations) return;
-    console.log('watcher scroll to annotation');
     scrollToElement(newElement.$el);
   });
 

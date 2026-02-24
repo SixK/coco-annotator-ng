@@ -3,7 +3,7 @@
 import { ref } from 'vue';
 import paper from 'paper';
 
-export default function useCanvas(image, activeTool, current, procStore) {
+export default function useCanvas(image, current, procStore) {
   const canvas = ref(null);
   const zoomLevel = ref(0.2);
   const imageRaster = ref(null);

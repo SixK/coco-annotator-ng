@@ -87,7 +87,6 @@
         :keypoint-labels="keypoint.labels"
         :keypoint-colors="keypoint.colors"
         :hover="hover.annotation"
-        :active-tool="activeTool"
         :scale="scale"
         :all-categories="getCategoriesList"
         :isHoverCategory="isHover"
@@ -208,7 +207,6 @@ const opacity = defineModel('opacity', { type: Number, required: true });
 const scale = defineModel('scale', { type: Number, default: 1 });
 const categorysearch = defineModel('categorysearch', { type: String, required: true });
 const simplify = defineModel('simplify', { type: Number, default: 1 });
-const activeTool = defineModel('activeTool', { type: String, required: true });
 const allCategories = defineModel('allCategories', { type: Array, required: true });
 
 

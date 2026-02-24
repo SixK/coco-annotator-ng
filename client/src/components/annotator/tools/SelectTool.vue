@@ -177,7 +177,7 @@ const generateStringFromMetadata = () => {
   if (keypoint.value) return "";
   let string = "";
   
-  let metadata = hover.value.annotation.metadata;
+  const metadata = hover.value.annotation.metadata;
   if ( metadata == null || Object.keys(metadata).length === 0) {
     string += "No Metadata \n";
   } else {
