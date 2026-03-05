@@ -192,7 +192,6 @@ function extractImageData(width, height){
 
   // Exposed methods
   return {
-    getCanvasElement,
     setupPaper,
     onWheel,
     onPinchStart,

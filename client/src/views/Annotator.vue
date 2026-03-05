@@ -195,9 +195,7 @@ import AnnotateButton from "@/components/annotator/tools/AnnotateButton";
 
 import ToolsPanel from "@/components/annotator/panels/ToolsPanel.vue";
 
-
 import { onBeforeUpdate, onUpdated, nextTick, toRef, ref, computed, watch, inject, onMounted, onUnmounted, provide, watchEffect } from 'vue';
-
 
 import { getCurrentInstance } from 'vue';
 import { onBeforeRouteLeave, useRouter, useRoute } from 'vue-router';
@@ -253,7 +251,6 @@ const { currentPanel, panelProps, toolInst } = useToolPanel(toolspanel)
 
 // need to be declared after image
 const {
-  getCanvasElement,
   setupPaper,
   onWheel,
   onPinchStart,
@@ -366,7 +363,6 @@ const setCursor = (newCursor) => {
 };
 
 const {
-  findCategoryByName,
   addAnnotation,
   createAnnotation,
   deleteAnnotation,
@@ -439,7 +435,6 @@ onBeforeRouteLeave(async (to, from) => {
   await save(); // navigation proceeds after this resolves
   // If you want to cancel: throw or return false
 });
-
 
 onMounted(() => {
     // can't call this command like this, but work without !??

@@ -153,7 +153,6 @@ export default function useAnnotations(options = {}) {
     //currentAnnotationFromList,
     
     // Methods
-    findCategoryByName,
     addAnnotation,
     createAnnotation,
     deleteAnnotation,

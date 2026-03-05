@@ -190,8 +190,8 @@ import KeypointsDefinition from "@/components/KeypointsDefinition";
 
 import { nextTick } from 'vue';
 
-import { getCurrentInstance, provide, inject, watch, reactive, 
-                 ref, computed, onMounted, onUnmounted, onUpdated,toRef, onBeforeUpdate } from 'vue';
+import { getCurrentInstance, provide, inject, watch,  
+                 ref, computed, onMounted, onUnmounted, toRef, onBeforeUpdate } from 'vue';
 
 const socket = inject('socket');
 
