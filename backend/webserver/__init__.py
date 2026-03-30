@@ -43,8 +43,8 @@ def create_app():
 
     # Dunno why observer.start() does not return 
     # We disable it and see later if this is fixable
-    # if Config.FILE_WATCHER:
-    #   run_watcher()
+    if Config.FILE_WATCHER:
+        run_watcher()
 
     flask = Flask(__name__,
                   # static_url_path='', # this option seem's to cause trouble with path handling
