@@ -29,18 +29,6 @@ export const useToolStore = defineStore('tool', () => {
     return savedTool
   }
   
-  /*
-  function restorePreviousTool() {
-    if (previousTool.value) {
-      activeTool.value = previousTool.value
-    }
-  }*/
-  /*
-  function toggleTool(toolA, toolB) {
-    activeTool.value = activeTool.value === toolA ? toolB : toolA
-    localStorage.setItem('editorTool', activeTool.value)
-  }*/
-
    function onKeypointsComplete() {
       // keep minimal logic here
       if (activeTool.value === 'Keypoint') {
@@ -57,8 +45,6 @@ export const useToolStore = defineStore('tool', () => {
     setActiveTool,
     getActiveTool,
     selectLastEditorTool,
-    // restorePreviousTool,
-    // toggleTool,
     onKeypointsComplete
   }
 })
