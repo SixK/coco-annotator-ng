@@ -2,7 +2,17 @@
 # if you don't need Zim, prefer runtime image that is lighter
 # else devel is necessary
 # FROM pytorch/pytorch:2.3.1-cuda11.8-cudnn8-runtime
-FROM pytorch/pytorch:2.4.1-cuda12.4-cudnn9-devel 
+# FROM pytorch/pytorch:2.9.1-cuda12.6-cudnn9-devel # dontwork
+FROM pytorch/pytorch:2.11.0-cuda12.6-cudnn9-devel 
+# FROM pytorch/pytorch:2.4.1-cuda12.4-cudnn9-devel 
+
+ENV PIP_BREAK_SYSTEM_PACKAGES=1
+
+# For SAM2 build
+# Add your GPU Architecture if missing
+# ENV TORCH_CUDA_ARCH_LIST="3.7;3.5+PTX;5.3;5.0;5.2+PTX;6.0;6.1;7.0+PTX;7.2;7.5+PTX"
+# ENV TORCH_CUDA_ARCH_LIST="6.0;6.1;7.0;7.2;7.5;8.0;8.6;8.7;8.9;9.0;10.0;10.3;11.0;12.0;12.1;12.1+PTX"
+ENV TORCH_CUDA_ARCH_LIST="6.0;6.1;7.0;7.2;7.5;8.0;8.6;8.7;8.9;9.0"
 
 ENV MASKRCNN="0"
 ENV DEXTR="1"
@@ -51,7 +61,9 @@ RUN if [ "$DEXTR" = "1" ]; then \
 RUN if [ "$SAM2" = "1" ]; then \
              git clone --single --depth 1 https://github.com/facebookresearch/sam2.git /tmp/sam2 && \
              cd /tmp/sam2 && \
-             python setup.py egg_info && \
+             # python setup.py egg_info && \
+             # python setup.py build_ext --inplace && \
+             python -m build --no-isolation && \
              pip --no-cache-dir  install `sed '/^\[dev\]/,/^\[/d' SAM_2.egg-info/requires.txt|sed '/^\[interactive-demo\]/,/^\[/d'|sed '/^\[notebooks\]/,/^\[/d'` && \
              pip --no-cache-dir install --no-deps . && \
              rm -Rf /tmp/sam2; \
