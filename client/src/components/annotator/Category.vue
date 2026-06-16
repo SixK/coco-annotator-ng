@@ -184,6 +184,7 @@
 import paper from "paper";
 import { Modal } from "bootstrap";
 
+import { useToolStore } from '@/store/toolStore';
 import Annotations from "@/models/annotations";
 import Annotation from "@/components/annotator/Annotation";
 import KeypointsDefinition from "@/components/KeypointsDefinition";
@@ -197,7 +198,10 @@ const socket = inject('socket');
 
 const emit = defineEmits(['click', 'keypointsComplete']);
 
-const { getImageId, scrollToElement, selectLastEditorTool } = inject('annotator');
+// const { getImageId, scrollToElement, selectLastEditorTool } = inject('annotator');
+const { getImageId, scrollToElement } = inject('annotator');
+const toolStore = useToolStore();
+
 
 const category = defineModel('category', { type: Object, required: true });
 const index = defineModel('index', { type: Number, required: true });
@@ -386,7 +390,7 @@ const createAnnotation = () => {
 
         selectedAnnotation.value = annotationId;
         nextTick(() => {
-          selectLastEditorTool();
+          toolStore.selectLastEditorTool();
           emit("click", {
             annotation: annotationId,
             category: index.value,

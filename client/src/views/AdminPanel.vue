@@ -213,7 +213,7 @@ import { ref, computed, watch, inject, onMounted, provide } from 'vue';
 import { useProcStore } from "@/store/index";
 const procStore = useProcStore();
 
-const {axiosReqestError, axiosReqestSuccess} = useAxiosRequest();
+const {axiosRequestError, axiosRequestSuccess} = useAxiosRequest();
 
 const users = ref([]);
 const limit = ref(50);
@@ -242,7 +242,7 @@ const createUser = (event) => {
   AdminPanel.createUser(create.value)
     .then(updatePage)
     .catch((error) => {
-      axiosReqestError("Create User", error.response.data.message);
+      axiosRequestError("Create User", error.response.data.message);
     });
 };
 
@@ -254,7 +254,7 @@ const deleteUser = (user) => {
   AdminPanel.deleteUser(user.username)
     .then(updatePage)
     .catch((error) => {
-      axiosReqestError('Create User', error.response.data.message);
+      axiosRequestError('Create User', error.response.data.message);
     });
 };
 

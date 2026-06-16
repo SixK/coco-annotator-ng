@@ -220,7 +220,7 @@ import KeypointsDefinition from "@/components/KeypointsDefinition";
 import { ref, computed, watch, inject, onMounted, provide } from 'vue';
 
 import useAxiosRequest from "@/composables/axiosRequest";
-const {axiosReqestError, axiosReqestSuccess} = useAxiosRequest();
+const {axiosRequestError, axiosRequestSuccess} = useAxiosRequest();
 
 import { useProcStore } from "@/store/index";
 const procStore = useProcStore();
@@ -292,7 +292,7 @@ const createCategory = () => {
       updatePage();
     })
     .catch((error) => {
-      axiosReqestError("Creating Category", error.response.data.message);
+      axiosRequestError("Creating Category", error.response.data.message);
     });
 };
 

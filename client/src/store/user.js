@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import useAxiosRequest from "@/composables/axiosRequest";
-const { axiosReqestError, axiosReqestSuccess } = useAxiosRequest();
+const { axiosRequestError, axiosRequestSuccess } = useAxiosRequest();
 import { ref, computed } from 'vue';
 
 export const useAuthStore = defineStore('auth', () => {
@@ -87,7 +87,7 @@ export const useAuthStore = defineStore('auth', () => {
     } catch (error) {
       _setError(error);
 
-      axiosReqestError("User Registration", error.response.data.message);
+      axiosRequestError("User Registration", error.response.data.message);
 
       return { success: false, error };
     }
@@ -107,7 +107,7 @@ export const useAuthStore = defineStore('auth', () => {
     } catch (error) {
       _setError(error);
 
-      axiosReqestError("User Login", error.response.data.message);
+      axiosRequestError("User Login", error.response.data.message);
 
       return { success: false, error };
     }
@@ -141,7 +141,7 @@ export const useAuthStore = defineStore('auth', () => {
         confirm_password: confirmPassword
       });
 
-      axiosReqestSuccess(
+      axiosRequestSuccess(
             "Changing Password",
             "Password has been changed"
       );
@@ -150,7 +150,7 @@ export const useAuthStore = defineStore('auth', () => {
     } catch (error) {
       _setError(error);
 
-      axiosReqestError(
+      axiosRequestError(
             "Changing Password",
             error.response.data.message
        );

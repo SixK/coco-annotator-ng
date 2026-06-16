@@ -1,8 +1,9 @@
 // useAnnotatorData.js
 
 import { ref, nextTick } from 'vue';
+import axios from "axios";
 
-export default function useAnnotatorData({ state, axios, router, axiosReqestError, toolspanel, settings, categorylist,image, updateImageName, procStore }) {
+export default function useAnnotatorData({ state, router, axiosRequestError, toolspanel, settings, categorylist,image, updateImageName, procStore }) {
   // state: expects (image, categories, dataset, loading, annotating, procStore) in state object
   
   const showAll = () => {
@@ -70,7 +71,7 @@ export default function useAnnotatorData({ state, axios, router, axiosReqestErro
   };
 
   const handleFetchError = () => {
-    axiosReqestError('Could not find requested image', 'Redirecting to previous page.');
+    axiosRequestError('Could not find requested image', 'Redirecting to previous page.');
     router.go(-1);
   };
 

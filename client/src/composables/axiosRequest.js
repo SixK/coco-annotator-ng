@@ -3,7 +3,7 @@ import {useToast} from 'vue-toast-notification';
 
 export default function useAxiosRequest() {
   const $toast = useToast();
-  const axiosReqestError = (title, message) => {
+  const axiosRequestError = (title, message) => {
     let options = {
       progressBar: true,
       positionClass: 'toast-bottom-left',
@@ -12,7 +12,7 @@ export default function useAxiosRequest() {
     // $toast.error(message, title, options);
   };
 
-  const axiosReqestSuccess = (title, message) => {
+  const axiosRequestSuccess = (title, message) => {
     let options = {
       progressBar: true,
       positionClass: 'toast-bottom-left',
@@ -23,8 +23,8 @@ export default function useAxiosRequest() {
   };
 
   return {
-    axiosReqestError,
-    axiosReqestSuccess,
+    axiosRequestError,
+    axiosRequestSuccess,
   };
 
 }

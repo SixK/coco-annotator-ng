@@ -720,7 +720,7 @@ import { useProcStore } from "@/store/index";
 const procStore = useProcStore();
 
 import useAxiosRequest from "@/composables/axiosRequest";
-const {axiosReqestError, axiosReqestSuccess} = useAxiosRequest();
+const {axiosRequestError, axiosRequestSuccess} = useAxiosRequest();
 
 import { onBeforeRouteUpdate, useRouter, useRoute } from 'vue-router';
 const router = useRouter();
@@ -843,7 +843,7 @@ const updatePage = (page) => {
       subdirectories.value = data.subdirectories;
     })
     .catch((error) => {
-      axiosReqestError("Loading Dataset", error.response.data.message);
+      axiosRequestError("Loading Dataset", error.response.data.message);
     })
     .finally(() => {
       procStore.removeProcess(process);
@@ -896,7 +896,7 @@ const createScanTask = () => {
       scan.value.id = id;
     })
     .catch((error) => {
-      axiosReqestError("Scanning Dataset", error.response.data.message);
+      axiosRequestError("Scanning Dataset", error.response.data.message);
     })
     .finally(() => {
       procStore.removeProcess(process);
@@ -927,7 +927,7 @@ const exportCOCO = () => {
       exporting.value.id = id;
     })
     .catch((error) => {
-      axiosReqestError("Exporting COCO", error.response.data.message);
+      axiosRequestError("Exporting COCO", error.response.data.message);
     })
     .finally(() => {
       procStore.removeProcess(process);
@@ -959,7 +959,7 @@ const importCOCO = () => {
       importing.value.id = id;
     })
     .catch((error) => {
-      axiosReqestError("Importing COCO", error.response.data.message);
+      axiosRequestError("Importing COCO", error.response.data.message);
     })
     .finally(() => {
         procStore.removeProcess(process);

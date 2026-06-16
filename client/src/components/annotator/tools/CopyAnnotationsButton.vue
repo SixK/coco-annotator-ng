@@ -120,7 +120,7 @@ import useAxiosRequest from "@/composables/axiosRequest";
 import { useProcStore } from "@/store/index";
 const procStore = useProcStore();
 
-const {axiosReqestError, axiosReqestSuccess} = useAxiosRequest();
+const {axiosRequestError, axiosRequestSuccess} = useAxiosRequest();
 const addProcess = (process) => procStore.addProcess(process);
 const removeProcess = (process) => procStore.removeProcess(process);
 const resetUndo = () => procStore.resetUndo();
@@ -164,7 +164,7 @@ const copyAnnotations =  () => {
         getData()
       })
       .catch((error) => {
-        axiosReqestError('Copying Annotations', error.response.data.message)
+        axiosRequestError('Copying Annotations', error.response.data.message)
       })
       .finally(() => removeProcess(process))
   });

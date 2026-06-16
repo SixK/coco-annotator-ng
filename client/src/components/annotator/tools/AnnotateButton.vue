@@ -10,7 +10,7 @@ import { ref, computed, watch, inject, onMounted, provide } from 'vue';
 import { useButton } from "@/composables/toolBar/button";
 import useAxiosRequest from "@/composables/axiosRequest";
 
-const {axiosReqestError, axiosReqestSuccess} = useAxiosRequest();
+const {axiosRequestError, axiosRequestSuccess} = useAxiosRequest();
 
 const { addAnnotation, getImageRaster } = inject('annotator');
 
@@ -95,7 +95,7 @@ const execute = () => {
             });
           })
           .catch((error) => {
-            axiosReqestError("Annotator", "Could not read data from URL");
+            axiosRequestError("Annotator", "Could not read data from URL");
           })
           .finally(() => {
             loading.value = false;

@@ -232,7 +232,7 @@ import TagsInput from "@/components/TagsInput";
 import useAxiosRequest from "@/composables/axiosRequest";
 import { ref, computed, watch, inject, onMounted, provide } from 'vue';
 
-const {axiosReqestError, axiosReqestSuccess} = useAxiosRequest();
+const {axiosRequestError, axiosRequestSuccess} = useAxiosRequest();
 
 import { useStores } from "@/composables/useStores"
 const { auth, proc } = useStores();
@@ -290,7 +290,7 @@ const createDataset = () => {
           updatePage();
         })
         .catch((error) => {
-          axiosReqestError(
+          axiosRequestError(
             "Creating Dataset",
             error.response.data.message
           );

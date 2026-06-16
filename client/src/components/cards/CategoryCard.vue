@@ -172,7 +172,7 @@ import useAxiosRequest from "@/composables/axiosRequest";
 import { useAuthStore } from "@/store/user";
 const authStore = useAuthStore();
 
-const {axiosReqestError, axiosReqestSuccess} = useAxiosRequest();
+const {axiosRequestError, axiosRequestSuccess} = useAxiosRequest();
 
 const emit = defineEmits(['updatePage']);
 const keypoints = ref([]);
@@ -247,7 +247,7 @@ const onUpdateClick = () => {
           keypoint_labels: keypoint.value.labels,
           keypoint_colors: keypoint.value.colors,
         });
-        axiosReqestSuccess(
+        axiosRequestSuccess(
           'Updating Category',
           'Category successfully updated'
         );
@@ -262,7 +262,7 @@ const onUpdateClick = () => {
         emit('updatePage');
       } catch (error) {
           console.error('Error updating category:',    error.message);
-          axiosReqestError(
+          axiosRequestError(
             'Updating Category',
             error.message
           );

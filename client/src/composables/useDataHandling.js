@@ -1,6 +1,5 @@
 import axios from "axios";
 // import { useProcStore } from "@/store/index";
-// import { axiosReqestError } from "@/composables/axiosRequest";
 import { useToolStore } from '@/store/toolStore';
 
 export default function useDataHandling(image, categories, dataset, categorylist, toolspanel, settings, procStore, mode, current, zoom) {

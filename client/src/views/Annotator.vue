@@ -174,7 +174,7 @@
 </template>
 
 <script setup>
-import axios from "axios";
+// import axios from "axios";
 
 import FileTitle from "@/components/annotator/FileTitle";
 import Category from "@/components/annotator/Category";
@@ -205,7 +205,7 @@ const route = useRoute();
 import useCanvas from '@/composables/useCanvas';
 import useShortcuts from "@/composables/shortcuts";
 import useAxiosRequest from "@/composables/axiosRequest";
-const {axiosReqestError, axiosReqestSuccess} = useAxiosRequest();
+const {axiosRequestError, axiosRequestSuccess} = useAxiosRequest();
 import useDataHandling from '@/composables/useDataHandling';
 
 import useAnnotatorImage from '@/composables/useAnnotatorImage';
@@ -262,7 +262,7 @@ const {
   getPaper
 } = useCanvas(image, current, procStore);
 
-const { getData, fetchData, showAll, hideAll } = useAnnotatorData({ state, axios, router, axiosReqestError, toolspanel, settings, categorylist, image, updateImageName, procStore });
+const { getData, fetchData, showAll, hideAll } = useAnnotatorData({ state, router, axiosRequestError, toolspanel, settings, categorylist, image, updateImageName, procStore });
 
 console.log('image:', image.value.url);
 
@@ -284,7 +284,7 @@ const getHover = () => {
 };
 
 const handleFetchError = () => {
-  axiosReqestError(
+  axiosRequestError(
     "Could not find requested image",
     "Redirecting to previous page."
   );
@@ -375,7 +375,7 @@ const {
         categories,
         categorylist,
         current,
-        axiosReqestError,
+        axiosRequestError,
         procStore,
         router,
         currentCategoryFromList,
