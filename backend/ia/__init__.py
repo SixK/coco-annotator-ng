@@ -1,5 +1,8 @@
-import eventlet
-eventlet.monkey_patch(thread=False)
+from gevent import monkey
+monkey.patch_all(thread=False)
+
+# import eventlet
+# eventlet.monkey_patch(thread=False)
 
 import sys
 

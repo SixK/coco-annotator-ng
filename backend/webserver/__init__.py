@@ -1,5 +1,8 @@
-import eventlet
-eventlet.monkey_patch(thread=False)
+# from gevent import monkey
+# monkey.patch_all(thread=False)
+
+# import eventlet
+# eventlet.monkey_patch(thread=False)
 
 import os
 import sys
@@ -61,9 +64,10 @@ def create_app():
     login_manager.init_app(flask)
     
     # socketio = SocketIO(flask, async_mode='eventlet', 
-    socketio.init_app(flask, async_mode='eventlet', 
+    socketio = SocketIO(flask, async_mode='gevent', 
                              cors_allowed_origins="*", 
                              message_queue=Config.CELERY_BROKER_URL)
+
     # Remove all poeple who were annotating when
     # the server shutdown
     ImageModel.objects.update(annotating=[])

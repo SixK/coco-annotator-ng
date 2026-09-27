@@ -6,7 +6,8 @@ bind = '0.0.0.0:6000'
 backlog = 2048
 
 workers = 1
-worker_class = 'eventlet'
+# worker_class = 'eventlet'
+worker_class = 'gevent'
 worker_connections = 1000
 timeout = 60
 keepalive = 2

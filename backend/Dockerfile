@@ -31,7 +31,8 @@ COPY ./backend/requirements_common.txt /workspace/
 # Install python package dependices
 RUN pip install --no-cache-dir --upgrade pip && \
           pip install --no-cache-dir -r requirements.txt && \
-          pip install --no-cache-dir gunicorn[eventlet]==23.0.0
+          pip install --no-cache-dir gunicorn[gevent]==26.2.0
+
 
 RUN apt-get -y -o Dpkg::Options::="--force-confmiss" install --reinstall netbase && \
           apt clean && rm -rf /var/lib/apt/lists/*
