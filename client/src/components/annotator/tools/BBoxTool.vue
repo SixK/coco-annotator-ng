@@ -38,8 +38,8 @@ const scaleFactor = 3;
 const bbox = ref(null);
 const selection = ref(null);
 
-const localCurrentAnnotation=ref(null);
-const localCurrentCategory=ref(null);
+const localCurrentAnnotation = computed(() => getCurrentAnnotation());
+const localCurrentCategory = computed(() => getCurrentCategory());
 
 const polygon = ref({
   path: null,
@@ -65,29 +65,11 @@ const actionTypes = Object.freeze({
 
 const actionPoints = ref(0);
 
-const localImageRaster = ref(null);
-
-watch(
-  () => getImageRaster(),
-  (value) => {
-      localImageRaster.value=value;
-  }
-);
+const localImageRaster = computed(() => getImageRaster());
 
 
-watch(
-  () => getCurrentAnnotation(),
-  (value) => {
-      localCurrentAnnotation.value=value;
-  }
-);
 
-watch(
-  () => getCurrentCategory(),
-  (value) => {
-      localCurrentCategory.value=value;
-  }
-);
+
 
 const exportBBox = () => {
   return {

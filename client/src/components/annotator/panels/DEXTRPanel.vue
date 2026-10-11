@@ -6,7 +6,6 @@
       min="0"
       max="1000"
       step="2"
-      @update="dextr.settings.padding = $event"
     />
     <PanelInputNumber
       v-model:value="dextr.settings.threshold"
@@ -14,7 +13,6 @@
       min="0"
       max="100"
       step="5"
-      @update="dextr.settings.threshold = $event"
     />
   </div>
 </template>

@@ -6,7 +6,6 @@
       min="0"
       max="1000"
       step="2"
-      @update="zim.settings.padding = $event"
     />
     <PanelInputNumber
       v-model:value="zim.settings.threshold"
@@ -14,7 +13,6 @@
       min="0"
       max="100"
       step="5"
-      @update="zim.settings.threshold = $event"
     />
   </div>
 </template>

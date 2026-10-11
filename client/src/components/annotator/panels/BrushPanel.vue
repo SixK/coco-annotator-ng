@@ -6,7 +6,6 @@
       min="0"
       max="1000"
       step="5"
-      @update="brush.brush.pathOptions.radius = $event"
     />
     <PanelInputString
       v-model:input-string="brush.brush.pathOptions.strokeColor"

@@ -6,7 +6,6 @@
       min="0"
       max="1000"
       step="5"
-      @update="eraser.eraser.pathOptions.radius = $event"
     />
     <PanelInputString
       v-model:input-string="eraser.eraser.pathOptions.strokeColor"

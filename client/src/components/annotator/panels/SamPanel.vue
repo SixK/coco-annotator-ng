@@ -6,7 +6,6 @@
       min="0"
       max="1000"
       step="2"
-      @update="sam.settings.padding = $event"
     />
     <PanelInputNumber
       v-model:value="sam.settings.threshold"
@@ -14,7 +13,6 @@
       min="0"
       max="100"
       step="5"
-      @update="sam.settings.threshold = $event"
     />
   </div>
 </template>

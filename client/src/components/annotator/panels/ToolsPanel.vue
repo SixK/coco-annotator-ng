@@ -5,19 +5,16 @@
       ref="select"
       :scale="image.scale"
       :categories="categories"
-      @setcursor="setCursor"
     />
     <hr />
     <BBoxTool
       ref="bbox"
       :scale="image.scale"
-      @setcursor="setCursor"
     />
 
     <PolygonTool
       ref="polygon"
       :scale="image.scale"
-      @setcursor="setCursor"
     />
 
     <MagicWandTool
@@ -25,48 +22,40 @@
       :width="image.raster.width"
       :height="image.raster.height"
       :image-data="image.data"
-      @setcursor="setCursor"
     />
 
     <BrushTool
       ref="brush"
       :scale="image.scale"
-      @setcursor="setCursor"
     />
 
     <EraserTool
       ref="eraser"
       :scale="image.scale"
-      @setcursor="setCursor"
     />
 
     <KeypointTool
       ref="keypoint"
-      @setcursor="setCursor"
     />
 
     <DEXTRTool
       ref="dextr"
       :scale="image.scale"
-      @setcursor="setCursor"
     />
 
     <SamTool
       ref="sam"
       :scale="image.scale"
-      @setcursor="setCursor"
     />
 
     <Sam2Tool
       ref="sam2"
       :scale="image.scale"
-      @setcursor="setCursor"
     />
 
     <ZimTool
       ref="zim"
       :scale="image.scale"
-      @setcursor="setCursor"
     />
   </div>
 </template>
@@ -93,8 +82,6 @@ const image = defineModel('image', { type: Object, required: true });
 const categories = defineModel('categories', { type: Array, required: true });
 const mode = defineModel('mode', { type: String, required: true });
 
-const emit = defineEmits(["setcursor"]);
-
 // template refs: only read through exported getters/methods (never written to),
 // so useTemplateRef()'s readonly ref is safe here.
 const select    = useTemplateRef('select');
@@ -117,10 +104,6 @@ const exportUserTools = () => ({
   select: select.value.exportSelect(),
   // settings: settings.value.exportSettings()
 });
-
-const setCursor = (newCursor) => {
-  emit("setcursor", newCursor);
-};
 
 watch(
   () => getImageRaster(),

@@ -27,7 +27,7 @@ name.value = "Eraser";
 cursor.value = "none";
 const icon = ref("fa-eraser");
 const scaleFactor = 3;
-const localCurrentAnnotation=ref('');
+const localCurrentAnnotation = computed(() => getCurrentAnnotation());
 
 const eraser = ref({
   brush: null,
@@ -39,12 +39,6 @@ const eraser = ref({
   },
 });
 
-watch(
-  () => getCurrentAnnotation(),
-  (value) => {
-      localCurrentAnnotation.value=value;
-  }
-);
 
 watch(
   () => eraser.value.pathOptions.radius,

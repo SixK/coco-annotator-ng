@@ -8,7 +8,7 @@
 import paper from "paper";
 import { useTools } from "@/composables/toolBar/tools";
 import axios from "axios";
-import { ref, computed, watch, inject, onMounted, provide } from 'vue'
+import { ref, computed, inject, onMounted, provide } from 'vue'
 
 const { getCurrentAnnotation, getImageRaster,  getImageId } = inject('annotator');
 
@@ -36,22 +36,10 @@ const settings = ref({
 let paperPoint=null;
 const points = ref([]);
 
-const localCurrentAnnotation=ref(null);
-const localImageRaster=ref(null);
+const localCurrentAnnotation = computed(() => getCurrentAnnotation());
+const localImageRaster = computed(() => getImageRaster());
 
-watch(
-  () => getImageRaster(),
-  (value) => {
-      localImageRaster.value=value;
-  }
-);
 
-watch(
-  () => getCurrentAnnotation(),
-  (value) => {
-      localCurrentAnnotation.value=value;
-  }
-);
 
 function createPoint(point) {
       paperPoint = new paper.Path.Circle(point, 5);

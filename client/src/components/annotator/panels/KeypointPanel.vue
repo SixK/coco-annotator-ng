@@ -18,7 +18,7 @@
   </div>
 </template>
 <script setup>
-import { watch, ref, inject, computed } from 'vue';
+import { ref, inject, computed } from 'vue';
 import PanelText from '@/components/PanelText';
 import PanelInputDropdown from '@/components/PanelInputDropdown';
 import { VisibilityOptions } from '@/libs/keypoints';
@@ -28,7 +28,7 @@ const currentAnnotation = defineModel('currentAnnotation', { type: Object,  vali
 
 const { getCurrentAnnotation } = inject('annotator');
 
-const localCurrentAnnotation=ref('');
+const localCurrentAnnotation = computed(() => getCurrentAnnotation());
 
 const visibility = ref(2);
 const label = ref(-1);
@@ -59,12 +59,6 @@ const keypointLabel = computed(() => {
   return labels[labelIndex];
 });
 
-watch(
-  () => getCurrentAnnotation(),
-  (value) => {
-      localCurrentAnnotation.value=value;
-  }
-);
 
 </script>
 <style scoped>

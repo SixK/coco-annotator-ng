@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, inject, watchEffect, onMounted, provide } from 'vue'
+import { ref, computed, inject, watchEffect, onMounted, provide } from 'vue'
 import { useTools } from "@/composables/toolBar/tools";
 
 const { getCurrentAnnotation } = inject('annotator');
@@ -31,14 +31,8 @@ const scale = defineModel('scale', { type: Number, default: 1 });
 name.value = "Keypoint";
 cursor.value = "cell";
 const icon = ref("fa-map-marker");
-const localCurrentAnnotation=ref('');
+const localCurrentAnnotation = computed(() => getCurrentAnnotation());
 
-watch(
-  () => getCurrentAnnotation(),
-  (value) => {
-      localCurrentAnnotation.value=value;
-  }
-);
 
 const onMouseDown = (event) => {
   if(state.isActive)  localCurrentAnnotation.value.addKeypoint(event.point);

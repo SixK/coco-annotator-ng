@@ -9,7 +9,6 @@
         :image="image"
         :categories="categories"
         :mode="mode"
-        @setcursor="setCursor"
       />
 
       <hr>

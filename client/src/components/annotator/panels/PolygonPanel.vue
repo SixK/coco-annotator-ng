@@ -31,7 +31,6 @@
       min="0"
       max="1000"
       step="5"
-      @update="polygon.polygon.completeDistance = $event"
     />
     <PanelInputNumber
       v-model:value="polygon.polygon.minDistance"
@@ -39,7 +38,6 @@
       min="0"
       max="500"
       step="2"
-      @update="polygon.polygon.minDistance = $event"
     />
   </div>
 </template>

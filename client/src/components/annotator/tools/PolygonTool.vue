@@ -61,15 +61,9 @@ const actionTypes = Object.freeze({
 });
 
 const actionPoints = ref(0);
-const localImageRaster = ref(null);
+const localImageRaster = computed(() => getImageRaster());
 
 
-watch(
-  () => getImageRaster(),
-  (value) => {
-      localImageRaster.value=value;
-  }
-);
 
 const exportPolygon = () => {
   return {
