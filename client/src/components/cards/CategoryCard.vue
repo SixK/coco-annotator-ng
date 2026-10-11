@@ -130,7 +130,7 @@
                 <KeypointsDefinition
                   ref="keypoints"
                   v-model:keypoints-def="keypoint"
-                  element-id="keypoints"
+                  :element-id="`keypoints-${category.id}`"
                   placeholder="Add a keypoint"
                 />
               </div>
@@ -163,7 +163,7 @@
 
 <script setup>
 
-import { ref, toRefs, reactive, onMounted, computed} from "vue";
+import { ref, toRefs, reactive, onMounted, computed, useTemplateRef} from "vue";
 
 import axios from "axios";
 import KeypointsDefinition from "@/components/KeypointsDefinition";
@@ -175,28 +175,26 @@ const authStore = useAuthStore();
 const {axiosRequestError, axiosRequestSuccess} = useAxiosRequest();
 
 const emit = defineEmits(['updatePage']);
-const keypoints = ref([]);
+const keypoints = useTemplateRef('keypoints');
 
-const props = defineProps({
+const { category } = defineProps({
   category: {
     type: Object,
     required: true,
   },
 });
 
-const category = ref(props.category);
-
 const state = reactive({
   group: null,
-  supercategory: category.value.supercategory,
-  color: props.category.color,
-  metadata: [],
+  supercategory: category.supercategory,
+  color: category.color,
+  // metadata: [],
   keypoint: {
-    labels: [...category.value.keypoint_labels],
-    edges: [...category.value.keypoint_edges],
-    colors: [...category.value.keypoint_colors],
+    labels: [...category.keypoint_labels],
+    edges: [...category.keypoint_edges],
+    colors: [...category.keypoint_colors],
   },
-  name: category.value.name,
+  name: category.name,
   isMounted: false,
 });
 
@@ -219,30 +217,30 @@ const isFormValid = computed(() => {
 });
 
 const resetCategorySettings = () => {
-      name.value = props.category.name;
-      supercategory.value = props.category.supercategory;
-      color.value = props.category.color;
+      name.value = category.name;
+      supercategory.value = category.supercategory;
+      color.value = category.color;
       keypoint.value = {
-        labels: [...props.category.keypoint_labels],
-        edges: [...props.category.keypoint_edges],
-        colors: [...props.category.keypoint_colors],
+        labels: [...category.keypoint_labels],
+        edges: [...category.keypoint_edges],
+        colors: [...category.keypoint_colors],
       };
     };
     const onCardClick = () => {};
     const onDownloadClick = () => {};
     const onDeleteClick = async () => {
-      await axios.delete("/api/category/" + props.category.id);
+      await axios.delete("/api/category/" + category.id);
       emit('updatePage');
 };
 
 
 const onUpdateClick = () => {
       try {
-        axios.put('/api/category/' + category.value.id, {
+        axios.put('/api/category/' + category.id, {
           name: name.value,
           color: color.value,
           supercategory: supercategory.value,
-          metadata: metadata.value,
+          // metadata: metadata.value,
           keypoint_edges: keypoint.value.edges,
           keypoint_labels: keypoint.value.labels,
           keypoint_colors: keypoint.value.colors,
@@ -252,13 +250,17 @@ const onUpdateClick = () => {
           'Category successfully updated'
         );
 
-        category.value.name = name.value;
-        category.value.supercategory = supercategory.value;
-        category.value.color = color.value;
-        category.value.metadata = { ...metadata.value };
-        category.value.keypoint_edges = [...keypoint.value.edges];
-        category.value.keypoint_labels = [...keypoint.value.labels];
-        category.value.keypoint_colors = [...keypoint.value.colors];
+        /* eslint-disable vue/no-mutating-props -- pre-existing behaviour: the edits are
+           mirrored into the shared category object (was hidden behind ref(props.category)).
+           Replace with emitted events in phase 3. */
+        category.name = name.value;
+        category.supercategory = supercategory.value;
+        category.color = color.value;
+        // category.metadata = { ...metadata.value };
+        category.keypoint_edges = [...keypoint.value.edges];
+        category.keypoint_labels = [...keypoint.value.labels];
+        category.keypoint_colors = [...keypoint.value.colors];
+        /* eslint-enable vue/no-mutating-props */
         emit('updatePage');
       } catch (error) {
           console.error('Error updating category:',    error.message);

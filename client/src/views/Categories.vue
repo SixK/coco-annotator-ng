@@ -217,7 +217,7 @@ import CategoryCard from "@/components/cards/CategoryCard";
 import Pagination from "@/components/Pagination";
 import KeypointsDefinition from "@/components/KeypointsDefinition";
 
-import { ref, computed, watch, inject, onMounted, provide } from 'vue';
+import { ref, computed, watch, inject, onMounted, provide, useTemplateRef } from 'vue';
 
 import useAxiosRequest from "@/composables/axiosRequest";
 const {axiosRequestError, axiosRequestSuccess} = useAxiosRequest();
@@ -232,7 +232,11 @@ const limit = ref(50);
 const range = ref(11);
 const newCategoryName = ref("");
 const newCategorySupercategory = ref("");
-const newCategoryColor = ref(null);
+// <input type="color"> displays black when its value is empty/invalid, but the
+// model stays `null` until the user actually picks a colour — and the backend
+// refuses `color: null`. Start from the colour the popup already shows.
+const DEFAULT_COLOR = "#000000";
+const newCategoryColor = ref(DEFAULT_COLOR);
 const newCategoryKeypoint = ref({
   labels: [],
   edges: [],
@@ -242,7 +246,7 @@ const categories = ref([]);
 const status = ref({
   data: { state: true, message: "Loading categories" }
 });
-const keypoints = ref(null);
+const keypoints = useTemplateRef('keypoints');
 
 const isFormValid = computed(() => {
   return (
@@ -287,7 +291,7 @@ const createCategory = () => {
     .then(() => {
       newCategoryName.value = "";
       newCategorySupercategory.value = "";
-      newCategoryColor.value = null;
+      newCategoryColor.value = DEFAULT_COLOR;
       newCategoryKeypoint.value = {};
       updatePage();
     })
