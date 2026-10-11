@@ -13,8 +13,8 @@ import { useTools } from "@/composables/toolBar/tools";
 const { getCurrentAnnotation } = inject('annotator');
 
 const { width, height } = defineProps({
-  width: { type: Number, required: true },
-  height: { type: Number, required: true },
+  width: { type: Number, default: 0 },
+  height: { type: Number, default: 0 },
 });
 const imageData = defineModel('imageData', { required: true, 
                                                                            validator: prop => typeof prop === "object" || prop === null });
