@@ -23,7 +23,7 @@
 
       <div class="col-sm">
         <input
-          :id="_uid"
+          :id="uid"
           :value="keys.join('+').toUpperCase()"
           type="text"
           class="input"
@@ -35,42 +35,36 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, toRef, watch } from 'vue';
+import { ref, computed, onMounted, onUnmounted, useId } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
 
-const props = defineProps({
+const { shortcut } = defineProps({
   shortcut: {
     type: Object,
     required: true,
   },
 });
 
-const _uid = ref(`input-${Date.now()}-${Math.random()}`);
-const keys = toRef(props.shortcut, 'default');
+const uid = useId();
+const keys = computed({
+  get: () => shortcut.default,
+  /* eslint-disable-next-line vue/no-mutating-props -- same write as the former
+     toRef(props.shortcut, 'default'); the compiler rejects toRef() on a
+     destructured prop. Replace with an emit in phase 3. */
+  set: (value) => { shortcut.default = value; },
+});
 
 const keysDown = ref([]);
-const readonly = ref(props.shortcut.readonly == null ? false : props.shortcut.readonly);
+const readonly = ref(shortcut.readonly == null ? false : shortcut.readonly);
 const toggleKey = computed(() => {
   return keysDown.value.toString().replace(/,/g, '+');
 });
 
-const compkeys = computed (() => {
-    return props.shortcut.default;
-});
-
-
-watch(
-    () => compkeys.value,
-    () => {
-        keys.value =  compkeys.value;
-    }
-);
-
 const myexport = (() => {
       return {
-        name: props.shortcut.name,
+        name: shortcut.name,
         keys: keys.value,
       };
 });
@@ -82,7 +76,7 @@ const myfunction = ((e) => {
       if (target === "textarea") return;
 
       e.preventDefault();
-      props.shortcut.function();
+      shortcut.function();
 });
 
 const keyCorrections = ((key) => {
@@ -105,7 +99,7 @@ const onKeydown = ((e) => {
         keysDown.value.push(key);
       }
 
-      if (e.target.id === _uid.value) {
+      if (e.target.id === uid) {
         e.preventDefault();
         keys.value = keysDown.value;
       } else if (route.name === "annotate") {

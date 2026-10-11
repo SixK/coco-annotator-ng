@@ -24,7 +24,7 @@ const icon = computed(() => {
 
 
 watch(
-   () => mode.value, 
+   mode, 
    (newVal) => {
         name.value = "Mode: " + newVal;
         mode.value = newVal;

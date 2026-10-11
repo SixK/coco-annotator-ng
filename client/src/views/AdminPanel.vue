@@ -263,7 +263,7 @@ const editUser = () => {
 };
 
 watch(
-    () => limit.value, 
+    limit, 
     () => {
         updatePage();
 });

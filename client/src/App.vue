@@ -52,7 +52,7 @@ const socketConnection = computed(() => {
 });
 
 watch(
-  () => loading.value, 
+  loading, 
   (newVal) => {
   if (!newVal && loader != null) {
     loader.hide();
@@ -61,7 +61,7 @@ watch(
 
 
 watch(
-  () => socketConnection.value, 
+  socketConnection, 
   (newVal) => {
       if (newVal) return;
       setTimeout(() => {
@@ -78,7 +78,7 @@ watch(
 });
 
 watch(
-() => loginRequired.value,
+loginRequired,
 (newValue) => {
     if (newValue) {
       toAuthPage();

@@ -89,10 +89,16 @@ const groupping = computed(() => {
     return groupping;
 });
 
+// BROKEN BEFORE FIX — two bugs:
+// 1. the source was `() => taskToShow`, the getter returning the computed *ref
+//    itself instead of its value, so it never fired;
+// 2. `showTask()` was called without the `taskId` argument it requires, and its
+//    first line is `if (taskId == null) return;` → always returned immediately.
+// Result: opening a task via `?id=` did nothing once already on the page.
 watch(
-  () => taskToShow,
-  () => {
-      showTask()
+  taskToShow,
+  (taskId) => {
+      showTask(taskId);
   }
 );
 

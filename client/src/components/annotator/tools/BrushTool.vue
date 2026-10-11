@@ -67,7 +67,7 @@ watch(
 
 
 watch(
-  () => scale.value,
+  scale,
   (newScale) => {
     brush.value.pathOptions.strokeWidth = newScale * scaleFactor;    
     if (brush.value.path != null)

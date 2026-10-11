@@ -23,15 +23,10 @@ export default function useAnnotatorState(image) {
   const simplify = ref(1);
   const cursor = ref('move');
 
-  // refs for template components (exposed)
+  // zoom is the only ref owned here; every template ref is declared in
+  // Annotator.vue with useTemplateRef() so the binding key is verified.
   const refsForTemplate = {
-    refcanvas: ref(null),
-    settings: ref(null),
-    toolspanel: ref(null),
-    filetitle: ref(null),
-    categorylist: ref([]),
     zoom: ref(0.2),
-    /* expose commonly used refs so SFC doesn't import them from this file */
   };
 
   const helpers = {
@@ -67,11 +62,6 @@ export default function useAnnotatorState(image) {
     shapeOpacity,
     simplify,
     cursor,
-    categorylist: refsForTemplate.categorylist,
-    settings: refsForTemplate.settings,
-    toolspanel: refsForTemplate.toolspanel,
-    refcanvas: refsForTemplate.refcanvas,
-    filetitle: refsForTemplate.filetitle,
     zoom: refsForTemplate.zoom,
   };
 

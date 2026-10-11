@@ -223,7 +223,7 @@ const removeLastPoint = () => {
 
 // need to understand why this scale is not triggered !?
 watch(
-   () => scale.value, 
+   scale, 
    (newScale) => {
   polygon.value.pathOptions.strokeWidth = newScale * scaleFactor;
   if (polygon.value.path != null) {

@@ -234,7 +234,7 @@ import axios from "axios";
 import MetaData from "@/components/MetaData";
 import TagsInput from "@/components/TagsInput";
 
-import { ref, computed, inject, watch, onMounted, onBeforeMount } from "vue";
+import { ref, computed, inject, watch, onMounted, onBeforeMount, useTemplateRef } from "vue";
 import { useRouter } from 'vue-router';
 
 import { useStores } from "@/composables/useStores"
@@ -261,7 +261,7 @@ import notFoundImageUrl from "@/assets/404-image.png";
 
 const sharedUsers = ref([]);
 const localUsers = ref([]);
-const defaultAnnotation = ref(null);
+const defaultAnnotation = useTemplateRef('defaultAnnotation');
 
 watch(
   () => getUsers(),

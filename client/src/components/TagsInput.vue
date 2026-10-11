@@ -126,20 +126,25 @@ const showPlaceholder = computed(() => {
 });
 
 watch(
-  () => selectedItems.value,
+  selectedItems,
   () => {
     tagsFromValue();
   }
 );
 
+// Was `watch(tags.value, …)`: the array reference is captured at setup and is
+// only ever mutated in place (push/splice), so this must be a deep watch on the
+// ref — otherwise `hiddenInput` and the `selected-items` emit never update.
 watch(
-  tags.value,
+  tags,
   (newVal, oldVal) => {
       hiddenInput.value = newVal.join(",");
       // don't have to emit thank's to defineModel, we simply attribute new value
       emit("selected-items", newVal);
       selectedItems.value = newVal;
-});
+  },
+  { deep: true }
+);
 
 
 const escapeRegExp = (string) => {

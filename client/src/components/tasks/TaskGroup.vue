@@ -36,21 +36,6 @@ import { toRef, ref, computed } from 'vue'
 const tasks = defineModel('tasks', { type: Array, required: true });
 const name = defineModel('name', { type: String, required: true });
 
-/*
-const props = defineProps({
-  tasks: {
-    type: Array,
-    required: true,
-  },
-  name: {
-    type: String,
-    required: true,
-  },
-});
-const tasks = toRef(props, 'tasks');
-const name = toRef(props, 'name');
-*/
-
 const showTasks = ref(true)
 
 const runningTasks = computed(() => {

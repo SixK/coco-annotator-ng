@@ -74,7 +74,7 @@ watch(
 );
 
 watch(
-    () => scale.value, 
+    scale, 
     (newScale) => {
       eraser.value.pathOptions.strokeWidth = newScale * scaleFactor;
       if (eraser.value.brush != null)

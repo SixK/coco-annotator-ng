@@ -84,7 +84,7 @@ import SamTool from "@/components/annotator/tools/SamTool";
 import Sam2Tool from "@/components/annotator/tools/Sam2Tool";
 import ZimTool from "@/components/annotator/tools/ZimTool";
 
-import { ref, inject, watch } from "vue";
+import { useTemplateRef, inject, watch } from "vue";
 
 const { getImageRaster } = inject('annotator');
 
@@ -95,16 +95,18 @@ const mode = defineModel('mode', { type: String, required: true });
 
 const emit = defineEmits(["setcursor"]);
 
-const bbox = ref(null);
-const polygon = ref(null);
-const eraser = ref(null);
-const brush = ref(null);
-const magicwand = ref(null);
-const select = ref(null);
-// const settings = ref(null);
-const keypoint  = ref(null);
-const dextr  = ref(null);
-const sam2 = ref(null);
+// template refs: only read through exported getters/methods (never written to),
+// so useTemplateRef()'s readonly ref is safe here.
+const select    = useTemplateRef('select');
+const bbox      = useTemplateRef('bbox');
+const polygon   = useTemplateRef('polygon');
+const magicwand = useTemplateRef('magicwand');
+const brush     = useTemplateRef('brush');
+const eraser    = useTemplateRef('eraser');
+const keypoint  = useTemplateRef('keypoint');
+const dextr     = useTemplateRef('dextr');
+const sam2      = useTemplateRef('sam2');
+// const settings = useTemplateRef('settings');
 
 const exportUserTools = () => ({
   bbox: bbox.value.exportBBox(),

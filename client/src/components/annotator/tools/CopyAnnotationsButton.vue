@@ -198,7 +198,7 @@ watchEffect(() => {
 });
 
 watch(
-  () => localCategories.value,
+  localCategories,
   (newCategories) => {
     const tags = [];
     newCategories.forEach((category) => {

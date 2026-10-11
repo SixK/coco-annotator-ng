@@ -726,18 +726,17 @@ import { onBeforeRouteUpdate, useRouter, useRoute } from 'vue-router';
 const router = useRouter();
 const route = useRoute();
 
-const props = defineProps({
+const { identifier } = defineProps({
   identifier: {
     type: [Number, String],
-    required: true
-  }
+    required: true,
+  },
 });
 
 // modals
 let cocoImportModal = null;
 let cocoExportModal = null;
 
-const identifier = ref(props.identifier);
 const page = ref(1);
 const pages = ref(1);
 const generateLimit = ref(100);
@@ -1035,7 +1034,7 @@ const onAnnotating = (data) => {
 };
 
 watch(
-    () => tab.value,
+    tab,
     (newtab) => {
       console.log('tab changed...:', newtab);
       localStorage.setItem('dataset/tab', newtab);
@@ -1046,7 +1045,7 @@ watch(
 );
 
 watch(
-    () => order.value,
+    order,
     (neworder) => {
       localStorage.setItem('dataset/order', neworder);
       updatePage();
@@ -1054,7 +1053,7 @@ watch(
 );
 
 watch(
-    () => queryAnnotated.value,
+    queryAnnotated,
     () => updatePage()
 );
 
@@ -1126,7 +1125,7 @@ watch(
 
 
 onBeforeRouteUpdate ((to, from, next) => {
-    dataset.value.id = parseInt(identifier.value);
+    dataset.value.id = parseInt(identifier);
     updatePage();
 });
 
@@ -1141,7 +1140,7 @@ onMounted(() => {
       if (sideWidth !== null) sidebar.value.width = parseInt(sideWidth);
       if (ltab !== null) tab.value = ltab;
       if (lorder !== null) order.value = lorder;
-      dataset.value.id = parseInt(identifier.value);
+      dataset.value.id = parseInt(identifier);
       updatePage();
 
       const importTag = document.getElementById("cocoUpload");

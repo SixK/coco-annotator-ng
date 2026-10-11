@@ -1055,20 +1055,20 @@ function findLabelIndex() {
 
 
 watch(
-    () => opacity.value, 
+    opacity, 
     (newOpacity) => {
         compoundPath.value.opacity = newOpacity;
 });
 
 
 watch(
-    () => color.value, 
+    color, 
     () => {
         setColor();
 });
 
 watch(
-    () => isVisible.value, 
+    isVisible, 
     (newVisible) => {
         if (compoundPath.value == null) return;
         compoundPath.value.visible = newVisible;
@@ -1076,7 +1076,7 @@ watch(
 });
 
 watch(
-    () => compoundPath.value, 
+    compoundPath, 
     () => {
         if (compoundPath.value == null) return;
         compoundPath.value.visible = isVisible.value;
@@ -1086,14 +1086,14 @@ watch(
 );
 
 watch(
-    () => keypoints.value, 
+    keypoints, 
     () => {
         updateIsEmptyState();
 });
 
 
 watch(
-  () => isCurrent.value, 
+  isCurrent, 
   (newcurrent, wasCurrent) => {
       if (newcurrent) {
         // Start new session
@@ -1112,7 +1112,7 @@ watch(
 });
 
 watch(
-  () => currentKeypoint.value, 
+  currentKeypoint, 
   (point, old) => {
       if (old) old.selected = false;
       if (point) point.selected = true;
@@ -1136,7 +1136,7 @@ watch(
 
 
 watch(
-  () => scale.value, 
+  scale, 
   (newScale) => {
       if (!keypoints.value) return;
       keypoints.value.radius = newScale * 6;

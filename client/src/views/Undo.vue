@@ -196,7 +196,7 @@ const deleteModel = (id, instance) => {
 };
 
 watch(
-  () => [limit.value, type.value], 
+  [limit, type], 
   () => {
   updatePage();
 });

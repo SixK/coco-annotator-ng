@@ -71,7 +71,7 @@ const hitOptions = ref({
 });
 
 watch(
-  () => keypoint.value, 
+  keypoint, 
   (newKeypoint) => {
         clear();
         if (!newKeypoint) return;
@@ -80,7 +80,7 @@ watch(
 );
 
 watch(
-  () => scale.value, 
+  scale, 
   (newScale) => {
       hover.value.rounded = newScale * 5;
       hover.value.textShift = newScale * 40;

@@ -19,7 +19,7 @@
       <div v-show="mode == 'segment'">
         <CopyAnnotationsButton
           :categories="categories"
-          :imageId="parseInt(props.identifier)"
+          :imageId="parseInt(identifier)"
           :next="image.next"
           :previous="image.previous"
         />
@@ -195,7 +195,7 @@ import AnnotateButton from "@/components/annotator/tools/AnnotateButton";
 
 import ToolsPanel from "@/components/annotator/panels/ToolsPanel.vue";
 
-import { onBeforeUpdate, onUpdated, nextTick, toRef, ref, computed, watch, inject, onMounted, onUnmounted, provide, watchEffect } from 'vue';
+import { onBeforeUpdate, onUpdated, nextTick, toRef, ref, computed, watch, inject, onMounted, onUnmounted, provide, watchEffect, useTemplateRef } from 'vue';
 
 import { getCurrentInstance } from 'vue';
 import { onBeforeRouteLeave, useRouter, useRoute } from 'vue-router';
@@ -224,27 +224,30 @@ const toolStore = useToolStore();
 
 const socket = inject('socket')
 
-const props = defineProps({
+const { identifier } = defineProps({
   identifier: {
     type: [Number, String],
-    required: true
-  }
+    required: true,
+  },
 });
 
-const filetitle = ref(null);
+const filetitle = useTemplateRef('filetitle');
 const { image, getImageId, nextImage,  previousImage } = useAnnotatorImage(filetitle);
 // bind all components
-const settings = ref(null);
+const settings = useTemplateRef('settings');
 const { state, refsForTemplate, helpers, _, user } = useAnnotatorState(image);
 /* expose some tool getters (wrap refs from ToolsPanel) */
-const toolspanel = refsForTemplate.toolspanel;
+const toolspanel = useTemplateRef('toolspanel');
 const getTool = name => toolspanel.value?.[name];
 
 /* unpack what we need directly for template access */
 const { categories, dataset, loading, 
               panels, mode, current, hover, annotating, 
               search, shapeOpacity, simplify, 
-              cursor, categorylist } =  refsForTemplate;
+              cursor } =  refsForTemplate;
+// `categorylist` deliberately stays a plain ref: useAnnotatorData writes through it
+// (cat.isVisible / cat.showAnnotations), which a useTemplateRef() readonly ref rejects.
+const categorylist = ref([]);
 
 const { currentPanel, panelProps, toolInst } = useToolPanel(toolspanel)
 
@@ -266,17 +269,15 @@ const { getData, fetchData, showAll, hideAll } = useAnnotatorData({ state, route
 
 console.log('image:', image.value.url);
 
-const refcanvas = ref(null);
+const refcanvas = useTemplateRef('refcanvas');
 const annotation = ref(null);
 const pinching = ref({
       old_zoom: 1
 });
 const category = ref(null);
 
-console.log('refsForTemplate.settings:', refsForTemplate.settings, settings.value);
-
 const { save } = useDataHandling(image, categories, dataset, 
-                                  categorylist, refsForTemplate.toolspanel,
+                                  categorylist, toolspanel,
                                   settings, procStore, mode, current, refsForTemplate.zoom);
 
 const getHover = () => {
@@ -405,13 +406,13 @@ watchEffect(() => {
 })
 
 watch(
-  () => annotating.value, 
+  annotating, 
   () => {
     removeFromAnnotatingList();
 });
 
 watch(
-  () => user.value, 
+  user, 
   () => {
     removeFromAnnotatingList();
 });
@@ -439,7 +440,7 @@ onBeforeRouteLeave(async (to, from) => {
 onMounted(() => {
     // can't call this command like this, but work without !??
     // paper = new paper.PaperScope();
-    image.value.id = parseInt(props.identifier);
+    image.value.id = parseInt(identifier);
     image.value.url = "/api/image/" + image.value.id;
 
     console.log('state:', state, image);

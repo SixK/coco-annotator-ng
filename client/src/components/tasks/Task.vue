@@ -111,13 +111,17 @@ const completed = computed(() => {
 });
 
 watch(
-  () => showLogs.value, 
+  showLogs, 
   () => {
     getLogs();
 });
 
+// BROKEN BEFORE FIX — the source was `() => completed`, i.e. the getter returned
+// the computed *ref itself* instead of `completed.value`. No dependency was ever
+// tracked, so the logs were never refreshed when the task finished.
+// Fix: watch the ref directly.
 watch(
-  () => completed, 
+  completed,
   (value) => {
     if (showLogs.value) {
       getLogs();

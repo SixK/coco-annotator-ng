@@ -84,7 +84,7 @@
                 :value="object.edges"
                 placeholder="Add connected label"
                 class="keypoint-input"
-                :element-id="`index${index}`"
+                :element-id="`${keypointIdPrefix}-index-${index}`"
                 :existing-tags="otherKeypointLabels(object.label)"
                 :only-existing-tags="true"
                 :typeahead="true"
@@ -101,7 +101,11 @@
 
 <script setup>
 import TagsInput from '@/components/TagsInput.vue';
-import { nextTick, toRef, ref, watchEffect, onMounted, computed, watch } from 'vue';
+import { nextTick, toRef, ref, watchEffect, onMounted, computed, watch, useId } from 'vue';
+
+// Unique per component instance: two <KeypointsDefinition> rendered on the same
+// page used to both generate `index0`, `index1`, ... for their hidden inputs.
+const keypointIdPrefix = useId();
 
 
 const DISTINCT_COLORS = [
@@ -162,7 +166,7 @@ const valid = computed(() => {
 });
 
 watch(
-      () => hiddenValue.value, 
+      hiddenValue, 
       () => {
           if (hiddenValue.value !== keypointsDef.value) {
             hiddenValue.value = keypointsDef.value;

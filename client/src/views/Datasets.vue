@@ -320,7 +320,7 @@ const user = computed(() => {
 });
 
 watch(
-  () => user.value,
+  user,
   () => { 
       updatePage();
   }

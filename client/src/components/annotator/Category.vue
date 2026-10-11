@@ -192,7 +192,7 @@ import KeypointsDefinition from "@/components/KeypointsDefinition";
 import { nextTick } from 'vue';
 
 import { getCurrentInstance, provide, inject, watch,  
-                 ref, computed, onMounted, onUnmounted, toRef, onBeforeUpdate } from 'vue';
+                 ref, computed, onMounted, onUnmounted, toRef, onBeforeUpdate, useTemplateRef } from 'vue';
 
 const socket = inject('socket');
 
@@ -230,7 +230,7 @@ const isVisible = ref(false);
 const search = ref("");
 const isMounted = ref(false);
 
-const keypoints = ref(null);
+const keypoints = useTemplateRef('keypoints');
 let categorySettingsModal = null;
 
 const annotation = ref(null);
@@ -304,13 +304,13 @@ const isFormValid = computed(() => {
 });
 
 watch(
-  () => color.value, 
+  color, 
   () => {
       setColor();
 });
 
 watch(
-  () => opacity.value, 
+  opacity, 
   (newopacity) => {
       const annotations = annotationlist.value
       if (annotations.value == null) return;
@@ -318,7 +318,7 @@ watch(
 });
 
 watch(
-  () => isVisible.value, 
+  isVisible, 
   (newVisible) => {
       const annotations = annotationlist.value
       if (annotations == null) return;
@@ -331,7 +331,7 @@ watch(
 });
 
 watch(
-  () => showAnnotations.value, 
+  showAnnotations, 
   (showing) => {
       if (!showing) {
         emit("click", {
@@ -343,12 +343,24 @@ watch(
       setColor();
 });
 
+// Was `watch(category.value, …)`: the source object was captured once at setup,
+// so replacing the whole category never re-bound it. Watching the model ref with
+// `{ deep: true }` keeps the original deep triggering *and* follows swaps.
+watch(
+  category,
+  () => {
+      initCategory();
+  },
+  { deep: true }
+);
+
+/*
 watch(
   category.value, 
   () => {
       initCategory();
 });
-
+*/
 
 const show = (index) => {
   if (search.value.length === 0) return true;

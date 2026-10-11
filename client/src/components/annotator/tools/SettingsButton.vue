@@ -115,13 +115,13 @@ import { Modal } from "bootstrap";
 
 import MetaData from "@/components/MetaData.vue";
 import CustomShortcut from "@/components/annotator/CustomShortcut.vue";
-import { onMounted, onUnmounted, toRef, ref, reactive } from 'vue';
+import { onMounted, onUnmounted, toRef, ref, reactive, useTemplateRef } from 'vue';
 
 const metadata = defineModel('metadata', { type: Object, required: true });
 const commands = defineModel('commands', { type: Array, required: true });
 
 const name = ref("Image Settings");
-const shortcuts = ref(null); 
+const shortcuts = useTemplateRef('shortcuts');
 
 let settingsModal = null;
 

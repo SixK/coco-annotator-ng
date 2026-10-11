@@ -200,7 +200,7 @@ function removeLastBBox() {
 };
 
 watch(
- () => scale.value, 
+ scale, 
  (newScale) => {
   polygon.value.pathOptions.strokeWidth = newScale * scaleFactor;
   if (polygon.value.path != null) {

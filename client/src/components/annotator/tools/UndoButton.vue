@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { useButton } from "@/composables/toolBar/button";
 
 import { useProcStore } from "@/store/index";
@@ -15,8 +15,12 @@ const procStore = useProcStore();
 const { iconColor, click } = useButton();
 
 const icon = ref("fa-undo");
-const disabled = ref(true);
 const undoList = computed(() => procStore.undo);
+// Was a ref kept in sync by `watch(undoList.value, () => …, { immediate: true })`.
+// `undoList.value` is only a deep-reactive array by accident of Pinia; a plain
+// array there would have been parsed as a multi-source array and never fired.
+// As a computed it can never go stale.
+const disabled = computed(() => undoList.value.length === 0);
 
 const name = computed(() => {
   const length = undoList.value.length;
@@ -30,13 +34,5 @@ const name = computed(() => {
 const execute = () => {
   procStore.doUndo();
 };
-
-watch(
-  undoList.value,
-  () => {
-    disabled.value = undoList.value.length === 0;
-  },
-  { immediate: true }
-  );
   
 </script>

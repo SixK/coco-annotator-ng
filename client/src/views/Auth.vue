@@ -213,14 +213,13 @@ const { auth, proc, info } = useStores();
 const router = useRouter();
 const $loading = useLoading({});
 
-const props = defineProps({
+const redirect = defineProps({
   redirect: {
     type: Object,
-    default: () => ({ name: "datasets" })
-  }
+    default: () => ({ name: "datasets" }),
+  },
 });
 
-const redirect = ref(props.redirect);
 const registerTab = ref(null);
 const tab = ref("login")
 const registerForm = ref({
@@ -230,9 +229,6 @@ const registerForm = ref({
     password: "",
     confirmPassword: ""
 });
-
-const registerFormContainer = ref(null);
-const loginFormContainer=ref(null);
 
 const loginForm = ref({
     loading: false,
@@ -316,7 +312,7 @@ const loginValid = computed(() => {
 
 
 watch(
-  () => totalUsers, 
+  totalUsers,
   (users) => {
       if (users === 0) {
         registerTab.value.click();
