@@ -22,17 +22,21 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
 
-const name = defineModel('name', { type: String, required: true });
+// `value` stays two-way (`v-model:value`); `name` and `values` are only read → props.
+const { name, values } = defineProps({
+  name: { type: String, required: true },
+  values: { type: Object, required: true },
+});
+
 const value = defineModel('value', { type: [Number, Array, Object, String], required: true });
-const values = defineModel('values', { type: Object, required: true });
 
 
 const options = computed(() => {
   let array = [];
-  Object.keys(values.value).forEach((k) => {
+  Object.keys(values).forEach((k) => {
     array.push({
       key: k,
-      value: values.value[k],
+      value: values[k],
       selected: value.value == k,
     });
   });

@@ -17,11 +17,17 @@
 <script setup>
 import { ref, watch } from 'vue';
 
-const name = defineModel('name', { type: String, required: true });
+// `value` is the only two-way binding (every parent uses `v-model:value`);
+// name/max/min/step are read-only configuration → plain props (Vue 3.5
+// reactive props destructure, so the template keeps reading them live).
+const { name, max, min, step } = defineProps({
+  name: { type: String, required: true },
+  max: { type: String, default: '10' },
+  min: { type: String, default: '1' },
+  step: { type: String, default: '1' },
+});
+
 const value = defineModel('value', { type: Number, required: true });
-const max = defineModel('max', { type: String, default: '10' });
-const min = defineModel('min', { type: String, default: '1' });
-const step = defineModel('step', { type: String, default: '1' });
 
 </script>
 

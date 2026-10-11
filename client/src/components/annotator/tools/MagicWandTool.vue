@@ -12,8 +12,10 @@ import { useTools } from "@/composables/toolBar/tools";
 
 const { getCurrentAnnotation } = inject('annotator');
 
-const width = defineModel('width', { type: null, required: true });
-const height = defineModel('height', { type: null, required: true });
+const { width, height } = defineProps({
+  width: { type: Number, required: true },
+  height: { type: Number, required: true },
+});
 const imageData = defineModel('imageData', { required: true, 
                                                                            validator: prop => typeof prop === "object" || prop === null });
 
@@ -75,8 +77,8 @@ const flood = (x, y, thr, rad) => {
 
   const image = {
     data: imageData.value.data,
-    width: width.value,
-    height: height.value,
+    width: width,
+    height: height,
     bytes: 4,
   };
   let mask = MagicWand.floodFill(image, x, y, thr);
@@ -99,11 +101,11 @@ const flood = (x, y, thr, rad) => {
 };
 
 const onMouseDown = (event) => {
-      const x = Math.round(width.value / 2 + event.point.x);
-      const y = Math.round(height.value / 2 + event.point.y);
+      const x = Math.round(width / 2 + event.point.x);
+      const y = Math.round(height / 2 + event.point.y);
 
       // Check if valid coordinates
-      if (x > width.value || y > height.value || x < 0 || y < 0) {
+      if (x > width || y > height || x < 0 || y < 0) {
         return;
       }
 

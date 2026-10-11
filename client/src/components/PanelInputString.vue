@@ -13,7 +13,7 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue';
 
-const name = defineModel('name', { type: String, required: true });
+const { name } = defineProps({ name: { type: String, required: true } });
 const inputString = defineModel('inputString', { type: String, required: true });
 
 const emit = defineEmits(['submit']);

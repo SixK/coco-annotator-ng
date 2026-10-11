@@ -8,7 +8,8 @@
 </template>
 <script setup>
 
-const name = defineModel('name', { type: String, required: true });
+
+const { name } = defineProps({ name: { type: String, required: true } });
 
 const emit = defineEmits(['click'])
 </script>

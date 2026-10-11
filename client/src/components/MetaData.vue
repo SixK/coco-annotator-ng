@@ -73,10 +73,13 @@
 import { ref, watchEffect, onMounted } from 'vue';
 
 const metadata = defineModel('metadata', { type: Object, required: true });
-const title = defineModel('title', { type: String, default: "Metadata" });
-const keyTitle = defineModel('keyTitle', { type: String, default: "Keys" });
-const valueTitle = defineModel('valueTitle', { type: String, default: "Values" });
-const exclude = defineModel('exclude', { type: String, default: "" });
+
+const { title, keyTitle, valueTitle, exclude } = defineProps({
+  title: { type: String, default: "Metadata" },
+  keyTitle: { type: String, default: "Keys" },
+  valueTitle: { type: String, default: "Values" },
+  exclude: { type: String, default: "" },
+});
 
 
 const metadataList = ref([]);
@@ -127,7 +130,7 @@ function loadMetadata() {
             continue;
         }
         
-        if (key === exclude.value) continue;
+        if (key === exclude) continue;
         let value = metadata.value[key];
         if (value == null) value = '';
         else value = value.toString();

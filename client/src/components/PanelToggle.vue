@@ -10,7 +10,7 @@
 
 <script setup>
 
-const name = defineModel('name', { type: String, required: true });
+const { name } = defineProps({ name: { type: String, required: true } });
 const showText = defineModel('showText', { type: Boolean, required: true });
 
 </script>

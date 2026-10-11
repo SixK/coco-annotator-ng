@@ -12,7 +12,7 @@ const { iconColor, click } = useButton();
 
 const emit = defineEmits(["update:mode"]);
 
-const mode = defineModel('mode', { type: null, required: true });
+const mode = defineModel('mode', { type: String, required: true });
 
 const name = ref("Mode: "+mode.value);
 
