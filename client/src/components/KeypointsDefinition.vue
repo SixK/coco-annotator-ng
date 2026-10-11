@@ -249,7 +249,9 @@ const getEdge = (index) => {
 }
 
 const getColor = (index) => {
-    return keypointsDef.value.colors[index];
+    // Optional chaining: a parent resetting keypointsDef to a partial object
+    // used to throw here ("colors is undefined") as soon as a row was added.
+    return keypointsDef.value.colors?.[index];
 }
 
 const  colorUpdated = (index, color) => {

@@ -292,7 +292,7 @@ const createCategory = () => {
       newCategoryName.value = "";
       newCategorySupercategory.value = "";
       newCategoryColor.value = DEFAULT_COLOR;
-      newCategoryKeypoint.value = {};
+      newCategoryKeypoint.value = { labels: [], edges: [], colors: [] };
       updatePage();
     })
     .catch((error) => {
