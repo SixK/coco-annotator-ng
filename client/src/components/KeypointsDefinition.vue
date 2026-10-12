@@ -143,7 +143,7 @@ const DISTINCT_COLORS = [
   "#e673a1"
 ];
 
-const emit = defineEmits(['update:keypoints-def', 'initialized', 'input']);
+const emit = defineEmits(['initialized']);
 
 const keypointsDef = defineModel('keypointsDef', { type: Object, required: true });
 const title = defineModel('title', { type: String, default: "Keypoints" });
@@ -257,7 +257,7 @@ const getColor = (index) => {
 const  colorUpdated = (index, color) => {
         keypoints.value[index].color = color;
         hiddenValue.value = propFomKeypoints();  
-        emit('update:keypoints-def', hiddenValue.value);
+        keypointsDef.value = hiddenValue.value;
 };
 
 const keypointLabelUpdated = (index, newLabel) => {
@@ -296,7 +296,7 @@ const keypointLabelUpdated = (index, newLabel) => {
   // Emit on success
   if (!current.label_error) {
     hiddenValue.value = propFomKeypoints();
-    emit('update:keypoints-def', hiddenValue.value);
+    keypointsDef.value = hiddenValue.value;
   }
 };
 
@@ -325,7 +325,7 @@ const keypointEdgesUpdated = (index, newEdges) => {
   
   current.edges = newEdges;
   hiddenValue.value = propFomKeypoints();
-  emit('update:keypoints-def', hiddenValue.value);
+  keypointsDef.value = hiddenValue.value;
 };
 
 const propFomKeypoints = () => {

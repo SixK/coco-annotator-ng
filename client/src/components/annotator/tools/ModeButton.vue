@@ -10,8 +10,6 @@ import { useButton } from "@/composables/toolBar/button";
 
 const { iconColor, click } = useButton();
 
-const emit = defineEmits(["update:mode"]);
-
 const mode = defineModel('mode', { type: String, required: true });
 
 const name = ref("Mode: "+mode.value);
@@ -27,7 +25,6 @@ watch(
    mode, 
    (newVal) => {
         name.value = "Mode: " + newVal;
-        mode.value = newVal;
     }
 );
 
@@ -37,7 +34,7 @@ const next = () => {
 };
 
 const execute = () => {
-  emit("update:mode", next());
+  mode.value = next();
 };
 
 </script>
