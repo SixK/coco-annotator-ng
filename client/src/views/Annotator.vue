@@ -394,7 +394,7 @@ const removeFromAnnotatingList = () => {
 
 
 
-const {moveUp, moveDown, stepIn, stepOut} = useAnnotatorMoves(current, currentAnnotation, currentAnnotationFromList, currentCategory, currentCategoryFromList, currentKeypoint, categories, currentAnnotationLength)
+const {moveUp, moveDown, stepIn, stepOut} = useAnnotatorMoves(current, currentAnnotationFromList, currentCategoryFromList, currentKeypoint, categories, currentAnnotationLength)
 
 
 const clampIndex = (val, max) => (val < 0 ? -1 : val >= max ? max - 1 : val)

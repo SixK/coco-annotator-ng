@@ -1,5 +1,5 @@
 
-export default function useAnnotatorMoves(current, currentAnnotation, currentAnnotationFromList, currentCategory, currentCategoryFromList, currentKeypoint, categories, currentAnnotationLength) {
+export default function useAnnotatorMoves(current, currentAnnotationFromList, currentCategoryFromList, currentKeypoint, categories, currentAnnotationLength) {
 
 const incrementCategory = () => {
     if (current.value.category >= categories.value.length - 1) {
