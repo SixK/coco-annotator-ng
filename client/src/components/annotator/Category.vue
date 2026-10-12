@@ -203,25 +203,37 @@ const { getImageId, scrollToElement } = inject('annotator');
 const toolStore = useToolStore();
 
 
-const category = defineModel('category', { type: Object, required: true });
-const index = defineModel('index', { type: Number, required: true });
-const current = defineModel('current', { type: Object, required: true });
-const hover = defineModel('hover', { type: Object, required: true });
-const opacity = defineModel('opacity', { type: Number, required: true });
-const scale = defineModel('scale', { type: Number, default: 1 });
-const categorysearch = defineModel('categorysearch', { type: String, required: true });
-const simplify = defineModel('simplify', { type: Number, default: 1 });
-const allCategories = defineModel('allCategories', { type: Array, required: true });
+const {
+  category,
+  index,
+  current,
+  hover,
+  opacity,
+  scale,
+  categorysearch,
+  simplify,
+  allCategories,
+} = defineProps({
+  category: { type: Object, required: true },
+  index: { type: Number, required: true },
+  current: { type: Object, required: true },
+  hover: { type: Object, required: true },
+  opacity: { type: Number, required: true },
+  scale: { type: Number, default: 1 },
+  categorysearch: { type: String, required: true },
+  simplify: { type: Number, default: 1 },
+  allCategories: { type: Array, required: true },
+});
 
 
 const group = ref(null);
-const supercategory = ref(category.value.supercategory);
-const color = ref(category.value.color);
+const supercategory = ref(category.supercategory);
+const color = ref(category.color);
 
 const keypoint = toRef({
-      labels: [...category.value.keypoint_labels],
-      edges: [...category.value.keypoint_edges],
-      colors: [...category.value.keypoint_colors],
+      labels: [...category.keypoint_labels],
+      edges: [...category.keypoint_edges],
+      colors: [...category.keypoint_colors],
 });
 
 const selectedAnnotation = ref(-1);
@@ -247,29 +259,29 @@ const getShowAnnotations  = () => {
 
 
 const getCategoryIndex  = () => {
-    return index.value;
+    return index;
 };
 
 
 const showCategory = computed(() => {
-  const search = categorysearch.value.toLowerCase();
+  const search = categorysearch.toLowerCase();
   if (search.length === 0) return true;
-  return category.value.name.toLowerCase().includes(search);
+  return category.name.toLowerCase().includes(search);
 });
 
 const getCategoriesList = computed(() => {
-  return allCategories.value.map((category) => ({
+  return allCategories.map((category) => ({
     value: category.id,
     text: category.name,
   }));
 });
 
 const categoryIsCurrent = computed(() => {
-  return current.value.category === index.value;
+  return current.category === index;
 });
 
 const isHover = computed(() => {
-  return hover.value.category === index.value;
+  return hover.category === index;
 });
 
 const backgroundColor = computed(() => {
@@ -310,7 +322,7 @@ watch(
 });
 
 watch(
-  opacity, 
+  () => opacity,
   (newopacity) => {
       const annotations = annotationlist.value
       if (annotations.value == null) return;
@@ -337,7 +349,7 @@ watch(
         emit("click", {
           annotation: -1,
           keypoint: -1,
-          category: index.value,
+          category: index,
         });
       }
       setColor();
@@ -347,7 +359,7 @@ watch(
 // so replacing the whole category never re-bound it. Watching the model ref with
 // `{ deep: true }` keeps the original deep triggering *and* follows swaps.
 watch(
-  category,
+  () => category,
   () => {
       initCategory();
   },
@@ -356,7 +368,7 @@ watch(
 
 /*
 watch(
-  category.value, 
+  category, 
   () => {
       initCategory();
 });
@@ -369,43 +381,43 @@ const show = (index) => {
 
 
 const resetCategorySettings = () => {
-  supercategory.value = category.value.supercategory;
-  color.value = category.value.color;
+  supercategory.value = category.supercategory;
+  color.value = category.color;
 
   keypoint.value = {
-    labels: [...category.value.keypoint_labels],
-    edges: [...category.value.keypoint_edges],
-    colors: [...category.value.keypoint_colors],
+    labels: [...category.keypoint_labels],
+    edges: [...category.keypoint_edges],
+    colors: [...category.keypoint_colors],
   };
 };
 
 const onUpdateClick = () => {
-  category.value.keypoint_labels = [...keypoint.value.labels];
-  category.value.keypoint_edges = [...keypoint.value.edges];
-  category.value.keypoint_colors = [...keypoint.value.colors];
-  category.value.supercategory = supercategory.value;
+  category.keypoint_labels = [...keypoint.value.labels];
+  category.keypoint_edges = [...keypoint.value.edges];
+  category.keypoint_colors = [...keypoint.value.colors];
+  category.supercategory = supercategory.value;
 };
 
 const createAnnotation = () => {
-      const annotationId = category.value.annotations.length;
+      const annotationId = category.annotations.length;
       Annotations.create({
         image_id: getImageId(),
-        category_id: category.value.id,
+        category_id: category.id,
       }).then((response) => {
        socket.io.emit("annotation", {
           action: "create",
-          category_id: category.value.id,
+          category_id: category.id,
           annotation: response.data
         });
 
-        category.value.annotations.push(response.data);
+        category.annotations.push(response.data);
 
         selectedAnnotation.value = annotationId;
         nextTick(() => {
           toolStore.selectLastEditorTool();
           emit("click", {
             annotation: annotationId,
-            category: index.value,
+            category: index,
             keypoint: -1,
           });
         });
@@ -431,19 +443,19 @@ const exportCategory = () => {
 
     const categoryData = {
       // Category Identification
-      id: category.value.id,
-      name: category.value.name,
+      id: category.id,
+      name: category.name,
       // Show in side bar
-      show: category.value.show,
+      show: category.show,
       // Show groups on canvas
       visualize: isVisible.value,
       color: color.value,
       metadata: [],
       annotations: [],
-      supercategory: category.value.supercategory,
-      keypoint_labels: category.value.keypoint_labels,
-      keypoint_edges: category.value.keypoint_edges,
-      keypoint_colors: category.value.keypoint_colors,
+      supercategory: category.supercategory,
+      keypoint_labels: category.keypoint_labels,
+      keypoint_edges: category.keypoint_edges,
+      keypoint_colors: category.keypoint_colors,
     };
 
     if (annotationlist.value != null) {
@@ -485,7 +497,7 @@ const onEyeClick = () => {
     if (categoryIsCurrent.value) {
       emit('click', {
         annotation: selectedAnnotation.value,
-        category: index.value,
+        category: index,
         keypoint: -1,
       });
     }
@@ -495,7 +507,7 @@ const onEyeClick = () => {
 const onKeypointClick = (annotationIndex, keypointIndex) => {
   const indices = {
     annotation: annotationIndex,
-    category: index.value,
+    category: index,
     keypoint: keypointIndex,
   };
   selectedAnnotation.value = annotationIndex;
@@ -506,7 +518,7 @@ const onKeypointClick = (annotationIndex, keypointIndex) => {
 const onAnnotationClick = (clicked_index) => {
   const indices = {
     annotation: clicked_index,
-    category: index.value,
+    category: index,
     keypoint: -1
   };
 
@@ -518,12 +530,12 @@ const onAnnotationClick = (clicked_index) => {
 const onClick = () => {
       const indices = {
         annotation: selectedAnnotation.value,
-        category: index.value,
+        category: index,
         keypoint: -1
       };
 
       emit('click', indices);
-      if (category.value.annotations.length === 0) return;
+      if (category.annotations.length === 0) return;
       showAnnotations.value = !showAnnotations.value;
       
       if (showAnnotations.value && !isVisible.value) {
@@ -573,14 +585,14 @@ const annotationDeleted = (indexDeleted) => {
 
     const indices = {
       annotation: selectedAnnotation.value,
-      category: index.value,
+      category: index,
       keypoint: -1,
     };
     // We delete here instead of deleting in annotation component
     // to avoid index desynchro - dunno how to handle better in vue3 ?
-    category.value.annotations.splice(indexDeleted, 1);
+    category.annotations.splice(indexDeleted, 1);
     emit("click", indices);
-    if (category.value.annotations.length === 0) isVisible.value = false;
+    if (category.annotations.length === 0) isVisible.value = false;
 };
 
 
@@ -589,15 +601,15 @@ const onAnnotation = (data) => {
       const action = data.action;
       const annot = data.annotation;
       if (annot.image_id != getImageId()) return;
-      if (annot.category_id != category.value.id) return;
-      const found = category.value.annotations.findIndex(
+      if (annot.category_id != category.id) return;
+      const found = category.annotations.findIndex(
         (a) => a.id == annot.id
       );
 
       if (found == -1) {
         if (action == "create") {
           // emit('annotation', annotation);
-              category.value.annotations.push(annotation);
+          category.annotations.push(annotation);
         }
       }
 };
@@ -611,7 +623,7 @@ onMounted( () => {
     initCategory();
     getCurrentInstance().ctx.sockets.subscribe('annotation', onAnnotation);
     isMounted.value = true;
-    const categoryTag = document.getElementById(`categorySettings${category.value.id}`);
+    const categoryTag = document.getElementById(`categorySettings${category.id}`);
     categorySettingsModal = new Modal(categoryTag, { });
 });
 

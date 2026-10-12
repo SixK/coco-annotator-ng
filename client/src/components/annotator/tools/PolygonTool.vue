@@ -27,7 +27,7 @@ const {
     cursor
   }= useTools();
 
-const scale = defineModel('scale', { type: Number, default: 1 });
+const { scale } = defineProps({ scale: { type: Number, default: 1 } });
 
 name.value = "Polygon";
 cursor.value = "copy";
@@ -217,7 +217,7 @@ const removeLastPoint = () => {
 
 // need to understand why this scale is not triggered !?
 watch(
-   scale, 
+   () => scale, 
    (newScale) => {
   polygon.value.pathOptions.strokeWidth = newScale * scaleFactor;
   if (polygon.value.path != null) {

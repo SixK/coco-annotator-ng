@@ -28,7 +28,7 @@ const {
 
 const { uniteCurrentAnnotation, getCurrentCategory, getCurrentAnnotation, getImageRaster } = inject('annotator');
 
-const scale = defineModel('scale', { type: Number, default: 1 });
+const { scale } = defineProps({ scale: { type: Number, default: 1 } });
 const settings = defineModel('settings', { type: [Object, null], default: null });
 
 name.value = "BBox";
@@ -182,7 +182,7 @@ function removeLastBBox() {
 };
 
 watch(
- scale, 
+ () => scale, 
  (newScale) => {
   polygon.value.pathOptions.strokeWidth = newScale * scaleFactor;
   if (polygon.value.path != null) {

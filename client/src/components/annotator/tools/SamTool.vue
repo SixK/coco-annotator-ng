@@ -22,7 +22,7 @@ const {
     cursor
   }= useTools();
 
-const scale = defineModel('scale', { type: Number, default: 1 });
+const { scale } = defineProps({ scale: { type: Number, default: 1 } });
 
 name.value = "SAM";
 cursor.value = "crosshair";

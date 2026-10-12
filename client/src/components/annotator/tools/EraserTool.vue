@@ -10,7 +10,7 @@ import { ref, computed, watch, inject, watchEffect, onMounted, provide } from 'v
 import { useTools } from "@/composables/toolBar/tools";
 import paper from 'paper';
 
-const scale = defineModel('scale', { type: Number, default: 1 });
+const { scale } = defineProps({ scale: { type: Number, default: 1 } });
 
 const { getCurrentAnnotation } = inject('annotator');
 
@@ -68,7 +68,7 @@ watch(
 );
 
 watch(
-    scale, 
+    () => scale, 
     (newScale) => {
       eraser.value.pathOptions.strokeWidth = newScale * scaleFactor;
       if (eraser.value.brush != null)

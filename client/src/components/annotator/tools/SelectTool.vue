@@ -26,7 +26,7 @@ const {
     cursor
   }= useTools();
 
-const scale = defineModel('scale', { type: Number, default: 1 });
+const { scale } = defineProps({ scale: { type: Number, default: 1 } });
 const categories = defineModel('categories', { type: Array, required: true });
 
 name.value = "Select";
@@ -80,7 +80,7 @@ watch(
 );
 
 watch(
-  scale, 
+  () => scale, 
   (newScale) => {
       hover.value.rounded = newScale * 5;
       hover.value.textShift = newScale * 40;

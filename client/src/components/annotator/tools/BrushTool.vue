@@ -9,7 +9,7 @@ import { ref, computed, watch, inject, onMounted, provide} from 'vue'
 import { useTools } from "@/composables/toolBar/tools";
 import paper from 'paper';
 
-const scale = defineModel('scale', { type: Number, default: 1 });
+const { scale } = defineProps({ scale: { type: Number, default: 1 } });
 
 const { uniteCurrentAnnotation } = inject('annotator');
 
@@ -67,7 +67,7 @@ watch(
 
 
 watch(
-  scale,
+  () => scale,
   (newScale) => {
     brush.value.pathOptions.strokeWidth = newScale * scaleFactor;    
     if (brush.value.path != null)

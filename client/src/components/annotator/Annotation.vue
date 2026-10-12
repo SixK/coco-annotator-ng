@@ -286,27 +286,45 @@ const emit = defineEmits(['set-color', 'keypointsComplete', 'keypoint-click', 'c
 
 const socket = inject('socket');
 
-const annotation = defineModel('annotation', { type: Object, required: true });
-const showAnnotations = defineModel('showAnnotations', { type: Boolean, required: true });
-const isHoverCategory = defineModel('isHoverCategory', { type: Boolean, required: true });
-const category = defineModel('category', { type: Object, required: true });
-const index = defineModel('index', { type: Number, required: true });
-const current = defineModel('current', { type: Number, required: true });
-const hover = defineModel('hover', { type: Number, required: true });
-const opacity = defineModel('opacity', { type: Number, required: true });
-const scale = defineModel('scale', { type: Number, default: 1 });
-const search = defineModel('search', { type: String, default: "" });
-const simplify = defineModel('simplify', { type: Number, default: 1 });
-const keypointEdges = defineModel('keypointEdges', { type: Array, required: true });
-const keypointLabels = defineModel('keypointLabels', { type: Array, required: true });
-const keypointColors = defineModel('keypointColors', { type: Array, required: true });
-const allCategories = defineModel('allCategories', { type: Array, default: () => [] });
+const {
+  annotation,
+  showAnnotations,
+  isHoverCategory,
+  category,
+  index,
+  current,
+  hover,
+  opacity,
+  scale,
+  search,
+  simplify,
+  keypointEdges,
+  keypointLabels,
+  keypointColors,
+  allCategories,
+} = defineProps({
+  annotation: { type: Object, required: true },
+  showAnnotations: { type: Boolean, required: true },
+  isHoverCategory: { type: Boolean, required: true },
+  category: { type: Object, required: true },
+  index: { type: Number, required: true },
+  current: { type: Number, required: true },
+  hover: { type: Number, required: true },
+  opacity: { type: Number, required: true },
+  scale: { type: Number, default: 1 },
+  search: { type: String, default: "" },
+  simplify: { type: Number, default: 1 },
+  keypointEdges: { type: Array, required: true },
+  keypointLabels: { type: Array, required: true },
+  keypointColors: { type: Array, required: true },
+  allCategories: { type: Array, default: () => [] },
+});
 
 const keypointsCompleted = ref(false);
 
 const isVisible = ref(true);
 const showKeypoints = ref(false);
-const color = ref(annotation.value.color);
+const color = ref(annotation.color);
 const compoundPath = ref(null);
 const keypoints = ref(null);
 const metadata = ref([]);
@@ -343,15 +361,15 @@ const cleanCompoundPath = () => {
 }
 
 const initAnnotation = () => {
-    const metaName = annotation.value.metadata.name;
+    const metaName = annotation.metadata.name;
 
     if (metaName) {
         name.value = metaName;
-        delete annotation.value.metadata["name"];
+        delete annotation.metadata["name"];
     }
 
     cleanCompoundPath();
-    createCompoundPath(annotation.value.paper_object, annotation.value.segmentation);
+    createCompoundPath(annotation.paper_object, annotation.segmentation);
 };
 
 
@@ -412,22 +430,22 @@ const handleDoubleClick = () => {
 
 const initializeKeypoints = () => {
   keypoints.value = new Keypoints(
-    keypointEdges.value,
-    keypointLabels.value,
-    keypointColors.value,
+    keypointEdges,
+    keypointLabels,
+    keypointColors,
     {
-      annotationId: annotation.value.id,
-      categoryName: category.value.name,
+      annotationId: annotation.id,
+      categoryName: category.name,
     }
   );
 
-  keypoints.value.radius = scale.value * 6;
-  keypoints.value.lineWidth = scale.value * 2;
+  keypoints.value.radius = scale * 6;
+  keypoints.value.lineWidth = scale * 2;
 };
 
 const loadAnnotationKeypoints = () => {
-  const { width, height } = annotation.value;
-  const annotationKeypoints = annotation.value.keypoints;
+  const { width, height } = annotation;
+  const annotationKeypoints = annotation.keypoints;
 
   if (annotationKeypoints) {
     for (let i = 0; i < annotationKeypoints.length; i += 3) {
@@ -447,7 +465,7 @@ const importJsonToCompoundPath = (json) => {
 };
 
 const loadSegmentsToCompoundPath = (segments) => {
-  const { width, height } = annotation.value;
+  const { width, height } = annotation;
   const center = new paper.Point(width / 2, height / 2);
 
   segments.forEach((polygon) => {
@@ -467,21 +485,21 @@ const configureCompoundPath = () => {
   updateCompoundPathData(compoundPath.value);
 
   compoundPath.value.fullySelected = isCurrent.value;
-  compoundPath.value.opacity = opacity.value;
+  compoundPath.value.opacity = opacity;
 
   setColor();
 
   compoundPath.value.onClick = () => {
-    emit('click', index.value);
+    emit('click', index);
   };
 };
 /* end - createCompoundPath */
 
 const deleteAnnotation = (id) => {
-  axios.delete("/api/annotation/" + annotation.value.id).then(() => {
+  axios.delete("/api/annotation/" + annotation.id).then(() => {
     socket.io.emit("annotation", {
       action: "delete",
-      annotation: annotation.value,
+      annotation: annotation,
     });
     deleteAnnot(id);
     emit("deleted", id);
@@ -490,16 +508,16 @@ const deleteAnnotation = (id) => {
 
 const deleteAnnot = (id) => {
   // we delete annotation on category component to avoid index desynchro between category.annotations and 
-  // category.value.annotations.splice(id, 1);
+  // category.annotations.splice(id, 1);
   clearExistingPaths();
 };
 
 const onAnnotationClick = (newshowKeypoints) => {
-  if (keypointLabels.value.length) {
+  if (keypointLabels.length) {
     showKeypoints.value = newshowKeypoints;
   }
   if (isVisible.value) {
-    emit('click', index.value);
+    emit('click', index);
   }
 };
 
@@ -556,7 +574,7 @@ const createUndoAction = (actionName) => {
       pervious.value.push(copy);
 
       const action = new UndoAction({
-        name: `Annotation ${annotation.value.id}`,
+        name: `Annotation ${annotation.id}`,
         action: actionName,
         func: undoCompound,
         args: {},
@@ -568,7 +586,7 @@ const createUndoAction = (actionName) => {
 /*  simplifyPath */
 const simplifyPath = () => {
     if (shouldDeleteAnnotation()) {
-        deleteAnnotation(index.value);
+        deleteAnnotation(index);
         return;
     }
 
@@ -600,7 +618,7 @@ const cloneAndFlattenCompoundPath = () => {
 };
 
 const updateCompoundPathData = (newCompoundPath) => {
-    newCompoundPath.data.annotationId = index.value;
+    newCompoundPath.data.annotationId = index;
     newCompoundPath.data.categoryId = categoryIndex.value;
 };
 
@@ -608,7 +626,7 @@ const createSimplifiedChildren = (newCompoundPath) => {
     const newChildren = [];
     newCompoundPath.children.forEach(path => {
         const points = path.segments.map(seg => ({ x: seg.point.x, y: seg.point.y }));
-        const simplifiedPoints = simplifyjs(points, simplify.value, true);
+        const simplifiedPoints = simplifyjs(points, simplify, true);
         const newPath = new paper.Path(simplifiedPoints);
         newPath.closePath();
         newChildren.push(newPath);
@@ -648,7 +666,7 @@ const addKeypoint = (point, visibility, label) => {
       console.log('keypoints completed, do nothing...');
       return;
   }
-  if(keypointLabels.value.length == 0) return;
+  if(keypointLabels.length == 0) return;
   if (label == null && keypoints.value.contains(point)) return;
    
    console.log('keypoint:', keypoint.value);
@@ -678,8 +696,8 @@ const createKeypoint = (point, visibility, label) => {
   return new Keypoint(point.x, point.y, {
     visibility: visibility || 0,
     indexLabel: label || 1,
-    fillColor: keypointColors.value[label - 1],
-    radius: scale.value * 6,
+    fillColor: keypointColors[label - 1],
+    radius: scale * 6,
     onClick: handleKeypointClick,
     onDoubleClick: handleKeypointDoubleClick,
     onMouseDrag: handleKeypointMouseDrag,
@@ -778,7 +796,7 @@ const setCompound = (compound) => {
 const unite = (compound, simplify = true, undoable = true, isBBox = false) => {
   ensureCompoundPathExists();
   const newCompound = setCompound(compoundPath.value.unite(compound));
-  annotation.value.isbbox = isBBox;
+  annotation.isbbox = isBBox;
   if (undoable) createUndoAction("Unite");
   compoundPath.value.remove();
   compoundPath.value = newCompound;
@@ -803,20 +821,20 @@ const setColor = () => {
   // getShowAnnotations() is workaround to get showAnnotations, 
   // value is not propagating when changing in category 
   // and I don't understand why
-  // if (!showAnnotations.value) {
+  // if (!showAnnotations) {
   if (!getShowAnnotations()) {
     emit('set-color');
     return;
   }
-  compoundPath.value.opacity = opacity.value;
+  compoundPath.value.opacity = opacity;
   compoundPath.value.fillColor = color.value;
   keypoints.value.color = darkHSL.value;
 };
 
 const setCategory = (event) => {
       const newCategoryName = event.target.value;
-      const newAnnotation = annotation.value;
-      const oldCategory = category.value;
+      const newAnnotation = annotation;
+      const oldCategory = category;
       updateAnnotationCategory(
         newAnnotation,
         oldCategory,
@@ -859,8 +877,8 @@ const prepareMetadata = () => {
 
 const createBaseAnnotationData = (localMetadata) => {
   return {
-    id: annotation.value.id,
-    isbbox: annotation.value.isbbox,
+    id: annotation.id,
+    isbbox: annotation.isbbox,
     color: color.value,
     metadata: localMetadata,
   };
@@ -875,7 +893,7 @@ const simplifyAndPrepareCompoundPath = (annotationData) => {
     precision: 1,
   });
 
-  if (annotation.value.paper_object !== json) {
+  if (annotation.paper_object !== json) {
     annotationData.compoundPath = json;
   }
 };
@@ -883,9 +901,9 @@ const simplifyAndPrepareCompoundPath = (annotationData) => {
 const addKeypointsToAnnotationData = (annotationData) => {
   if (!keypoints.value.isEmpty()) {
     annotationData.keypoints = keypoints.value.exportJSON(
-      keypointLabels.value,
-      annotation.value.width,
-      annotation.value.height
+      keypointLabels,
+      annotation.width,
+      annotation.height
     );
   }
 };
@@ -902,11 +920,11 @@ const exportSessions = (annotationData) => {
 
 const emitModify = () => {
   const uuid = Math.random().toString(36).replace(/[^a-z]+/g, "");
-  annotation.value.paper_object = compoundPath.value.exportJSON({ asString: false, precision: 1 });
+  annotation.paper_object = compoundPath.value.exportJSON({ asString: false, precision: 1 });
   socket.io.emit("annotation", {
     uuid: uuid,
     action: "modify",
-    annotation: annotation.value
+    annotation: annotation
   });
 };
 
@@ -934,7 +952,7 @@ const getKeypointVisibility = (index) => {
 };
 
 const getKeypointBackgroundColor = (index) => {
-    if (isHover.value && isHoverCategory.value) return "#646c82";
+    if (isHover.value && isHoverCategory) return "#646c82";
     // if (keypoint.tag == index + 1) return "#4b624c";
     let activeIndex = keypoint.value.next.label;
 
@@ -950,7 +968,7 @@ const categoryIndex = computed(() => {
 });
 
 const isCurrent = computed(() => {
-    return index.value === current.value && categoryIsCurrent.value;
+    return index === current && categoryIsCurrent.value;
 });
 
 watch(isCurrent, (isNowCurrent) => {
@@ -964,14 +982,14 @@ watch(isCurrent, (isNowCurrent) => {
 
 const getKeypointIconColor = (visibility, index) => {
   switch (visibility) {
-    case 2: return keypointColors.value[index];
+    case 2: return keypointColors[index];
     case 1: return "lightgray";
     default: return "rgb(40, 42, 49)";
   }
 };
 
 const keypointListView = computed(() => 
-  keypointLabels.value.map((label, i) => ({
+  keypointLabels.map((label, i) => ({
     label,
     visibility: getKeypointVisibility(i),
     iconColor: getKeypointIconColor(getKeypointVisibility(i), i),
@@ -980,21 +998,21 @@ const keypointListView = computed(() =>
 );
 
 const isHover = computed(() => {
-  return index.value === hover.value;
+  return index === hover;
 });
 
 const backgroundColor = computed(() => {
-      if (isHover.value && isHoverCategory.value) return "#646c82";
+      if (isHover.value && isHoverCategory) return "#646c82";
       if (isCurrent.value) return "#4b624c";
       return "inherit";
 });
 
 const showSideMenu = computed(() => {
-      const localsearch = search.value.toLowerCase();
+      const localsearch = search.toLowerCase();
       if (localsearch.length === 0) return true;
-      if (localsearch === String(annotation.value.id)) return true;
-      if (localsearch === String(index.value + 1)) return true;
-      return name.value.toLowerCase().includes(search.value);
+      if (localsearch === String(annotation.id)) return true;
+      if (localsearch === String(index + 1)) return true;
+      return name.value.toLowerCase().includes(search);
 });
 
 const darkHSL = computed(() => {
@@ -1007,7 +1025,7 @@ const darkHSL = computed(() => {
 
 const notUsedKeypointLabels = computed(() => {
   const tags = {};
-  keypointLabels.value.forEach((kpLabel, i) => {
+  keypointLabels.forEach((kpLabel, i) => {
     // Include it tags if it is the current keypoint or not in use.
     if (keypoints.value && !keypoints.value._labelled[i + 1]) {
       tags[i + 1] = kpLabel;
@@ -1043,7 +1061,7 @@ function handleKeypointsTool(tool) {
 }
 
 function findLabelIndex() {
-  const labels = keypointLabels.value;
+  const labels = keypointLabels;
   const len = labels.length;
   
   for (let i = 0; i < len; i++) {
@@ -1055,7 +1073,7 @@ function findLabelIndex() {
 
 
 watch(
-    opacity, 
+    () => opacity,
     (newOpacity) => {
         compoundPath.value.opacity = newOpacity;
 });
@@ -1136,7 +1154,7 @@ watch(
 
 
 watch(
-  scale, 
+  () => scale,
   (newScale) => {
       if (!keypoints.value) return;
       keypoints.value.radius = newScale * 6;
@@ -1146,22 +1164,22 @@ watch(
 const onAnnotation = (data) => {
   const localannotation = data.annotation;
   if (uuid.value === data.uuid) return;
-  if (localannotation.id !== annotation.value.id) return;
+  if (localannotation.id !== annotation.id) return;
   if (data.action === 'modify') {
     createCompoundPath(localannotation.paper_object, localannotation.segmentation);
   }
   if (data.action === 'delete') {
-    deleteAnnotation(index.value);
+    deleteAnnotation(index);
   }
 };
 
 onMounted( () => {
     initAnnotation();
 
-    const keypointTag = document.getElementById(`keypointSettings${annotation.value.id}`);
+    const keypointTag = document.getElementById(`keypointSettings${annotation.id}`);
     keypointSettingsModal = new Modal(keypointTag, { });
 
-    const modalTag = document.getElementById(`annotationSettings${annotation.value.id}`);
+    const modalTag = document.getElementById(`annotationSettings${annotation.id}`);
     annotationSettingsModal = new Modal(modalTag, { });
 
     // seem's to not work. should probably trigger category resetCategorySettings on @hidden when editing an annotation

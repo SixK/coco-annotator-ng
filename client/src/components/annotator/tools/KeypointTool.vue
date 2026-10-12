@@ -26,7 +26,7 @@ const isActive = computed(() => {
   return state.isActive;
 });
 
-const scale = defineModel('scale', { type: Number, default: 1 });
+const { scale } = defineProps({ scale: { type: Number, default: 1 } });
 
 name.value = "Keypoint";
 cursor.value = "cell";
