@@ -94,6 +94,7 @@
         @keypoint-click="onKeypointClick(listIndex, $event)"
         @keypoints-complete="$emit('keypointsComplete')"
         @deleted="annotationDeleted(listIndex)"
+        @patch-annotation="onAnnotationPatch(listIndex, $event)"
         @set-color="setColor"
       />
     </ul>
@@ -196,7 +197,7 @@ import { getCurrentInstance, provide, inject, watch,
 
 const socket = inject('socket');
 
-const emit = defineEmits(['click', 'keypointsComplete']);
+const emit = defineEmits(['click', 'keypointsComplete', 'patch-category', 'patch-annotation', 'remove-annotation']);
 
 // const { getImageId, scrollToElement, selectLastEditorTool } = inject('annotator');
 const { getImageId, scrollToElement } = inject('annotator');
@@ -392,10 +393,12 @@ const resetCategorySettings = () => {
 };
 
 const onUpdateClick = () => {
-  category.keypoint_labels = [...keypoint.value.labels];
-  category.keypoint_edges = [...keypoint.value.edges];
-  category.keypoint_colors = [...keypoint.value.colors];
-  category.supercategory = supercategory.value;
+  emit('patch-category', index, {
+    keypoint_labels: [...keypoint.value.labels],
+    keypoint_edges: [...keypoint.value.edges],
+    keypoint_colors: [...keypoint.value.colors],
+    supercategory: supercategory.value,
+  });
 };
 
 const createAnnotation = () => {
@@ -588,11 +591,13 @@ const annotationDeleted = (indexDeleted) => {
       category: index,
       keypoint: -1,
     };
-    // We delete here instead of deleting in annotation component
-    // to avoid index desynchro - dunno how to handle better in vue3 ?
-    category.annotations.splice(indexDeleted, 1);
+    emit('remove-annotation', index, indexDeleted);
     emit("click", indices);
     if (category.annotations.length === 0) isVisible.value = false;
+};
+
+const onAnnotationPatch = (annIndex, patch) => {
+  emit('patch-annotation', index, annIndex, patch);
 };
 
 

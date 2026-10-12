@@ -96,6 +96,9 @@
             :scale="image.scale"
             @click="onCategoryClick"
             @keypoints-complete="toolStore.onKeypointsComplete"
+            @patch-category="onPatchCategory"
+            @patch-annotation="onPatchAnnotation"
+            @remove-annotation="onRemoveAnnotation"
           />
         </div>
 
@@ -455,6 +458,20 @@ onUnmounted(() => {
   getCurrentInstance().ctx.sockets.unsubscribe('annotating', onAnnotating);
 });
 
+
+const onPatchCategory = (catIndex, patch) => {
+  const cat = categories.value[catIndex];
+  if (cat) Object.assign(cat, patch);
+};
+
+const onPatchAnnotation = (catIndex, annIndex, patch) => {
+  const ann = categories.value[catIndex]?.annotations[annIndex];
+  if (ann) Object.assign(ann, patch);
+};
+
+const onRemoveAnnotation = (catIndex, annIndex) => {
+  categories.value[catIndex]?.annotations.splice(annIndex, 1);
+};
 
 const ctx = {
  setCursor, updateCurrentAnnotation, save, getData, activateTools, current, 

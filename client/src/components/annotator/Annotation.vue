@@ -281,7 +281,7 @@ const { removeKeypointEdge,  addKeypointEdge, categoryIsCurrent, getCategoryInde
 
 const { updateAnnotationCategory } = inject('annotator');
 
-const emit = defineEmits(['set-color', 'keypointsComplete', 'keypoint-click', 'click', 'deleted']);
+const emit = defineEmits(['set-color', 'keypointsComplete', 'keypoint-click', 'click', 'deleted', 'patch-annotation']);
 
 
 const socket = inject('socket');
@@ -365,7 +365,9 @@ const initAnnotation = () => {
 
     if (metaName) {
         name.value = metaName;
-        delete annotation.metadata["name"];
+        const restMetadata = { ...annotation.metadata };
+        delete restMetadata.name;
+        emit('patch-annotation', index, { metadata: restMetadata });
     }
 
     cleanCompoundPath();
@@ -796,7 +798,7 @@ const setCompound = (compound) => {
 const unite = (compound, simplify = true, undoable = true, isBBox = false) => {
   ensureCompoundPathExists();
   const newCompound = setCompound(compoundPath.value.unite(compound));
-  annotation.isbbox = isBBox;
+  emit('patch-annotation', index, { isbbox: isBBox });
   if (undoable) createUndoAction("Unite");
   compoundPath.value.remove();
   compoundPath.value = newCompound;
