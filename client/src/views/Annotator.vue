@@ -329,8 +329,6 @@ const getCategoryByIndex = (index) => {
 
 const {
     activateTools,
-    currentCategory,
-    currentAnnotation,
     currentKeypoint,
     currentCategoryFromList,
     currentAnnotationFromList,
@@ -338,7 +336,6 @@ const {
     subtractCurrentAnnotation,
     getCurrentCategory,
     getCurrentAnnotation,
-    getCurrentAnnotationRef,
     currentAnnotationLength,
     currentKeypointLength,
     updateCurrentAnnotation

@@ -1,4 +1,4 @@
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import { useAnnotationStore } from '@/store/annotation';
 
 export default function useCurrentEntities(current, getCategoryByIndex) {
@@ -31,41 +31,22 @@ export default function useCurrentEntities(current, getCategoryByIndex) {
     return getCategoryByIndex(current.value.category);
   });
 
-  const currentCategory = computed(() => {
-    return getCategoryByIndex(current.value.category);
-  });
-
   const currentAnnotationFromList = computed(() => {
-    if (currentCategoryFromList.value == null) {
-      store.setAnnotation(null);
-      return null;
-    }
-    store.setAnnotation(currentCategoryFromList.value.getAnnotationFromIndex(current.value.annotation));
+    if (currentCategoryFromList.value == null) return null;
     return currentCategoryFromList.value.getAnnotationFromIndex(current.value.annotation);
   });
 
-  const getCurrentAnnotationRef = () => {
-      return currentAnnotation.value;
-  }
-
-  const currentAnnotation = computed(() => {
-    if (currentCategory.value == null) {
-      store.setAnnotation(null);
-      return null;
-    }
-    store.setAnnotation(currentCategory.value.getAnnotationFromIndex(current.value.annotation));
-    return currentCategory.value.getAnnotationFromIndex(current.value.annotation);
-  });
+  watch(currentAnnotationFromList, (annotation) => store.setAnnotation(annotation), { immediate: true });
 
   const currentKeypoint = computed(() => {
-    if (currentCategory.value == null) {
+    if (currentCategoryFromList.value == null) {
       return null;
     }
     if (
-      currentAnnotation.value == null ||
-      !currentAnnotation.value.keypointLabels ||
-      currentAnnotation.value.keypointLabels.length === 0 ||
-      !currentAnnotation.value.showKeypoints
+      currentAnnotationFromList.value == null ||
+      !currentAnnotationFromList.value.keypointLabels ||
+      currentAnnotationFromList.value.keypointLabels.length === 0 ||
+      !currentAnnotationFromList.value.showKeypoints
     ) {
       return null;
     }
@@ -74,7 +55,7 @@ export default function useCurrentEntities(current, getCategoryByIndex) {
     }
     return {
       label: [String(current.value.keypoint + 1)],
-      visibility: currentAnnotation.value.getKeypointVisibility(current.value.keypoint),
+      visibility: currentAnnotationFromList.value.getKeypointVisibility(current.value.keypoint),
     };
   });
 
@@ -92,8 +73,6 @@ export default function useCurrentEntities(current, getCategoryByIndex) {
 
   return {
     activateTools,
-    currentCategory,
-    currentAnnotation,
     currentKeypoint,
     currentCategoryFromList,
     currentAnnotationFromList,
@@ -101,7 +80,6 @@ export default function useCurrentEntities(current, getCategoryByIndex) {
     subtractCurrentAnnotation,
     getCurrentCategory,
     getCurrentAnnotation,
-    getCurrentAnnotationRef,
     currentAnnotationLength,
     currentKeypointLength,
     updateCurrentAnnotation
