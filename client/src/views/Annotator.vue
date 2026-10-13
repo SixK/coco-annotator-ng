@@ -455,7 +455,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   socket.emit("annotating", { image_id: image.value.id, active: false });
-  getCurrentInstance().ctx.sockets.unsubscribe('annotating', onAnnotating);
+  getCurrentInstance().ctx.sockets.unsubscribe('annotating');
 });
 
 
