@@ -246,7 +246,6 @@ const isMounted = ref(false);
 const keypoints = useTemplateRef('keypoints');
 let categorySettingsModal = null;
 
-const annotation = ref(null);
 const annotationlist = ref([]);
 const setAnnotationRef = el => {
       if (el) {
@@ -550,12 +549,6 @@ const initCategory = () => {
       setColor();
 };
 
-const getAnnotation = (index) => {
-      const ref = annotation.value;
-      if (ref == null) return null;
-      return annotation.value[index];
-};
-
 const getAnnotationFromIndex = (index) => {
       const ref = annotationlist.value;
       if (ref == null) return null;
@@ -638,7 +631,7 @@ onUnmounted(() => {
 });
     
 
-defineExpose({category, setColor, getAnnotation, getAnnotationFromIndex,
+defineExpose({category, setColor, getAnnotationFromIndex,
                               showAnnotations, exportCategory, 
                               createAnnotation, selectedAnnotation,
                               isVisible,  isHover, color, supercategory, search,
