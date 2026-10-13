@@ -1,73 +1,60 @@
-// import { Vue } from "vue";
 import { createWebHistory, createRouter } from "vue-router";
-
-// import Home from "@/views/Home";
-import About from "@/views/About";
-import Annotator from "@/views/Annotator";
-import AdminPanel from "@/views/AdminPanel";
-import Datasets from "@/views/Datasets";
-import Categories from "@/views/Categories";
-import Undo from "@/views/Undo";
-import Dataset from "@/views/Dataset";
-import Authentication from "@/views/Auth";
-import User from "@/views/User";
-import Tasks from "@/views/Tasks";
 import PageNotFound from "@/views/PageNotFound";
 
 const routes = [
   {
     path: "/about",
     name: "about",
-    component: About,
+    component: () => import("@/views/About"),
   },
   {
     alias: "/",
     path: "/datasets",
     name: "datasets",
-    component: Datasets,
+    component: () => import("@/views/Datasets"),
   },
   {
     path: "/categories",
     name: "categories",
-    component: Categories,
+    component: () => import("@/views/Categories"),
   },
   {
     path: "/undo",
     name: "undo",
-    component: Undo,
+    component: () => import("@/views/Undo"),
   },
   {
     path: "/annotate/:identifier",
     name: "annotate",
-    component: Annotator,
+    component: () => import("@/views/Annotator"),
     props: true,
   },
   {
     path: "/dataset/:identifier",
     name: "dataset",
-    component: Dataset,
+    component: () => import("@/views/Dataset"),
     props: true,
   },
   {
     path: "/auth",
     name: "authentication",
-    component: Authentication,
+    component: () => import("@/views/Auth"),
     props: true,
   },
   {
     path: "/user",
     name: "user",
-    component: User,
+    component: () => import("@/views/User"),
   },
   {
     path: "/admin/panel",
     name: "admin",
-    component: AdminPanel,
+    component: () => import("@/views/AdminPanel"),
   },
   {
     path: "/tasks",
     name: "tasks",
-    component: Tasks,
+    component: () => import("@/views/Tasks"),
   },
   { path: "/:pathMatch(.*)*", name: "notfound", component: PageNotFound },
 ];
