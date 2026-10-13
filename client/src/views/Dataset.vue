@@ -220,78 +220,21 @@
           <div v-else>
             <div class="row">
               <div
-                v-if="stats.total"
-                class="card my-3 p-3 shadow-sm col-3 mr-2"
+                v-for="card in statCards"
+                :key="card.key"
+                class="card my-3 p-3 shadow-sm mr-2"
+                :class="card.col"
               >
                 <h6 class="border-bottom border-gray pb-2">
-                  <b>Total</b>
+                  <b>{{ card.title }}</b>
                 </h6>
                 <div
-                  v-for="(stat, index) in Object.keys(stats.total)"
+                  v-for="(stat, index) in Object.keys(stats[card.key])"
                   :key="index"
                   class="row"
                 >
                   <strong class="col-8">{{ stat }}:</strong>
-                  <span class="col-4">{{ stats.total[stat].toFixed(0) }}</span>
-                </div>
-              </div>
-
-              <div
-                v-if="stats.average"
-                class="card my-3 p-3 shadow-sm col-4 mr-2"
-              >
-                <h6 class="border-bottom border-gray pb-2">
-                  <b>Average</b>
-                </h6>
-                <div
-                  v-for="(stat, index) in Object.keys(stats.average)"
-                  :key="index"
-                  class="row"
-                >
-                  <strong class="col-8">{{ stat }}:</strong>
-                  <span class="col-4">{{
-                    stats.average[stat].toFixed(0)
-                  }}</span>
-                </div>
-              </div>
-
-              <div
-                v-if="stats.categories"
-                class="card my-3 p-3 shadow-sm col-4 mr-2"
-              >
-                <h6 class="border-bottom border-gray pb-2">
-                  <b>Annotations Per Category</b>
-                </h6>
-                <div
-                  v-for="(stat, index) in Object.keys(stats.categories)"
-                  :key="index"
-                  class="row"
-                >
-                  <strong class="col-8">{{ stat }}:</strong>
-                  <span class="col-4">{{
-                    stats.categories[stat].toFixed(0)
-                  }}</span>
-                </div>
-              </div>
-
-              <div
-                v-if="stats.images_per_category"
-                class="card my-3 p-3 shadow-sm col-4 mr-2"
-              >
-                <h6 class="border-bottom border-gray pb-2">
-                  <b>Annotated Images Per Category</b>
-                </h6>
-                <div
-                  v-for="(stat, index) in Object.keys(
-                    stats.images_per_category
-                  )"
-                  :key="index"
-                  class="row"
-                >
-                  <strong class="col-8">{{ stat }}:</strong>
-                  <span class="col-4">{{
-                    stats.images_per_category[stat].toFixed(0)
-                  }}</span>
+                  <span class="col-4">{{ stats[card.key][stat].toFixed(0) }}</span>
                 </div>
               </div>
 
@@ -346,7 +289,6 @@
 
     <div
       id="filter"
-      ref="sidebar"
       class="sidebar"
       :style="{ width: sidebar.width + 'px' }"
     >
@@ -805,6 +747,20 @@ const panel = ref({
   showNotAnnotated: true
 });
 const stats = ref(null);
+
+const statCards = computed(() => {
+  if (stats.value == null) return [];
+  return [
+    { key: "total", title: "Total", col: "col-3" },
+    { key: "average", title: "Average", col: "col-4" },
+    { key: "categories", title: "Annotations Per Category", col: "col-4" },
+    {
+      key: "images_per_category",
+      title: "Annotated Images Per Category",
+      col: "col-4",
+    },
+  ].filter((card) => stats.value[card.key]);
+});
 
 const updateOrder = (newOrder) => {
   order.value = newOrder;
