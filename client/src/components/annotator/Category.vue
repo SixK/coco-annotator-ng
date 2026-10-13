@@ -197,7 +197,7 @@ import { getCurrentInstance, provide, inject, watch,
 
 const socket = inject('socket');
 
-const emit = defineEmits(['click', 'keypointsComplete', 'patch-category', 'patch-annotation', 'remove-annotation']);
+const emit = defineEmits(['click', 'keypointsComplete', 'patch-category', 'patch-annotation', 'add-annotation', 'remove-annotation']);
 
 // const { getImageId, scrollToElement, selectLastEditorTool } = inject('annotator');
 const { getImageId, scrollToElement } = inject('annotator');
@@ -613,8 +613,7 @@ const onAnnotation = (data) => {
 
       if (found == -1) {
         if (action == "create") {
-          // emit('annotation', annotation);
-          category.annotations.push(annotation);
+          emit('add-annotation', index, annot);
         }
       }
 };

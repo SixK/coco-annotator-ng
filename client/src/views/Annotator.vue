@@ -98,6 +98,7 @@
             @keypoints-complete="toolStore.onKeypointsComplete"
             @patch-category="onPatchCategory"
             @patch-annotation="onPatchAnnotation"
+            @add-annotation="onAddAnnotation"
             @remove-annotation="onRemoveAnnotation"
           />
         </div>
@@ -467,6 +468,10 @@ const onPatchCategory = (catIndex, patch) => {
 const onPatchAnnotation = (catIndex, annIndex, patch) => {
   const ann = categories.value[catIndex]?.annotations[annIndex];
   if (ann) Object.assign(ann, patch);
+};
+
+const onAddAnnotation = (catIndex, ann) => {
+  categories.value[catIndex]?.annotations.push(ann);
 };
 
 const onRemoveAnnotation = (catIndex, annIndex) => {
