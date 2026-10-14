@@ -2,10 +2,10 @@ import { createApp, h } from "vue";
 import { createPinia } from 'pinia';
 import App from "./App.vue";
 import router from "./router";
-import paper from "paper";
+// import paper from "paper";
 import FloatingVue from 'floating-vue'
 import {LoadingPlugin} from "vue-loading-overlay";
-import Vue3TouchEvents from "vue3-touch-events";
+// import Vue3TouchEvents from "vue3-touch-events";
 import VueSocketIO from "vue-3-socket.io-ext";
 import Unlazy from '@unlazy/vue';
 

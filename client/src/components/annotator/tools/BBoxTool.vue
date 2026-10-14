@@ -6,7 +6,6 @@
 </template>
 <script setup>
 import paper from "paper";
-import UndoAction from "@/undo";
 
 import { invertColor } from "@/libs/colors";
 import { BBox } from "@/libs/bbox";
