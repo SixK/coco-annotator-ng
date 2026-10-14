@@ -80,7 +80,7 @@ export default function useAnnotations(options = {}) {
 
     try {
       // Delete from old category
-      currentCategoryFromList.value.deleteAnnot(annotation.id);
+      currentAnnotationFromList.value.deleteAnnot(annotation.id);
       
       // Update via API
       const response = await Annotations.update(annotation.id, { 
