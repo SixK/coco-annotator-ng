@@ -340,7 +340,6 @@ const {
     getCurrentCategory,
     getCurrentAnnotation,
     currentAnnotationLength,
-    currentKeypointLength,
     updateCurrentAnnotation
   } = useCurrentEntities(current, getCategoryByIndex);
 

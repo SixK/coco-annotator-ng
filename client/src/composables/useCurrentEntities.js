@@ -63,10 +63,6 @@ export default function useCurrentEntities(current, getCategoryByIndex) {
     return currentCategoryFromList.value.category.annotations.length||0;
   });
 
-  const currentKeypointLength = computed(() => {
-    return currentAnnotationFromList.value.annotation.keypoints.length||0;
-  });
-
   const activateTools = computed(() => {
     return current.value.annotation !== -1;
   });
@@ -81,7 +77,6 @@ export default function useCurrentEntities(current, getCategoryByIndex) {
     getCurrentCategory,
     getCurrentAnnotation,
     currentAnnotationLength,
-    currentKeypointLength,
     updateCurrentAnnotation
   };
 }
