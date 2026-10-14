@@ -45,7 +45,7 @@ const loginRequired = computed(() => {
       return !auth.isAuthenticated;
 });
 
-const { loading, getLoadingStatus } = storeToRefs(info);
+const { loading } = storeToRefs(info);
 
 const socketConnection = computed(() => {
       return info.socket;
