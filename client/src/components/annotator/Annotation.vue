@@ -54,6 +54,7 @@
         style="float: right"
         data-bs-toggle="modal"
         :data-bs-target="'#annotationSettings' + annotation.id"
+        @click="onAnnotationSettingsClick"
       />
       <i
         class="fa fa-trash-o annotation-icon"
@@ -830,6 +831,10 @@ const setColor = () => {
   compoundPath.value.opacity = opacity;
   compoundPath.value.fillColor = color.value;
   keypoints.value.color = darkHSL.value;
+};
+
+const onAnnotationSettingsClick = () => {
+      emit('click', index);
 };
 
 const setCategory = (event) => {
