@@ -183,27 +183,6 @@ onMounted(() => {
       isMounted.value = true;
 });
 
-const exportKeypoints = () => {
-  const newKeypoints = [];
-
-  for (let i = 0; i < keypointsDef.value.labels.length; ++i) {
-    newKeypoints.push({
-      label: keypointsDef.value.labels[i],
-      edges: [],
-      label_error: "",
-      color: keypointsDef.value.colors[i],
-    });
-  }
-
-  keypointsDef.value.edges.forEach((edge) => {
-    const label0 = edge[0] - 1;
-    const label1 = edge[0] - 1;
-    newKeypoints[label0].edges.push(keypointsDef.value.labels[label1]);
-    newKeypoints[label1].edges.push(keypointsDef.value.labels[label0]);
-  });
-  return newKeypoints;
-};
-
 const createKeypoints = () => {
     keypoints.value.push({
         label: "",
@@ -378,7 +357,7 @@ const nextDistinctColor = () => {
   return DISTINCT_COLORS[nextDistinct.value];
 };
 
-defineExpose({exportKeypoints, valid, keypoints});
+defineExpose({valid, keypoints});
 
 
 </script>
