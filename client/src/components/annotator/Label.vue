@@ -33,14 +33,11 @@
 </template>
 
 <script setup>
-import { ref, computed, toRef } from 'vue';
+import { computed } from 'vue';
 
 const category = defineModel('category', { type: Object, required: true });
 const categoryIds = defineModel('categoryIds', { type: Array, required: true });
 const search = defineModel('search', { type: String, required: true });
-
-const emit = defineEmits(['update']);
-
 
 const show = computed(() => {
   const searchLower = search.value.toLowerCase();
@@ -58,7 +55,7 @@ const click = () => {
   } else {
     copy.splice(copy.indexOf(category.value.id), 1);
   }
-  emit('update', copy);
+  categoryIds.value = copy;
 };
 </script>
 

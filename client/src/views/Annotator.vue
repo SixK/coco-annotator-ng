@@ -110,9 +110,8 @@
           <CLabel
             v-for="category in categories"
             :key="category.id + '-label-'+image.id"
-            v-model="image.categoryIds"
+            v-model:categoryIds="image.categoryIds"
             :category="category"
-            :categoryIds="image.categoryIds"
             :search="search"
           />
         </div>
