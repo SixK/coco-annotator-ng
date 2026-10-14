@@ -322,14 +322,6 @@ watch(
 });
 
 watch(
-  () => opacity,
-  (newopacity) => {
-      const annotations = annotationlist.value
-      if (annotations.value == null) return;
-      annotations.value.forEach((a) => (a.compoundPath.opacity = newopacity));
-});
-
-watch(
   isVisible, 
   (newVisible) => {
       const annotations = annotationlist.value
@@ -433,7 +425,7 @@ const createAnnotation = () => {
         const tmp_annotation = annotations[annotationId - 1];
         
         if (tmp_annotation == null) {
-          const element = document.getElementById(`heading' + category.id`);
+          const element = document.getElementById(`heading${category.id}`);
           scrollToElement(element);
         } else {
           scrollToElement(tmp_annotation.$el);

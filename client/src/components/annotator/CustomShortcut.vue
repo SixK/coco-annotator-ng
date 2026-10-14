@@ -85,7 +85,6 @@ const keyCorrections = ((key) => {
 });
 
 const onKeyup = ((e) => {
-      window.addEventListener('keyup: ', e, onKeyup);
       const key = keyCorrections(e.key.toLowerCase());
       // if (key === " ") key = "space";
       keysDown.value = keysDown.value.filter((a) => a !== key);
