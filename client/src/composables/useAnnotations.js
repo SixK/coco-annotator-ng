@@ -33,7 +33,6 @@ export default function useAnnotations(options = {}) {
     }
 
     try {
-      annotationState.value.isCreating = true;
       const response = await Annotations.create({
         image_id: image.value.id,
         category_id: category.id,
@@ -46,8 +45,6 @@ export default function useAnnotations(options = {}) {
       procStore.setTaskProgress(null); // Reset progress
     } catch (error) {
       axiosRequestError("Failed to create annotation", error.message);
-    } finally {
-      annotationState.value.isCreating = false;
     }
   };
 
@@ -82,8 +79,6 @@ export default function useAnnotations(options = {}) {
     if (!newCategory || !annotation) return;
 
     try {
-      annotationState.value.isUpdating = true;
-      
       // Delete from old category
       currentCategoryFromList.value.deleteAnnot(annotation.id);
       
@@ -108,8 +103,6 @@ export default function useAnnotations(options = {}) {
       }
     } catch (error) {
       axiosRequestError("Failed to update annotation category", error.message);
-    } finally {
-      annotationState.value.isUpdating = false;
     }
   };
 
@@ -148,7 +141,6 @@ export default function useAnnotations(options = {}) {
   // Return public API
   return {
     // State
-    //annotationState: readonly(annotationState),
     // currentCategoryFromList,
     //currentAnnotationFromList,
     
