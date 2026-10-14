@@ -11,14 +11,11 @@ import EraserPanel    from '@/components/annotator/panels/EraserPanel.vue'
 import DEXTRPanel     from '@/components/annotator/panels/DEXTRPanel.vue'
 import Sam2Panel      from '@/components/annotator/panels/Sam2Panel.vue'
 
-import { useAnnotationStore } from '@/store/annotation';
-
 import { useToolStore } from '@/store/toolStore';
 
 export default function useToolPanel(toolspanelRef) {
   /* ---------- panel map ---------- */
 const toolStore = useToolStore();
-const store = useAnnotationStore();
 
 const panelMap = {
   bbox:      BBoxPanel,
@@ -47,7 +44,6 @@ const panelMap = {
     if (tool === 'keypoint') {
       return {
         keypoint: toolInst('keypoint'),
-        'current-annotation': store.currentAnnotation?.value,
       }
     }
     return { [tool]: toolInst(tool) }

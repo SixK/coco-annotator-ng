@@ -24,7 +24,6 @@ import PanelInputDropdown from '@/components/PanelInputDropdown';
 import { VisibilityOptions } from '@/libs/keypoints';
 
 const keypoint = defineModel('keypoint', { type: Object, required: true });
-const currentAnnotation = defineModel('currentAnnotation', { type: Object,  validator: (prop) => typeof prop === 'object' || prop === undefined});
 
 const { getCurrentAnnotation } = inject('annotator');
 
@@ -39,15 +38,7 @@ const updateOrder = (newOrder) => {
 };
 
 const keypointLabel = computed(() => {
-  let localAnnot = null;
-  if(!localCurrentAnnotation.value) { 
-      //hack since currentAnnotation is not propagated to props !?
-       console.log("Still need to hack !");
-      localAnnot = getCurrentAnnotation();
-  } else { 
-      localAnnot = localCurrentAnnotation.value;
-      console.log("Seem's this hack is not necessary anymore, remove me !");
-  }
+  const localAnnot = localCurrentAnnotation.value;
   if (!localAnnot) return {};
   if(!localAnnot.keypoint) return {};
   const labelIndex = localAnnot.keypoint.next.label;
