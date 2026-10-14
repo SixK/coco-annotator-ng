@@ -86,7 +86,6 @@ const keyCorrections = ((key) => {
 
 const onKeyup = ((e) => {
       const key = keyCorrections(e.key.toLowerCase());
-      // if (key === " ") key = "space";
       keysDown.value = keysDown.value.filter((a) => a !== key);
 });
 const onKeydown = ((e) => {

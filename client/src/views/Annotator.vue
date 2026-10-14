@@ -248,7 +248,7 @@ const { categories, dataset, loading,
               search, shapeOpacity, simplify, 
               cursor } =  refsForTemplate;
 // `categorylist` deliberately stays a plain ref: useAnnotatorData writes through it
-// (cat.isVisible / cat.showAnnotations), which a useTemplateRef() readonly ref rejects.
+// (cat.isVisible / cat.showAnnotations).
 const categorylist = ref([]);
 
 const { currentPanel, panelProps, toolInst } = useToolPanel(toolspanel)

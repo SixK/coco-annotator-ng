@@ -274,7 +274,7 @@ const toolStore = useToolStore();
 import MetaData from "@/components/MetaData";
 
 import { nextTick, getCurrentInstance, watchEffect, inject, watch, 
-                 ref, computed, onMounted, onUnmounted, toRef } from 'vue';
+                 ref, computed, onMounted, onUnmounted, toRef, useTemplateRef } from 'vue';
 
 const { removeKeypointEdge,  addKeypointEdge, categoryIsCurrent, getCategoryIndex, 
                getShowAnnotations, resetCategorySettings } = inject('category');
@@ -327,7 +327,7 @@ const showKeypoints = ref(false);
 const color = ref(annotation.color);
 const compoundPath = ref(null);
 const keypoints = ref(null);
-const metadata = ref([]);
+const metadata = useTemplateRef('metadata');
 const isEmpty = ref(true);
 const name = ref("");
 const uuid = ref("");
