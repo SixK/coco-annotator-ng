@@ -6,7 +6,7 @@
 </template>
 <script setup>
 import axios from "axios";
-import { ref, computed, watch, inject, onMounted, provide } from 'vue';
+import { ref, computed, watch, inject } from 'vue';
 import { useButton } from "@/composables/toolBar/button";
 import useAxiosRequest from "@/composables/axiosRequest";
 

@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import { ref, computed, inject, watchEffect, onMounted, provide } from 'vue'
+import { ref, computed, inject, onMounted } from 'vue'
 import { useTools } from "@/composables/toolBar/tools";
 
 const { getCurrentAnnotation } = inject('annotator');

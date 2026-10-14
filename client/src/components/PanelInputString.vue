@@ -11,7 +11,6 @@
   </div>
 </template>
 <script setup>
-import { ref, watch, onMounted } from 'vue';
 
 const { name } = defineProps({ name: { type: String, required: true } });
 const inputString = defineModel('inputString', { type: String, required: true });

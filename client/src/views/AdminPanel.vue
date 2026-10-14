@@ -208,7 +208,7 @@
 <script setup>
 import AdminPanel from "@/models/admin";
 import useAxiosRequest from "@/composables/axiosRequest";
-import { ref, computed, watch, inject, onMounted, provide } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 
 import { useProcStore } from "@/store/index";
 const procStore = useProcStore();

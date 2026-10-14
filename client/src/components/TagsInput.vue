@@ -85,7 +85,7 @@
 
 <script setup>
 import { nextTick } from 'vue';
-import { toRaw, toRef, ref, computed, watch, onMounted } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 
 const emit = defineEmits(["initialized", "tag-added", "tags-updated", "tag-removed", "selected-items"]);
 

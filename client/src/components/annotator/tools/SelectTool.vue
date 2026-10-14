@@ -12,7 +12,7 @@ import { useTools } from "@/composables/toolBar/tools";
 import { useAuthStore } from "@/store/user";
 const authStore = useAuthStore();
 
-import { nextTick, ref, computed, watch, inject, onMounted, provide } from 'vue'
+import { ref, watch, inject, onMounted } from 'vue'
 
 const { getPaper } = inject('annotator');
 const localPaper = ref(getPaper());

@@ -29,7 +29,7 @@
 <script setup>
 import TaskGroup from "@/components/tasks/TaskGroup";
 import Tasks from "@/models/tasks";
-import { ref, computed, watch, inject, onMounted, provide } from 'vue';
+import { ref, computed, watch, onMounted, provide } from 'vue';
 
 import { useRoute } from 'vue-router';
 

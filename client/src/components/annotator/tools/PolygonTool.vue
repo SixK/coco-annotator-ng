@@ -10,7 +10,7 @@ import paper from "paper";
 import UndoAction from "@/undo";
 import { invertColor } from "@/libs/colors";
 import { useTools } from "@/composables/toolBar/tools";
-import { ref, computed, watch, inject, onMounted, provide } from 'vue'
+import { ref, computed, watch, inject, onMounted } from 'vue'
 
 const { uniteCurrentAnnotation, save, getImageRaster } = inject('annotator');
 

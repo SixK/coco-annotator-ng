@@ -1,4 +1,3 @@
-import { ref } from 'vue';
 import {useToast} from 'vue-toast-notification';
 
 export default function useAxiosRequest() {

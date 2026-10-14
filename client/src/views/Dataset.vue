@@ -656,7 +656,7 @@ import TagsInput from "@/components/TagsInput";
 
 import { Modal } from "bootstrap";
 
-import { getCurrentInstance, ref, computed, watch, inject, onUnmounted, onMounted, provide } from 'vue';
+import { getCurrentInstance, ref, computed, watch, onUnmounted, onMounted } from 'vue';
 
 import { useProcStore } from "@/store/index";
 const procStore = useProcStore();

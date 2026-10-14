@@ -31,7 +31,7 @@
 
 <script setup>
 import AppTask from "@/components/tasks/Task";
-import { toRef, ref, computed } from 'vue'
+import { ref, computed } from 'vue'
 
 const tasks = defineModel('tasks', { type: Array, required: true });
 const name = defineModel('name', { type: String, required: true });

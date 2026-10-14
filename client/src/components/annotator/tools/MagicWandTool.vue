@@ -7,7 +7,7 @@
 <script setup>
 import paper from "paper";
 import MagicWand from "./magic-wand";
-import { ref, computed, inject, onMounted, provide } from 'vue'
+import { ref, computed, inject, onMounted } from 'vue'
 import { useTools } from "@/composables/toolBar/tools";
 
 const { getCurrentAnnotation } = inject('annotator');

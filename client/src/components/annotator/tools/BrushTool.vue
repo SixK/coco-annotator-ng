@@ -5,7 +5,7 @@
   </div>
 </template>
 <script setup>
-import { ref, computed, watch, inject, onMounted, provide} from 'vue'
+import { ref, watch, inject, onMounted } from 'vue'
 import { useTools } from "@/composables/toolBar/tools";
 import paper from 'paper';
 

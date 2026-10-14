@@ -101,7 +101,7 @@
 
 <script setup>
 import TagsInput from '@/components/TagsInput.vue';
-import { nextTick, toRef, ref, watchEffect, onMounted, computed, watch, useId } from 'vue';
+import { nextTick, ref, onMounted, computed, watch, useId } from 'vue';
 
 // Unique per component instance: two <KeypointsDefinition> rendered on the same
 // page used to both generate `index0`, `index1`, ... for their hidden inputs.

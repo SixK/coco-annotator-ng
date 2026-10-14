@@ -15,7 +15,6 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
 
 // `value` is the only two-way binding (every parent uses `v-model:value`);
 // name/max/min/step are read-only configuration → plain props (Vue 3.5

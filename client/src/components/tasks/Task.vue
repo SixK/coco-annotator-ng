@@ -66,7 +66,7 @@
 
 <script setup>
 import Tasks from "@/models/tasks";
-import { getCurrentInstance, toRef, ref, computed, watch, inject, onMounted, onUnmounted } from 'vue';
+import { getCurrentInstance, ref, computed, watch, inject, onMounted, onUnmounted } from 'vue';
 
 const tasksUpdatePage = inject('tasksUpdatePage');
 

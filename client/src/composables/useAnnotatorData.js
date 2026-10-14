@@ -1,6 +1,6 @@
 // useAnnotatorData.js
 
-import { ref, nextTick } from 'vue';
+import { nextTick } from 'vue';
 import axios from "axios";
 
 export default function useAnnotatorData({ state, router, axiosRequestError, toolspanel, settings, categorylist,image, updateImageName, procStore }) {

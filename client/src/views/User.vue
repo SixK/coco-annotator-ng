@@ -64,7 +64,7 @@
 
 <script setup>
 
-import { ref, watch, computed } from "vue";
+import { ref, computed } from "vue";
 
 import { useAuthStore } from "@/store/user";
 const authStore = useAuthStore();

@@ -197,7 +197,7 @@ import AnnotateButton from "@/components/annotator/tools/AnnotateButton";
 
 import ToolsPanel from "@/components/annotator/panels/ToolsPanel.vue";
 
-import { onBeforeUpdate, onUpdated, nextTick, toRef, ref, computed, watch, inject, onMounted, onUnmounted, provide, watchEffect, useTemplateRef } from 'vue';
+import { nextTick, ref, watch, inject, onMounted, onUnmounted, provide, watchEffect, useTemplateRef } from 'vue';
 
 import { getCurrentInstance } from 'vue';
 import { onBeforeRouteLeave, useRouter, useRoute } from 'vue-router';

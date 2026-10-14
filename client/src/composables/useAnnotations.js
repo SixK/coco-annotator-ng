@@ -1,5 +1,5 @@
 // @/composables/useAnnotations.js
-import { ref, computed, watch } from 'vue';
+import { watch } from 'vue';
 import Annotations from "@/models/annotations";
 
 export default function useAnnotations(options = {}) {

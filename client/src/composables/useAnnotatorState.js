@@ -1,4 +1,4 @@
-import { ref, computed, reactive, onMounted } from 'vue';
+import { ref, computed, reactive } from 'vue';
 import { useAuthStore } from '@/store/user';
 
 export default function useAnnotatorState(image) {

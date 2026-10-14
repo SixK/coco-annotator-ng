@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { computed } from 'vue';
 
 // `value` stays two-way (`v-model:value`); `name` and `values` are only read → props.
 const { name, values } = defineProps({

@@ -156,7 +156,7 @@
 
 <script setup>
 import Undo from "@/models/undos";
-import { ref, computed, watch, inject, onMounted, provide } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import {useLoading} from 'vue-loading-overlay'
 
 import { useProcStore } from "@/store/index";

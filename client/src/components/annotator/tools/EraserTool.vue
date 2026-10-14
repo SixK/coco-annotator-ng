@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, inject, watchEffect, onMounted, provide } from 'vue'
+import { ref, computed, watch, inject, onMounted } from 'vue'
 import { useTools } from "@/composables/toolBar/tools";
 import paper from 'paper';
 

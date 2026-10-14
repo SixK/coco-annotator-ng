@@ -10,7 +10,7 @@ import UndoAction from "@/undo";
 
 import { invertColor } from "@/libs/colors";
 import { BBox } from "@/libs/bbox";
-import { ref, computed, watch, inject, onMounted, provide } from 'vue'
+import { ref, computed, watch, inject, onMounted } from 'vue'
 import { useTools } from "@/composables/toolBar/tools";
 
 import { useProcStore } from "@/store/index";

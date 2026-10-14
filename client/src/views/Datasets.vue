@@ -230,7 +230,7 @@ import Pagination from "@/components/Pagination";
 import TagsInput from "@/components/TagsInput";
 
 import useAxiosRequest from "@/composables/axiosRequest";
-import { ref, computed, watch, inject, onMounted, provide } from 'vue';
+import { ref, computed, watch, onMounted, provide } from 'vue';
 
 const {axiosRequestError, axiosRequestSuccess} = useAxiosRequest();
 
