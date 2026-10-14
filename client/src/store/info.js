@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
-import { readonly } from 'vue';
 
 import { ref } from 'vue';
 
@@ -14,10 +13,6 @@ export const useInfoStore = defineStore('info', () => {
   const name = ref('COCO Annotator');
   const socket = ref(null);
   
-  function getLoadingStatus() {
-    return loading.value;
-  }
-
   function setSocket(connected) {
       socket.value = connected;
     };
@@ -46,5 +41,5 @@ export const useInfoStore = defineStore('info', () => {
 
   return { loading, success,  allowRegistration, 
                   loginEnabled, version, totalUsers, name, 
-                  socket, getLoadingStatus, getServerInfo, incrementUserCount, setSocket};
+                  socket, getServerInfo, incrementUserCount, setSocket};
 });
