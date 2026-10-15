@@ -142,8 +142,8 @@
                 ref="defaultAnnotation"
                 :metadata="defaultMetadata"
                 title="Default Annotation Metadata"
-                key-name="Default Key"
-                value-name="Default Value"
+                key-title="Default Key"
+                value-title="Default Value"
               />
             </form>
           </div>
