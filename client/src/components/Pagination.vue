@@ -30,12 +30,18 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onUnmounted, onMounted} from 'vue';
+import { computed, watch } from 'vue';
 
 const pages = defineModel('pages', { type: Number, required: true });
 const page = defineModel('page', { type: Number, required: true });
 
-const pageRange = ref(11);
+// Number of page buttons rendered. Computed instead of being clamped once in
+// `onMounted`: the page count arrives asynchronously with the data, so a
+// one-shot clamp would freeze the range at its initial (pre-load) value and
+// never show the extra pages created later on.
+const PAGE_RANGE = 11;
+const pageRange = computed(() => Math.min(PAGE_RANGE, pages.value));
+
 const emit  = defineEmits(['pagechange']);
 
 const previousPage = () => {
@@ -67,15 +73,6 @@ const startPage = computed(() => {
     return pages.value - pageRange.value;
   }
   return start;
-});
-
-onMounted(() => {
-      if (pageRange.value > pages.value) {
-        pageRange.value = pages.value;
-      }
-});
-
-onUnmounted(() => {
 });
 
 </script>

@@ -274,7 +274,7 @@ const toolStore = useToolStore();
 
 import MetaData from "@/components/MetaData";
 
-import { nextTick, getCurrentInstance, inject, watch, ref, computed, onMounted, onUnmounted, toRef, useTemplateRef } from 'vue';
+import { getCurrentInstance, inject, watch, ref, computed, onMounted, onUnmounted, toRef, useTemplateRef } from 'vue';
 
 const { removeKeypointEdge,  addKeypointEdge, categoryIsCurrent, getCategoryIndex, 
                getShowAnnotations, resetCategorySettings } = inject('category');

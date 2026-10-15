@@ -298,7 +298,7 @@
         class="text-center"
         style="color: lightgray"
       >
-        Total of <strong style="color: white">{{ imageCount }}</strong> images
+        Total of <strong style="color: white">{{ total }}</strong> images
         displayed on <strong style="color: white">{{ pages }}</strong> pages.
       </p>
       <div class="row justify-content-md-center sidebar-section-buttons">
@@ -658,11 +658,11 @@ import { Modal } from "bootstrap";
 
 import { getCurrentInstance, ref, computed, watch, onUnmounted, onMounted } from 'vue';
 
-import { useProcStore } from "@/store/index";
-const procStore = useProcStore();
-
 import useAxiosRequest from "@/composables/axiosRequest";
+import usePaginatedList from "@/composables/usePaginatedList";
+import { useProcess } from "@/composables/useProcess";
 const {axiosRequestError, axiosRequestSuccess} = useAxiosRequest();
+const { withProcess } = useProcess();
 
 import { onBeforeRouteUpdate, useRouter, useRoute } from 'vue-router';
 const router = useRouter();
@@ -679,11 +679,7 @@ const { identifier } = defineProps({
 let cocoImportModal = null;
 let cocoExportModal = null;
 
-const page = ref(1);
-const pages = ref(1);
 const generateLimit = ref(100);
-const limit = ref(52);
-const imageCount = ref(0);
 const categories = ref([]);
 const images = ref([]);
 const folders = ref([]);
@@ -774,36 +770,32 @@ const generateDataset = () => {
   });
 };
 
-const updatePage = (page) => {
-  let process = "Loading images from dataset";
-  procStore.addProcess(process);
-
-  console.log('queryannotated:', queryAnnotated);
-  Dataset.getData(dataset.value.id, {
-    page: page,
-    limit: limit.value,
+const { page, pages, total, updatePage } = usePaginatedList({
+  processLabel: "Loading images from dataset",
+  initialLimit: 52,
+  // no page argument keeps the previous behaviour: the backend picks its own
+  // default page instead of reusing the one currently displayed.
+  syncPage: false,
+  fetchPage: (params) => Dataset.getData(dataset.value.id, params),
+  // pagination fields sit at the top level of this payload (no `pagination` key)
+  getPagination: (data) => ({ pages: data.pages, total: data.total }),
+  params: () => ({
     folder: folders.value.join("/"),
     ...query.value,
     annotated: queryAnnotated.value,
     category_ids__in: encodeURI(selected.value.categories),
     order: order.value
-  })
-    .then((response) => {
-      const data = response.data;
-      images.value = data.images;
-      dataset.value = data.dataset;
-      categories.value = data.categories;
-      imageCount.value = data.total;
-      pages.value = data.pages;
-      subdirectories.value = data.subdirectories;
-    })
-    .catch((error) => {
-      axiosRequestError("Loading Dataset", error.response.data.message);
-    })
-    .finally(() => {
-      procStore.removeProcess(process);
-    });
-}
+  }),
+  handleResponse: ({ data }) => {
+    images.value = data.images;
+    dataset.value = data.dataset;
+    categories.value = data.categories;
+    subdirectories.value = data.subdirectories;
+  },
+  onError: (error) => {
+    axiosRequestError("Loading Dataset", error.response.data.message);
+  },
+});
 
 const getUsers = () => {
   Dataset.getUsers(dataset.value.id).then((response) => {
@@ -840,22 +832,17 @@ const getStats = () => {
 };
 
 const createScanTask = () => {
-  const process = "Loading images from dataset";
   if (scan.value.id != null) {
     router.push({ path: "/tasks", query: { id: scan.value.id } });
     return;
   }
-  Dataset.scan(dataset.value.id)
-    .then((response) => {
-      const id = response.data.id;
-      scan.value.id = id;
+  withProcess("Scanning dataset", () =>
+    Dataset.scan(dataset.value.id).then((response) => {
+      scan.value.id = response.data.id;
     })
-    .catch((error) => {
-      axiosRequestError("Scanning Dataset", error.response.data.message);
-    })
-    .finally(() => {
-      procStore.removeProcess(process);
-    });
+  ).catch((error) => {
+    axiosRequestError("Scanning Dataset", error.response.data.message);
+  });
 };
 
 const exportModal = () => {
@@ -870,23 +857,18 @@ const exportModal = () => {
 const exportCOCO = () => {
   // $("#exportDataset").modal("hide");
   cocoExportModal.hide();
-  const process = "Loading images from dataset";
 
-  Dataset.exportingCOCO(
-    dataset.value.id,
-    exporting.value.categories,
-    exporting.value.with_empty_images
-  )
-    .then((response) => {
-      const id = response.data.id;
-      exporting.value.id = id;
+  withProcess("Exporting COCO", () =>
+    Dataset.exportingCOCO(
+      dataset.value.id,
+      exporting.value.categories,
+      exporting.value.with_empty_images
+    ).then((response) => {
+      exporting.value.id = response.data.id;
     })
-    .catch((error) => {
-      axiosRequestError("Exporting COCO", error.response.data.message);
-    })
-    .finally(() => {
-      procStore.removeProcess(process);
-    });
+  ).catch((error) => {
+    axiosRequestError("Exporting COCO", error.response.data.message);
+  });
 };
 
 const removeFolder = (folder) => {
@@ -906,19 +888,14 @@ const importModal = () => {
 };
 
 const importCOCO = () => {
-  const process = "Loading images from dataset";
   const uploaded = document.getElementById("coco");
-  Dataset.uploadCoco(dataset.value.id, uploaded.files[0])
-    .then((response) => {
-      const id = response.data.id;
-      importing.value.id = id;
+  withProcess("Importing COCO", () =>
+    Dataset.uploadCoco(dataset.value.id, uploaded.files[0]).then((response) => {
+      importing.value.id = response.data.id;
     })
-    .catch((error) => {
-      axiosRequestError("Importing COCO", error.response.data.message);
-    })
-    .finally(() => {
-        procStore.removeProcess(process);
-    });
+  ).catch((error) => {
+    axiosRequestError("Importing COCO", error.response.data.message);
+  });
 };
 
 const mouseMove = (event) => {

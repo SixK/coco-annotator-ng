@@ -34,7 +34,10 @@ import { ref, computed, watch, onMounted, provide } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useStores } from "@/composables/useStores"
-const { auth, proc } = useStores();
+const { auth } = useStores();
+
+import { useProcess } from "@/composables/useProcess"
+const { withProcess } = useProcess();
 
 const route = useRoute();
 
@@ -42,17 +45,14 @@ const total = ref(0);
 const tasks = ref([]);
 
 const updatePage = () => {
-  let process = "Loading tasks";
-  proc.addProcess(process);
-
-  Tasks.all().then(response => {
-        tasks.value = response.data;
-        if (taskToShow.value !== null) {
-          showTask(taskToShow.value);
-        }
-  }).finally (() => {
-      proc.removeProcess(process);
-  });
+  return withProcess("Loading tasks", () =>
+    Tasks.all().then((response) => {
+      tasks.value = response.data;
+      if (taskToShow.value !== null) {
+        showTask(taskToShow.value);
+      }
+    })
+  );
 };
 
 const showTask = (taskId) => {

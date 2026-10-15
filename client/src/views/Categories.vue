@@ -17,7 +17,7 @@
         </h2>
 
         <p class="text-center">
-          Loaded <strong>{{ categoryCount }}</strong> categories.
+          Loaded <strong>{{ total }}</strong> categories.
         </p>
 
         <div class="row justify-content-md-center">
@@ -220,15 +220,9 @@ import KeypointsDefinition from "@/components/KeypointsDefinition";
 import { ref, computed, onMounted, useTemplateRef } from 'vue';
 
 import useAxiosRequest from "@/composables/axiosRequest";
+import usePaginatedList from "@/composables/usePaginatedList";
 const {axiosRequestError, axiosRequestSuccess} = useAxiosRequest();
 
-import { useProcStore } from "@/store/index";
-const procStore = useProcStore();
-
-const categoryCount = ref(0);
-const pages = ref(1);
-const page = ref(1);
-const limit = ref(50);
 const range = ref(11);
 const newCategoryName = ref("");
 const newCategorySupercategory = ref("");
@@ -256,26 +250,13 @@ const isFormValid = computed(() => {
   );
 });
 
-const updatePage = (p) => {
-  const process = "Loading categories";
-  procStore.addProcess(process);
-
-  p = p || page.value;
-  page.value = p;
-  Category.allData({
-    page: p,
-    limit: limit.value
-  })
-    .then((response) => {
-      categories.value = response.data.categories;
-      page.value = response.data.pagination.page;
-      pages .value= response.data.pagination.pages;
-      categoryCount.value = response.data.pagination.total;
-    })
-    .finally(() => {
-               procStore.removeProcess(process);
-    });
-};
+const { page, pages, total, updatePage } = usePaginatedList({
+  processLabel: "Loading categories",
+  fetchPage: (params) => Category.allData(params),
+  handleResponse: ({ data }) => {
+    categories.value = data.categories;
+  },
+});
 
 const createCategory = () => {
   if (newCategoryName.value.length < 1) return;

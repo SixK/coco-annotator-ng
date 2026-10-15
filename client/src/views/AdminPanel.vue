@@ -210,8 +210,8 @@ import AdminPanel from "@/models/admin";
 import useAxiosRequest from "@/composables/axiosRequest";
 import { ref, watch, onMounted } from 'vue';
 
-import { useProcStore } from "@/store/index";
-const procStore = useProcStore();
+import { useProcess } from "@/composables/useProcess";
+const { withProcess } = useProcess();
 
 const {axiosRequestError, axiosRequestSuccess} = useAxiosRequest();
 
@@ -226,15 +226,12 @@ const create = ref({
 });
 
 const updatePage = () => {
-  const process = "Loading users";
-  procStore.addProcess(process);
-
-  AdminPanel.getUsers(limit.value)
-    .then((response) => {
+  return withProcess("Loading users", () =>
+    AdminPanel.getUsers(limit.value).then((response) => {
       users.value = response.data.users;
       total.value = response.data.total;
     })
-     .finally(() => procStore.removeProcess(process));
+  );
 };
 
 const createUser = (event) => {

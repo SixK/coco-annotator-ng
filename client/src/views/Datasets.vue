@@ -230,16 +230,14 @@ import Pagination from "@/components/Pagination";
 import TagsInput from "@/components/TagsInput";
 
 import useAxiosRequest from "@/composables/axiosRequest";
+import usePaginatedList from "@/composables/usePaginatedList";
 import { ref, computed, watch, onMounted, provide } from 'vue';
 
 const {axiosRequestError, axiosRequestSuccess} = useAxiosRequest();
 
 import { useStores } from "@/composables/useStores"
-const { auth, proc } = useStores();
+const { auth } = useStores();
 
-const pages = ref(1);
-const limit = ref(52);
-const page = ref(1);
 const create = ref({
       name: "",
       categories: []
@@ -253,31 +251,21 @@ const getUsers = () => {
   return users.value;
 };
 
-const updatePage = (p) => {
-      let process = "Loading datasets";
-      proc.addProcess(process);
-
-      p = p || page.value;
-      page.value = p;
-
-      Datasets.allData({
-        limit: limit.value,
-        page: p,
-      })
-        .then((response) => {
-          datasets.value = response.data.datasets;
-          categories.value = response.data.categories;
-          subdirectories.value = response.data.subdirectories;
-          pages.value = response.data.pagination.pages;
-          page.value = response.data.pagination.page;
-          AdminPanel.getUsers(limit.value).then((response) => {
-            users.value = response.data.users;
-          });
-        })
-        .finally(() => { 
-            proc.removeProcess(process);
-        });
-};
+const { page, pages, limit, updatePage } = usePaginatedList({
+  processLabel: "Loading datasets",
+  initialLimit: 52,
+  fetchPage: (params) => Datasets.allData(params),
+  handleResponse: ({ data }) => {
+    datasets.value = data.datasets;
+    categories.value = data.categories;
+    subdirectories.value = data.subdirectories;
+  },
+  onLoaded: () => {
+    AdminPanel.getUsers(limit.value).then((response) => {
+      users.value = response.data.users;
+    });
+  },
+});
 
 const createDataset = () => {
       if (create.value.name.length < 1) return;

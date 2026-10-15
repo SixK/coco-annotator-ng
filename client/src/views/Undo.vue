@@ -159,8 +159,8 @@ import Undo from "@/models/undos";
 import { ref, watch, onMounted } from 'vue';
 import {useLoading} from 'vue-loading-overlay'
 
-import { useProcStore } from "@/store/index";
-const procStore = useProcStore();
+import { useProcess } from "@/composables/useProcess";
+const { withProcess } = useProcess();
 
 const $loading = useLoading({});
 
@@ -175,16 +175,14 @@ const updatePage = () => {
   const loader = $loading.show({
     color: "#383c4a"
   });
-  const process = `Loading undo for ${type.value} instance type`;
-  procStore.addProcess(process);
-  Undo.all(limit.value, type.value)
-    .then(response => {
+
+  return withProcess(`Loading undo for ${type.value} instance type`, () =>
+    Undo.all(limit.value, type.value).then((response) => {
       undos.value = response.data;
     })
-    .finally(() => {
-      procStore.removeProcess(process);
-      loader.hide()
-    });
+  ).finally(() => {
+    loader.hide();
+  });
 };
 
 const undoModel = (id, instance) => {
