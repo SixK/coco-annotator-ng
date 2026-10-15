@@ -87,7 +87,7 @@
 import { nextTick } from 'vue';
 import { ref, computed, watch, onMounted } from 'vue';
 
-const emit = defineEmits(["initialized", "tag-added", "tags-updated", "tag-removed", "selected-items"]);
+const emit = defineEmits(["tag-added", "tags-updated", "tag-removed", "selected-items"]);
 
 // The only genuine two-way binding here: every parent uses
 // `v-model:selectedItems` (or `:selectedItems` + `@selectedItems`).
@@ -351,8 +351,6 @@ const onKeyDown = (e) => {
 
 onMounted(() => {
   tagsFromValue();
-  // Emit an event
-  emit("initialized");
 });
 
 </script>

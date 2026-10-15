@@ -143,8 +143,6 @@ const DISTINCT_COLORS = [
   "#e673a1"
 ];
 
-const emit = defineEmits(['initialized']);
-
 const keypointsDef = defineModel('keypointsDef', { type: Object, required: true });
 const title = defineModel('title', { type: String, default: "Keypoints" });
 const keyTitle = defineModel('keyTitle', { type: String, default: "Label" });
@@ -179,7 +177,6 @@ watch(
 
 onMounted(() => {
       keypoints.value = keypointsFromProp();
-      emit('initialized');
       isMounted.value = true;
 });
 
