@@ -1,30 +1,23 @@
 import axios from "axios";
 // import { useProcStore } from "@/store/index";
 import { useToolStore } from '@/store/toolStore';
+import { useProcess } from "./useProcess";
 
 export default function useDataHandling(image, categories, dataset, categorylist, toolspanel, settings, procStore, mode, current, zoom) {
     const toolStore = useToolStore();
-  // New async save() that returns a Promise
-  const save = async () => {
-    const process = "Saving";
-    procStore.addProcess(process);
-    try {
+    const { withProcess } = useProcess(procStore);
+
+  // New async save() that returns a Promise. Errors are re-thrown by
+  // withProcess so callers can catch/handle them.
+  const save = () => withProcess("Saving", () => {
       const data = prepareSaveData();
-      // sendDataToServer returns a Promise; await it so caller can know completion.
-      const response = await sendDataToServer(data);
+      // sendDataToServer returns a Promise; callers chain on it to know
+      // when the save completed.
 
-      // If you previously used callbacks to run something after save,
-      // callers will now await save() and then continue.
-
-      return response && response.data ? response.data : response;
-    } catch (err) {
-      // Re-throw so callers can catch/handle errors.
-      // Optionally you can log or show an error notification here.
-      throw err;
-    } finally {
-      procStore.removeProcess(process);
-    }
-  };
+      return sendDataToServer(data).then((response) => {
+        return response && response.data ? response.data : response;
+      });
+  });
 
   const prepareSaveData = () => {
     const data = {

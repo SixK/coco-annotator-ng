@@ -117,12 +117,13 @@ import { watch, computed, ref, inject, watchEffect } from 'vue'
 
 import useAxiosRequest from "@/composables/axiosRequest";
 
-import { useProcStore } from "@/store/index";
+import { useProcStore } from "@/store/index";
 const procStore = useProcStore();
 
+import { useProcess } from "@/composables/useProcess";
+const { withProcess } = useProcess(procStore);
+
 const {axiosRequestError, axiosRequestSuccess} = useAxiosRequest();
-const addProcess = (process) => procStore.addProcess(process);
-const removeProcess = (process) => procStore.removeProcess(process);
 const resetUndo = () => procStore.resetUndo();
 
 
@@ -146,7 +147,7 @@ let modal = ref(null);
 const closeModal = () => Modal.getInstance(modal.value)?.hide();
 const showModal = () => Modal.getInstance(modal.value)?.show();
 
-const copyAnnotations =  () => {
+const copyAnnotations = () => {
 
   if (validImageId.value !== '') return
   closeModal();
@@ -154,20 +155,26 @@ const copyAnnotations =  () => {
   const process = `Copying annotations from ${fromId.value}`
   const scategories = selectedCategories.value.map((category) => parseInt(category))
 
-  save(() => {
-    addProcess(process);
-    axios
-      .post(`/api/image/copy/${fromId.value}/${imageId.value}/annotations`, {
-        category_ids: scategories,
+  // `save()` returns a promise and ignores any argument (see useDataHandling):
+  // passing it a callback used to skip the copy entirely. Save first, then copy.
+  save()
+    .catch((error) => {
+      axiosRequestError('Saving', error.response?.data?.message || error.message);
+      return false; // stop here: don't copy onto unsaved annotations
+    })
+    .then((saved) => {
+      if (saved === false) return;
+
+      return withProcess(process, () => {
+        return axios.post(`/api/image/copy/${fromId.value}/${imageId.value}/annotations`, {
+          category_ids: scategories,
+        });
       })
-      .then(() => {
-        getData()
-      })
-      .catch((error) => {
-        axiosRequestError('Copying Annotations', error.response.data.message)
-      })
-      .finally(() => removeProcess(process))
-  });
+        .then(() => getData())
+        .catch((error) => {
+          axiosRequestError('Copying Annotations', error.response?.data?.message);
+        });
+    });
 };
 
 

@@ -2,11 +2,14 @@
 
 import { ref } from 'vue';
 import paper from 'paper';
+import { useProcess } from "./useProcess";
 
 export default function useCanvas(image, current, procStore) {
   const canvas = ref(null);
   const zoomLevel = ref(0.2);
   const imageRaster = ref(null);
+
+  const { withProcess } = useProcess(procStore);
 
   const textElements = {
     topLeft: null,
@@ -40,11 +43,22 @@ export default function useCanvas(image, current, procStore) {
     return paper;
   };
 
-  // Load image into Paper.js
-  function loadImageAndSetupText(processName) {
-    const img = new paper.Raster(image.value.url);
-    img.onLoad = () => handleImageLoad(processName, img);
-    imageRaster.value = img;
+  // Load image into Paper.js. The returned promise settles once the raster is
+  // ready (or failed), so the caller can close the loading process.
+  function loadImageAndSetupText() {
+    return new Promise((resolve) => {
+      const img = new paper.Raster(image.value.url);
+      img.onLoad = () => {
+        handleImageLoad(img);
+        resolve();
+      };
+      // never leave the loading process pending when the source is unreachable
+      img.onError = (error) => {
+        console.error('could not load image:', image.value.url, error);
+        resolve();
+      };
+      imageRaster.value = img;
+    });
   }
 
 function extractImageData(width, height){
@@ -57,7 +71,7 @@ function extractImageData(width, height){
 };
 
   // Handle post-load logic for image
-  function handleImageLoad(processName, img) {
+  function handleImageLoad(img) {
     const width = img.width;
     const height = img.height;
 
@@ -67,13 +81,6 @@ function extractImageData(width, height){
     extractImageData(width, height);
     createTopLeftText(width, height);
     createTopRightText(width, height);
-
-    removeProcessFromStore(processName);
-  }
-
-  // Remove process from store after load
-  function removeProcessFromStore(processName) {
-    procStore.removeProcess(processName);
   }
 
   // Fit view to canvas size
@@ -177,17 +184,14 @@ function extractImageData(width, height){
     }
   }
 
-  // Initialize canvas
+  // Initialize canvas: the loading process stays registered until the image is
+  // actually loaded (see loadImageAndSetupText), whatever happens in between.
   function initCanvas(processName) {
-    addProcessToStore(processName);
-    const canvasElement = getCanvasElement();
-    setupPaper(canvasElement);
-    loadImageAndSetupText(processName);
-  }
-
-  // Add process to store
-  function addProcessToStore(processName) {
-    procStore.addProcess(processName);
+    return withProcess(processName, () => {
+      const canvasElement = getCanvasElement();
+      setupPaper(canvasElement);
+      return loadImageAndSetupText();
+    });
   }
 
   // Exposed methods

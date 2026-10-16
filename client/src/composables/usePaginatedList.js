@@ -66,37 +66,37 @@ export default function usePaginatedList({
     // backend pages are 1-based: never send 0 or a negative page (mongo `skip`)
     const startAt = syncPage ? page.value : requestedPage;
 
-    return withProcess(processLabel, async () => {
-      const response = await fetchPage({
+    return withProcess(processLabel, () =>
+      fetchPage({
         page: startAt > 0 ? startAt : null,
         limit: limit.value,
         ...(params ? params() : {}),
-      });
+      }).then((response) => {
+        readPagination(response.data);
+        // note: `page` is never read back from the payload — the backend echoes
+        // the page it served as a *0-based* index, and writing it back into the
+        // ref would re-trigger `pagechange` → `updatePage` → page-1, in a loop
+        // down to page 1.
 
-      readPagination(response.data);
-      // note: `page` is never read back from the payload — the backend echoes
-      // the page it served as a *0-based* index, and writing it back into the
-      // ref would re-trigger `pagechange` → `updatePage` → page-1, in a loop
-      // down to page 1.
+        // The page we asked for does not exist anymore (last item of the last page
+        // deleted, filtered list got shorter, ...): reload once on a page the
+        // backend can actually serve. This must not rely on the `<Pagination>`
+        // widget: it is unmounted as soon as the list is empty, so its
+        // `pagechange` event would never fire.
+        const current = startAt ?? page.value;
+        const clampedPage = Math.max(1, Math.min(current, pages.value));
+        if (clampedPage !== current) {
+          return updatePage(clampedPage);
+        }
 
-      // The page we asked for does not exist anymore (last item of the last page
-      // deleted, filtered list got shorter, ...): reload once on a page the
-      // backend can actually serve. This must not rely on the `<Pagination>`
-      // widget: it is unmounted as soon as the list is empty, so its
-      // `pagechange` event would never fire.
-      const current = startAt ?? page.value;
-      const clampedPage = Math.max(1, Math.min(current, pages.value));
-      if (clampedPage !== current) {
-        return updatePage(clampedPage);
-      }
+        if (handleResponse) handleResponse(response);
+        if (onLoaded) onLoaded(response);
 
-      if (handleResponse) handleResponse(response);
-      if (onLoaded) onLoaded(response);
-
-      return response;
-    }).catch((error) => {
+        return response;
+      })
+    ).catch((error) => {
       if (onError) onError(error);
-      // keep the rejection: callers may await/catch it themselves
+      // keep the rejection: callers may chain on it themselves
       throw error;
     });
   };

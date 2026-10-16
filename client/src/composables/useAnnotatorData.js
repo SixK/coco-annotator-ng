@@ -2,10 +2,13 @@
 
 import { nextTick } from 'vue';
 import axios from "axios";
+import { useProcess } from "./useProcess";
 
 export default function useAnnotatorData({ state, router, axiosRequestError, toolspanel, settings, categorylist,image, updateImageName, procStore }) {
   // state: expects (image, categories, dataset, loading, annotating, procStore) in state object
   
+  const { withProcess } = useProcess(procStore);
+
   const showAll = () => {
       if (categorylist.value == null) return;
 
@@ -23,28 +26,28 @@ export default function useAnnotatorData({ state, router, axiosRequestError, too
       });
   };
 
-  const getData = async (callback) => {
-    const process = 'Loading annotation data';
-    try {
-      procStore.addProcess(process);
-      const data = await fetchData();
-      updateStateWithData(data);
-      console.log('data.prefs:', data.preferences);
-      handlePreferences(data.preferences);
+  const getData = (callback) => {
+    return withProcess('Loading annotation data', () => {
+      return fetchData()
+        .then((data) => {
+          updateStateWithData(data);
+          console.log('data.prefs:', data.preferences);
+          handlePreferences(data.preferences);
 
-      updateImageName(image.value.filename);
+          updateImageName(image.value.filename);
 
-      // apply preferences or other side effects later if needed
-      await nextTick();
-      showAll();
+          // apply preferences or other side effects later if needed
+          return nextTick();
+        })
+        .then(() => {
+          showAll();
       
-      // showAll or other UI updates can be triggered by the caller
-      if (typeof callback === 'function') callback();
-    } catch (err) {
+          // showAll or other UI updates can be triggered by the caller
+          if (typeof callback === 'function') callback();
+        });
+    }).catch((err) => {
       handleFetchError(err);
-    } finally {
-      procStore.removeProcess(process);
-    }
+    });
   };
 
   const fetchData = async () => {

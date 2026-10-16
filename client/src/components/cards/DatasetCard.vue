@@ -240,13 +240,13 @@ import { useRouter } from 'vue-router';
 import { useStores } from "@/composables/useStores"
 const { auth, proc } = useStores();
 
+import { useProcess } from "@/composables/useProcess"
+const { withProcess } = useProcess(proc);
+
 const router = useRouter();
 const emit = defineEmits(['updatePage']);
 
 const getUsers = inject('getUsers');
-
-const addProcess = (process) => proc.addProcess(process);
-const removeProcess = (process) => proc.removeProcess(process);
 
 const dataset = defineModel('dataset', { type: Object, required: true });
 const categories = defineModel('categories', { type: Array, required: true });
@@ -290,19 +290,14 @@ const onShare = () => {
 
 
 const onCocoDownloadClick = () => {
-  const process = `Generating COCO for ${dataset.value.name}`;
-  addProcess(process);
-  try {
-    const response = axios.get(`/api/dataset/${dataset.value.id}/coco`)
-                          .then((response) => {
-                             const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(response.data))}`;
-                             downloadURI(dataStr, `${dataset.value.name}.json`);
-                           });
-  } catch (error) {
+  withProcess(`Generating COCO for ${dataset.value.name}`, () => {
+    return axios.get(`/api/dataset/${dataset.value.id}/coco`).then((response) => {
+      const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(response.data))}`;
+      downloadURI(dataStr, `${dataset.value.name}.json`);
+    });
+  }).catch((error) => {
     console.error(error);
-  } finally {
-    removeProcess(process);
-  }
+  });
 };
 
 const onDeleteClick = () => {
