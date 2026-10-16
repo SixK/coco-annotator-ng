@@ -116,6 +116,7 @@
 import axios from "axios";
 import { ref, computed} from "vue";
 import { useRouter } from 'vue-router';
+import { downloadURI, fetchAndDownloadJson } from "@/libs/download";
 
 const router = useRouter();
 const emit = defineEmits(['updatePage']);
@@ -141,15 +142,6 @@ const annotated = computed(() => {
       return image.value.annotating.length > 0;
 });
 
-const downloadURI = (uri, exportName) => {
-  const link = document.createElement("a");
-  link.href = uri;
-  link.download = exportName;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-};
-
 const openAnnotator = () => {
   router.push({
     name: "annotate",
@@ -160,15 +152,10 @@ const openAnnotator = () => {
 const onDownloadClick = () => {
   downloadURI("/api/image/" + image.value.id + "?asAttachment=true", image.value.file_name);
   
-  axios.get("/api/image/" + image.value.id + "/coco").then(response => {
-    const dataStr =
-      "data:text/json;charset=utf-8," +
-      encodeURIComponent(JSON.stringify(response.data));
-    downloadURI(
-      dataStr,
-      image.value.file_name.replace(/\.[^/.]+$/, "") + ".json"
-    );
-  });
+  fetchAndDownloadJson(
+    "/api/image/" + image.value.id + "/coco",
+    image.value.file_name.replace(/\.[^/.]+$/, "") + ".json"
+  );
 }
 
 const onDownloadSegmentedClick = () => {

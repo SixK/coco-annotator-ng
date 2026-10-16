@@ -243,6 +243,8 @@ const { auth, proc } = useStores();
 import { useProcess } from "@/composables/useProcess"
 const { withProcess } = useProcess(proc);
 
+import { fetchAndDownloadJson } from "@/libs/download";
+
 const router = useRouter();
 const emit = defineEmits(['updatePage']);
 
@@ -291,10 +293,10 @@ const onShare = () => {
 
 const onCocoDownloadClick = () => {
   withProcess(`Generating COCO for ${dataset.value.name}`, () => {
-    return axios.get(`/api/dataset/${dataset.value.id}/coco`).then((response) => {
-      const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(response.data))}`;
-      downloadURI(dataStr, `${dataset.value.name}.json`);
-    });
+    return fetchAndDownloadJson(
+      `/api/dataset/${dataset.value.id}/coco`,
+      `${dataset.value.name}.json`
+    );
   }).catch((error) => {
     console.error(error);
   });
@@ -320,15 +322,6 @@ const onSave = () => {
     .then(() => {
         emit('updatePage');
     });
-};
-
-const downloadURI = (uri, exportName) => {
-  const link = document.createElement("a");
-  link.href = uri;
-  link.download = exportName;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
 };
 
 const createSelectedCategories = () => {

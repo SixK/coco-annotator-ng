@@ -1,20 +1,18 @@
 import axios from "axios";
+import { downloadBlob } from "@/libs/download";
 
 const baseURL = "/api/export";
 
 export default {
   download(id, dataset) {
-    axios({
+    return axios({
       url: `${baseURL}/${id}/download`,
       method: "GET",
       responseType: "blob"
     }).then(response => {
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `${dataset}-${id}.json`);
-      document.body.appendChild(link);
-      link.click();
+      // downloadBlob() removes the temporary <a> and revokes the blob URL,
+      // which used to leak on every export download
+      downloadBlob(response.data, `${dataset}-${id}.json`);
     });
   }
 };
