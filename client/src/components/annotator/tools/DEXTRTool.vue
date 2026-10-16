@@ -5,123 +5,18 @@
   </div>
 </template>
 <script setup>
-import paper from "paper";
-import { useTools } from "@/composables/toolBar/tools";
-import axios from "axios";
-import { ref, computed, inject, onMounted } from 'vue'
-
-const { getCurrentAnnotation, getImageRaster, getImageId } = inject('annotator');
-
-const {
-    click,
-    state,
-    iconColor,
-    tooltip,
-    name,
-    cursor
-  }= useTools();
+import { useInteractivePointTool } from "@/composables/useInteractivePointTool";
 
 const { scale } = defineProps({ scale: { type: Number, default: 1 } });
 
-name.value = "DEXTR";
-cursor.value = "crosshair";
-
-const icon = ref("fa-crosshairs");
-
-const settings = ref({
-      padding: 50,
-      threshold: 80,
+const { click, icon, iconColor, tooltip, name, points, settings } = useInteractivePointTool({
+  name: "DEXTR",
+  icon: "fa-crosshairs",
+  endpoint: "/api/model/dextr",
+  // DEXTR needs the 4 extreme points before querying the model
+  triggerPoints: 4,
+  defaultSettings: { padding: 50, threshold: 80 },
 });
 
-const paperPoints=[];
-const points = ref([]);
-
-const localCurrentAnnotation = computed(() => getCurrentAnnotation());
-const localImageRaster = computed(() => getImageRaster());
-
-
-
-function createPoint(point) {
-      const paperPoint = new paper.Path.Circle(point, 5);
-      paperPoint.fillColor = localCurrentAnnotation.value.color;
-      paperPoint.data.point = point;
-      paperPoints.push(paperPoint);
-      points.value.push(paperPoint);
-}
-
-function onMouseDown(event) {
-    if(state.isActive)
-    {
-      createPoint(event.point);
-      checkPoints(points.value);
-    }
-}
-
-function createPath(segments, width, height) {
-    const center = new paper.Point(width, height);
-    const compoundPath = new paper.CompoundPath();
-    segments.forEach(polygon => {
-        const path = new paper.Path();
-        for (let j = 0; j < polygon.length; j += 2) {
-            const point = new paper.Point(polygon[j], polygon[j + 1]);
-            path.add(point.subtract(center));
-        }
-        path.closePath();
-        compoundPath.addChild(path);
-    });
-    return compoundPath;
-}
-
-// original code was watching for new points, but it seem's to be a bug between Vue3 and paper.js.
-// so we call function directly
-function checkPoints(newPoints) {
-  if (newPoints.length == 4) {
-    const currentAnnotation = localCurrentAnnotation.value;
-    const pointsList = [];
-    const width = localImageRaster.value.width / 2;
-    const height = localImageRaster.value.height / 2;
-    newPoints.forEach((point) => {
-      const pt = point.position;
-      pointsList.push([
-        Math.round(width + pt.x),
-        Math.round(height + pt.y),
-      ]);
-    });
-
-    const  canvas = getImageRaster().canvas;
-    const data = new FormData();
-
-    data.append('data', JSON.stringify({ 'points': pointsList,
-            ...settings.value}));
-
-    canvas.toBlob((blob) => {
-        data.append('image', blob);
-
-        axios
-              .post(`/api/model/dextr`, data, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                }
-            })
-          .then((response) => {
-            const compoundPath = createPath(response.data.segmentaiton, width, height);
-            currentAnnotation.unite(compoundPath);
-          })
-          .finally(() => { 
-              points.value = [];
-              paperPoints.map((path) => path.removeSegments());
-          });
-        });
-    }
-};
-
-onMounted(() => {
-    state.tool.onMouseDown = onMouseDown;
-    // state.tool.onMouseDrag = onMouseDrag;
-    // state.tool.onMouseMove = onMouseMove;
-    // state.tool.onMouseUp = onMouseUp;
-})
-
-defineExpose({points, settings, name});
-
+defineExpose({ points, settings, name });
 </script>
