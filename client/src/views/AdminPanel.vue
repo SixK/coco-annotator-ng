@@ -112,96 +112,73 @@
       </div>
     </div>
 
-    <div
+    <BaseModal
       id="createUser"
-      class="modal fade"
-      tabindex="-1"
-      role="dialog"
+      title="Create a User"
     >
-      <div
-        class="modal-dialog"
-        role="document"
-      >
-        <div class="modal-content">
-          <div class="modal-header justify-content-between">
-            <h5 class="modal-title">
-              Create a User
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            >
-            </button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div
-                class="form-group"
-                :class="{ 'was-validated': create.username.length !== 0 }"
-              >
-                <label>Username</label>
-                <input
-                  v-model="create.username"
-                  class="form-control"
-                  placeholder="Username"
-                  required
-                >
-              </div>
-              <div
-                class="form-group"
-                :class="{ 'was-validated': create.password.length !== 0 }"
-              >
-                <label>Password</label>
-                <input
-                  v-model="create.password"
-                  class="form-control"
-                  placeholder="Password"
-                  required
-                >
-              </div>
-              <div
-                class="form-group"
-                :class="{ 'was-validated': create.name.length !== 0 }"
-              >
-                <label>Name</label>
-                <input
-                  v-model="create.name"
-                  class="form-control"
-                  placeholder="Name"
-                  required
-                >
-              </div>
-              <div class="form-check">
-                <input
-                  v-model="create.isAdmin"
-                  type="checkbox"
-                  class="form-check-input"
-                >
-                <label class="form-check-label">Admin</label>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="submit"
-              class="btn btn-primary"
-              @click="createUser"
-            >
-              Create User
-            </button>
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-          </div>
+      <form>
+        <div
+          class="form-group"
+          :class="{ 'was-validated': create.username.length !== 0 }"
+        >
+          <label>Username</label>
+          <input
+            v-model="create.username"
+            class="form-control"
+            placeholder="Username"
+            required
+          >
         </div>
-      </div>
-    </div>
+        <div
+          class="form-group"
+          :class="{ 'was-validated': create.password.length !== 0 }"
+        >
+          <label>Password</label>
+          <input
+            v-model="create.password"
+            class="form-control"
+            placeholder="Password"
+            required
+          >
+        </div>
+        <div
+          class="form-group"
+          :class="{ 'was-validated': create.name.length !== 0 }"
+        >
+          <label>Name</label>
+          <input
+            v-model="create.name"
+            class="form-control"
+            placeholder="Name"
+            required
+          >
+        </div>
+        <div class="form-check">
+          <input
+            v-model="create.isAdmin"
+            type="checkbox"
+            class="form-check-input"
+          >
+          <label class="form-check-label">Admin</label>
+        </div>
+      </form>
+      <template #footer>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          @click="createUser"
+        >
+          Create User
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Close
+        </button>
+      </template>
+    </BaseModal>
   </div>
 </template>
 
@@ -209,6 +186,7 @@
 import AdminPanel from "@/models/admin";
 import useAxiosRequest from "@/composables/axiosRequest";
 import { ref, watch, onMounted } from 'vue';
+import BaseModal from "@/components/BaseModal";
 
 import { useProcess } from "@/composables/useProcess";
 const { withProcess } = useProcess();

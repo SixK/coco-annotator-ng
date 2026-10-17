@@ -99,96 +99,72 @@
       />
     </ul>
 
-    <div
+    <BaseModal
       :id="'categorySettings' + category.id"
-      ref="category_settings"
-      class="modal fade"
-      tabindex="-1"
-      role="dialog"
+      :title="category.name"
       @hidden="resetCategorySettings"
     >
-      <div
-        class="modal-dialog"
-        role="document"
-      >
-        <div class="modal-content">
-          <div class="modal-header justify-content-between">
-            <h5 class="modal-title">
-              {{ category.name }}
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            >
-            </button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="form-group">
-                <label>Supercategory</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  :value="supercategory"
-                  @input="supercategory = $event.target.value"
-                >
-              </div>
+      <form>
+        <div class="form-group">
+          <label>Supercategory</label>
+          <input
+            type="text"
+            class="form-control"
+            :value="supercategory"
+            @input="supercategory = $event.target.value"
+          >
+        </div>
 
-              <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Color</label>
-                <div class="col-sm-9">
-                  <input
-                    v-model="color"
-                    type="color"
-                    class="form-control"
-                  >
-                </div>
-              </div>
-
-              <div class="form-group">
-                <KeypointsDefinition
-                  ref="keypoints"
-                  v-model:keypoints-def="keypoint"
-                  element-id="keypointLabels"
-                />
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-success"
-              :disabled="!isFormValid"
-              :class="{ disabled: !isFormValid }"
-              data-bs-dismiss="modal"
-              @click="onUpdateClick"
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label">Color</label>
+          <div class="col-sm-9">
+            <input
+              v-model="color"
+              type="color"
+              class="form-control"
             >
-              Update
-            </button>
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
           </div>
         </div>
-      </div>
-    </div>
+
+        <div class="form-group">
+          <KeypointsDefinition
+            ref="keypoints"
+            v-model:keypoints-def="keypoint"
+            element-id="keypointLabels"
+          />
+        </div>
+      </form>
+      <template #footer>
+        <button
+          type="button"
+          class="btn btn-success"
+          :disabled="!isFormValid"
+          :class="{ disabled: !isFormValid }"
+          data-bs-dismiss="modal"
+          @click="onUpdateClick"
+        >
+          Update
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Close
+        </button>
+      </template>
+    </BaseModal>
   </div>
 </template>
 
 <script setup>
 import paper from "paper";
-import { Modal } from "bootstrap";
 
 import { useToolStore } from '@/store/toolStore';
 import Annotations from "@/models/annotations";
 import Annotation from "@/components/annotator/Annotation";
 import KeypointsDefinition from "@/components/KeypointsDefinition";
+import BaseModal from "@/components/BaseModal";
 
 import { nextTick } from 'vue';
 
@@ -244,7 +220,6 @@ const search = ref("");
 const isMounted = ref(false);
 
 const keypoints = useTemplateRef('keypoints');
-let categorySettingsModal = null;
 
 const annotationlist = ref([]);
 const setAnnotationRef = el => {
@@ -612,14 +587,10 @@ onMounted( () => {
     initCategory();
     getCurrentInstance().ctx.sockets.subscribe('annotation', onAnnotation);
     isMounted.value = true;
-    const categoryTag = document.getElementById(`categorySettings${category.id}`);
-    categorySettingsModal = new Modal(categoryTag, { });
 });
 
 onUnmounted(() => {
     getCurrentInstance().ctx.sockets.unsubscribe('annotation');
-
-    categorySettingsModal.hide();
 });
     
 

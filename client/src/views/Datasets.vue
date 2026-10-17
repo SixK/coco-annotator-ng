@@ -80,145 +80,97 @@
       </div>
     </div>
 
-    <div
+    <BaseModal
       id="createDataset"
-      class="modal fade"
-      tabindex="-1"
-      role="dialog"
+      title="Creating a Dataset"
     >
-      <div
-        class="modal-dialog"
-        role="document"
-      >
-        <div class="modal-content">
-          <div class="modal-header justify-content-between">
-            <h5 class="modal-title">
-              Creating a Dataset
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            >
-            </button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div
-                class="form-group"
-                :class="{ 'was-validated': validDatasetName.length !== 0 }"
-              >
-                <label>Dataset Name</label>
-                <input
-                  v-model="create.name"
-                  class="form-control"
-                  placeholder="Dataset name"
-                  required
-                >
-                <div class="invalid-feedback">
-                  {{ validDatasetName }}
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label>Default Categories</label>
-                <TagsInput
-                  v-model:selectedItems="create.categories"
-                  element-id="createCategory"
-                  :existing-tags="categoryTags"
-                  :typeahead="true"
-                  :typeahead-activation-threshold="0"
-                />
-              </div>
-
-              <div
-                class="form-group"
-                required
-              >
-                <label>Folder Directory</label>
-                <input
-                  class="form-control"
-                  disabled
-                  :value="directory"
-                >
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-primary"
-              @click="createDataset"
-            >
-              Create Dataset
-            </button>
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
+      <form>
+        <div
+          class="form-group"
+          :class="{ 'was-validated': validDatasetName.length !== 0 }"
+        >
+          <label>Dataset Name</label>
+          <input
+            v-model="create.name"
+            class="form-control"
+            placeholder="Dataset name"
+            required
+          >
+          <div class="invalid-feedback">
+            {{ validDatasetName }}
           </div>
         </div>
-      </div>
-    </div>
 
-    <div
+        <div class="form-group">
+          <label>Default Categories</label>
+          <TagsInput
+            v-model:selectedItems="create.categories"
+            element-id="createCategory"
+            :existing-tags="categoryTags"
+            :typeahead="true"
+            :typeahead-activation-threshold="0"
+          />
+        </div>
+
+        <div
+          class="form-group"
+          required
+        >
+          <label>Folder Directory</label>
+          <input
+            class="form-control"
+            disabled
+            :value="directory"
+          >
+        </div>
+      </form>
+      <template #footer>
+        <button
+          type="button"
+          class="btn btn-primary"
+          @click="createDataset"
+        >
+          Create Dataset
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Close
+        </button>
+      </template>
+    </BaseModal>
+
+    <BaseModal
       id="helpDataset"
-      class="modal fade"
-      tabindex="-1"
-      role="dialog"
+      title="Datasets"
     >
-      <div
-        class="modal-dialog"
-        role="document"
-      >
-        <div class="modal-content">
-          <div class="modal-header justify-content-between">
-            <h5 class="modal-title">
-              Datasets
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            >
-            </button>
-          </div>
-
-          <div class="modal-body">
-            More information can be found in the
-            <a href="/help">help section</a>.
-            <hr>
-            <h6>What is a dataset?</h6>
-            A dataset is a collection of images. It provides default category
-            options for all subsequent images. Each dataset has its own folder
-            in the /datasets directory.
-            <hr>
-            <h6>How do I create one?</h6>
-            Click on the "Create" button found on this webpage. A dataset name
-            must be provided.
-            <hr>
-            <h6>How do I add images?</h6>
-            Once you have created a dataset you can add images by placing them
-            in the create folder (while the server is running).
-          </div>
-
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+      More information can be found in the
+      <a href="/help">help section</a>.
+      <hr>
+      <h6>What is a dataset?</h6>
+      A dataset is a collection of images. It provides default category
+      options for all subsequent images. Each dataset has its own folder
+      in the /datasets directory.
+      <hr>
+      <h6>How do I create one?</h6>
+      Click on the "Create" button found on this webpage. A dataset name
+      must be provided.
+      <hr>
+      <h6>How do I add images?</h6>
+      Once you have created a dataset you can add images by placing them
+      in the create folder (while the server is running).
+      <template #footer>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Close
+        </button>
+      </template>
+    </BaseModal>
   </div>
 </template>
 
@@ -228,6 +180,7 @@ import AdminPanel from "@/models/admin";
 import DatasetCard from "@/components/cards/DatasetCard";
 import Pagination from "@/components/Pagination";
 import TagsInput from "@/components/TagsInput";
+import BaseModal from "@/components/BaseModal";
 
 import useAxiosRequest from "@/composables/axiosRequest";
 import usePaginatedList from "@/composables/usePaginatedList";

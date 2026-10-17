@@ -71,143 +71,97 @@
       </div>
     </div>
 
-    <div
+    <BaseModal
       id="createCategories"
-      class="modal fade"
-      tabindex="-1"
-      role="dialog"
+      title="Creating a Category"
     >
-      <div
-        class="modal-dialog"
-        role="document"
-      >
-        <div class="modal-content">
-          <div class="modal-header justify-content-between">
-            <h5 class="modal-title">
-              Creating a Category
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            >
-            </button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="form-group">
-                <label>Name:</label>
-                <input
-                  v-model="newCategoryName"
-                  class="form-control"
-                  :class="{ 'is-invalid': newCategoryName.trim().length === 0 }"
-                  required="true"
-                  placeholder="Name"
-                >
-              </div>
+      <form>
+        <div class="form-group">
+          <label>Name:</label>
+          <input
+            v-model="newCategoryName"
+            class="form-control"
+            :class="{ 'is-invalid': newCategoryName.trim().length === 0 }"
+            required="true"
+            placeholder="Name"
+          >
+        </div>
 
-              <div class="form-group">
-                <label>Supercategory:</label>
-                <input
-                  v-model="newCategorySupercategory"
-                  class="form-control"
-                  placeholder="Supercategory"
-                >
-              </div>
+        <div class="form-group">
+          <label>Supercategory:</label>
+          <input
+            v-model="newCategorySupercategory"
+            class="form-control"
+            placeholder="Supercategory"
+          >
+        </div>
 
-              <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Color:</label>
-                <div class="col-sm-9">
-                  <input
-                    v-model="newCategoryColor"
-                    type="color"
-                    class="form-control"
-                  >
-                </div>
-              </div>
-
-              <div class="form-group">
-                <KeypointsDefinition
-                  ref="keypoints"
-                  v-model:keypoints-def="newCategoryKeypoint"
-                  element-id="keypoints"
-                  placeholder="Add a keypoint"
-                />
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-primary"
-              :disabled="!isFormValid"
-              :class="{ disabled: !isFormValid }"
-              @click="createCategory"
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label">Color:</label>
+          <div class="col-sm-9">
+            <input
+              v-model="newCategoryColor"
+              type="color"
+              class="form-control"
             >
-              Create Category
-            </button>
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
           </div>
         </div>
-      </div>
-    </div>
 
-    <div
+        <div class="form-group">
+          <KeypointsDefinition
+            ref="keypoints"
+            v-model:keypoints-def="newCategoryKeypoint"
+            element-id="keypoints"
+            placeholder="Add a keypoint"
+          />
+        </div>
+      </form>
+      <template #footer>
+        <button
+          type="button"
+          class="btn btn-primary"
+          :disabled="!isFormValid"
+          :class="{ disabled: !isFormValid }"
+          @click="createCategory"
+        >
+          Create Category
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Close
+        </button>
+      </template>
+    </BaseModal>
+
+    <BaseModal
       id="helpCategories"
-      class="modal fade"
-      tabindex="-1"
-      role="dialog"
+      title="Categories"
     >
-      <div
-        class="modal-dialog"
-        role="document"
+      More information can be found in the
+      <a
+        href="https://github.com/jsbroks/coco-annotator/wiki/Usage#creating-categories"
       >
-        <div class="modal-content">
-          <div class="modal-header justify-content-between">
-            <h5 class="modal-title">
-              Categories
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            >
-            </button>
-          </div>
-          <div class="modal-body">
-            More information can be found in the
-            <a
-              href="https://github.com/jsbroks/coco-annotator/wiki/Usage#creating-categories"
-            >
-              getting started section </a>.
-            <hr>
-            <h6>What is a category?</h6>
+        getting started section </a>.
+      <hr>
+      <h6>What is a category?</h6>
 
-            <hr>
-            <h6>How do I create one?</h6>
-            Click on the "Create" button found on this webpage. You must
-            provided a name for the category.
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+      <hr>
+      <h6>How do I create one?</h6>
+      Click on the "Create" button found on this webpage. You must
+      provided a name for the category.
+      <template #footer>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Close
+        </button>
+      </template>
+    </BaseModal>
   </div>
 </template>
 
@@ -216,6 +170,7 @@ import Category from "@/models/categories";
 import CategoryCard from "@/components/cards/CategoryCard";
 import Pagination from "@/components/Pagination";
 import KeypointsDefinition from "@/components/KeypointsDefinition";
+import BaseModal from "@/components/BaseModal";
 
 import { ref, computed, onMounted, useTemplateRef } from 'vue';
 

@@ -103,129 +103,85 @@
     </div>
 
     <!-- Edit Dataset -->
-    <div
+    <BaseModal
       :id="'datasetEdit' + dataset.id"
-      class="modal fade"
-      role="dialog"
+      :title="dataset.name"
     >
-      <div
-        class="modal-dialog"
-        role="document"
-      >
-        <div class="modal-content">
-          <div class="modal-header justify-content-between">
-            <h5 class="modal-title">
-              {{ dataset.name }}
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            >
-            </button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="form-group">
-                <label>Default Categories</label>
-                <TagsInput
-                  v-model:selectedItems="selectedCategories"
-                  element-id="changeDataset"
-                  :existing-tags="categoryTags"
-                  :typeahead="true"
-                  :typeahead-activation-threshold="0"
-                />
-              </div>
-
-              <MetaData
-                ref="defaultAnnotation"
-                :metadata="defaultMetadata"
-                title="Default Annotation Metadata"
-                key-title="Default Key"
-                value-title="Default Value"
-              />
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-success"
-              data-bs-dismiss="modal"
-              @click="onSave"
-            >
-              Save
-            </button>
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-          </div>
+      <form>
+        <div class="form-group">
+          <label>Default Categories</label>
+          <TagsInput
+            v-model:selectedItems="selectedCategories"
+            element-id="changeDataset"
+            :existing-tags="categoryTags"
+            :typeahead="true"
+            :typeahead-activation-threshold="0"
+          />
         </div>
-      </div>
-    </div>
+
+        <MetaData
+          ref="defaultAnnotation"
+          :metadata="defaultMetadata"
+          title="Default Annotation Metadata"
+          key-title="Default Key"
+          value-title="Default Value"
+        />
+      </form>
+      <template #footer>
+        <button
+          type="button"
+          class="btn btn-success"
+          data-bs-dismiss="modal"
+          @click="onSave"
+        >
+          Save
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Close
+        </button>
+      </template>
+    </BaseModal>
 
     <!-- Share Dataset -->
-    <div
+    <BaseModal
       :id="'datasetShare' + dataset.id"
-      class="modal fade"
-      role="dialog"
+      :title="dataset.name"
     >
-      <div
-        class="modal-dialog"
-        role="document"
-      >
-        <div class="modal-content">
-          <div class="modal-header justify-content-between">
-            <h5 class="modal-title">
-              {{ dataset.name }}
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            >
-            </button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="form-group">
-                <label>Users shared with</label>
-                <TagsInput
-                  v-model:selectedItems="sharedUsers"
-                  element-id="usersList"
-                  :existing-tags="users"
-                  :typeahead="true"
-                  :typeahead-activation-threshold="0"
-                  placeholder="Add usernames"
-                />
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-success"
-              data-bs-dismiss="modal"
-              @click="onShare"
-            >
-              Save
-            </button>
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-          </div>
+      <form>
+        <div class="form-group">
+          <label>Users shared with</label>
+          <TagsInput
+            v-model:selectedItems="sharedUsers"
+            element-id="usersList"
+            :existing-tags="users"
+            :typeahead="true"
+            :typeahead-activation-threshold="0"
+            placeholder="Add usernames"
+          />
         </div>
-      </div>
-    </div>
+      </form>
+      <template #footer>
+        <button
+          type="button"
+          class="btn btn-success"
+          data-bs-dismiss="modal"
+          @click="onShare"
+        >
+          Save
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Close
+        </button>
+      </template>
+    </BaseModal>
   </div>
 </template>
 
@@ -233,6 +189,7 @@
 import axios from "axios";
 import MetaData from "@/components/MetaData";
 import TagsInput from "@/components/TagsInput";
+import BaseModal from "@/components/BaseModal";
 
 import { ref, computed, inject, watch, onMounted, onBeforeMount, useTemplateRef } from "vue";
 import { useRouter } from 'vue-router';

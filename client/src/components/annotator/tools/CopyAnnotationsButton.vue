@@ -6,114 +6,85 @@
       style="color: white"
       data-bs-toggle="modal"
       data-bs-target="#copyAnnotations"
-      @click="showModal"
     />
     <br>
     <!-- Modal -->
-    <div
+    <BaseModal
       id="copyAnnotations"
-      ref="modal"
-      class="modal fade"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="copyAnnotationsLabel"
-      aria-hidden="true"
+      ref="copyModal"
+      title="Copy Annotations From Image"
     >
-      <div
-        class="modal-dialog"
-        role="document"
-      >
-        <div class="modal-content">
-          <div class="modal-header justify-content-between">
-            <h5
-              id="copyAnnotationsLabel"
-              class="modal-title"
-            >
-              Copy Annotations From Image
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            >
-            </button>
-          </div>
-          <div class="modal-body">
-            <form novalidate="true">
-              <button
-                type="button"
-                class="btn btn-sm btn-light"
-                style="float: left"
-                @click="fromId = previous.toString()"
-              >
-                <i class="fa fa-arrow-left" /> Previous Image
-              </button>
-              <button
-                type="button"
-                class="btn btn-sm btn-light"
-                style="float: right; margin-left: 8px"
-                @click="fromId = next.toString()"
-              >
-                Next Image <i class="fa fa-arrow-right" />
-              </button>
+      <form novalidate="true">
+        <button
+          type="button"
+          class="btn btn-sm btn-light"
+          style="float: left"
+          @click="fromId = previous.toString()"
+        >
+          <i class="fa fa-arrow-left" /> Previous Image
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-light"
+          style="float: right; margin-left: 8px"
+          @click="fromId = next.toString()"
+        >
+          Next Image <i class="fa fa-arrow-right" />
+        </button>
 
-              <div class="form-group">
-                <label>Image ID</label>
-                <input
-                  v-model="fromId"
-                  :class="{
-                    'form-control': true,
-                    'is-invalid': validImageId.length !== 0,
-                  }"
-                  placeholder="Enter an image ID"
-                  required
-                >
-                <div class="invalid-feedback">
-                  {{ validImageId }}
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label>Copy Only Selected Categories</label>
-                <TagsInput
-                  v-model:selectedItems="selectedCategories"
-                  element-id="categoriesToCopy"
-                  :existing-tags="categoryTags"
-                  :typeahead="true"
-                  :only-existing-tags="true"
-                  :typeahead-activation-threshold="0"
-                />
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              @click="closeModal()"
-            >
-              Close
-            </button>
-            <button
-              type="button"
-              class="btn btn-primary"
-              @click="copyAnnotations()"
-            >
-              Copy
-            </button>
+        <div class="form-group">
+          <label>Image ID</label>
+          <input
+            v-model="fromId"
+            :class="{
+              'form-control': true,
+              'is-invalid': validImageId.length !== 0,
+            }"
+            placeholder="Enter an image ID"
+            required
+          >
+          <div class="invalid-feedback">
+            {{ validImageId }}
           </div>
         </div>
-      </div>
-    </div>
+
+        <div class="form-group">
+          <label>Copy Only Selected Categories</label>
+          <TagsInput
+            v-model:selectedItems="selectedCategories"
+            element-id="categoriesToCopy"
+            :existing-tags="categoryTags"
+            :typeahead="true"
+            :only-existing-tags="true"
+            :typeahead-activation-threshold="0"
+          />
+        </div>
+      </form>
+      <template #footer>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          @click="closeModal()"
+        >
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          @click="copyAnnotations()"
+        >
+          Copy
+        </button>
+      </template>
+    </BaseModal>
   </div>
 </template>
 
 <script setup>
 import axios from "axios";
-import { Modal } from "bootstrap";
 import TagsInput from "@/components/TagsInput";
-import { watch, computed, ref, inject, watchEffect } from 'vue'
+import BaseModal from "@/components/BaseModal";
+import { watch, computed, ref, inject, watchEffect, useTemplateRef } from 'vue'
 
 import useAxiosRequest from "@/composables/axiosRequest";
 
@@ -143,9 +114,8 @@ const isVisible = ref(false);
 
 const localCategories = ref([]);
 
-let modal = ref(null);
-const closeModal = () => Modal.getInstance(modal.value)?.hide();
-const showModal = () => Modal.getInstance(modal.value)?.show();
+const copyModal = useTemplateRef('copyModal');
+const closeModal = () => copyModal.value.hideModal();
 
 const copyAnnotations = () => {
 

@@ -459,188 +459,121 @@
       </div>
     </div>
 
-    <div
+    <BaseModal
       id="generateDataset"
-      class="modal fade"
-      tabindex="-1"
-      role="dialog"
+      title="Generate a Dataset"
     >
-      <div
-        class="modal-dialog"
-        role="document"
-      >
-        <div class="modal-content">
-          <div class="modal-header justify-content-between">
-            <h5 class="modal-title">
-              Generate a Dataset
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            >
-            </button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="form-group">
-                <label>Keyword</label>
-                <input
-                  v-model="keyword"
-                  class="form-control"
-                >
-              </div>
-              <div class="form-group">
-                <label>Limit</label>
-                <input
-                  v-model="generateLimit"
-                  class="form-control"
-                  type="number"
-                >
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-primary"
-              @click="generateDataset"
-            >
-              Generate
-            </button>
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-          </div>
+      <form>
+        <div class="form-group">
+          <label>Keyword</label>
+          <input
+            v-model="keyword"
+            class="form-control"
+          >
         </div>
-      </div>
-    </div>
+        <div class="form-group">
+          <label>Limit</label>
+          <input
+            v-model="generateLimit"
+            class="form-control"
+            type="number"
+          >
+        </div>
+      </form>
+      <template #footer>
+        <button
+          type="button"
+          class="btn btn-primary"
+          @click="generateDataset"
+        >
+          Generate
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Close
+        </button>
+      </template>
+    </BaseModal>
 
-    <div
+    <BaseModal
       id="cocoUpload"
-      class="modal fade"
-      tabindex="-1"
-      role="dialog"
+      ref="cocoImport"
+      title="Upload COCO Annotaitons"
     >
-      <div
-        class="modal-dialog"
-        role="document"
-      >
-        <div class="modal-content">
-          <div class="modal-header justify-content-between">
-            <h5 class="modal-title">
-              Upload COCO Annotaitons
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            >
-            </button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="form-group">
-                <label for="coco">COCO Annotation file (.json)</label>
-                <input
-                  id="coco"
-                  type="file"
-                  class="form-control-file"
-                >
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-primary"
-              data-bs-dismiss="modal"
-              @click="importCOCO"
-            >
-              Upload
-            </button>
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-          </div>
+      <form>
+        <div class="form-group">
+          <label for="coco">COCO Annotation file (.json)</label>
+          <input
+            id="coco"
+            type="file"
+            class="form-control-file"
+          >
         </div>
-      </div>
-    </div>
+      </form>
+      <template #footer>
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-dismiss="modal"
+          @click="importCOCO"
+        >
+          Upload
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Close
+        </button>
+      </template>
+    </BaseModal>
 
-    <div
+    <BaseModal
       id="exportDataset"
-      class="modal fade"
-      tabindex="-1"
-      role="dialog"
+      ref="cocoExport"
+      :title="'Export ' + dataset.name"
     >
-      <div
-        class="modal-dialog"
-        role="document"
-      >
-        <div class="modal-content">
-          <div class="modal-header justify-content-between">
-            <h5 class="modal-title">
-              Export {{ dataset.name }}
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            >
-            </button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="form-group">
-                <label>Categories (Empty export all)</label>
-                <TagsInput
-                  v-model:selectedItems="exporting.categories"
-                  element-id="exportCategories"
-                  :existing-tags="categoryTags"
-                  :typeahead="true"
-                  :typeahead-activation-threshold="0"
-                />
-              </div>
-              <div>
-                <input
-                  v-model="exporting.with_empty_images"
-                  type="checkbox"
-                  class="form-check-input"
-                >
-                <label class="form-check-label">export with not annotated images</label>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-primary"
-              @click="exportCOCO"
-            >
-              Export
-            </button>
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-          </div>
+      <form>
+        <div class="form-group">
+          <label>Categories (Empty export all)</label>
+          <TagsInput
+            v-model:selectedItems="exporting.categories"
+            element-id="exportCategories"
+            :existing-tags="categoryTags"
+            :typeahead="true"
+            :typeahead-activation-threshold="0"
+          />
         </div>
-      </div>
-    </div>
+        <div>
+          <input
+            v-model="exporting.with_empty_images"
+            type="checkbox"
+            class="form-check-input"
+          >
+          <label class="form-check-label">export with not annotated images</label>
+        </div>
+      </form>
+      <template #footer>
+        <button
+          type="button"
+          class="btn btn-primary"
+          @click="exportCOCO"
+        >
+          Export
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Close
+        </button>
+      </template>
+    </BaseModal>
   </div>
 </template>
 
@@ -653,10 +586,9 @@ import PanelString from "@/components/PanelInputString";
 import PanelToggle from "@/components/PanelToggle";
 import PanelDropdown from "@/components/PanelInputDropdown";
 import TagsInput from "@/components/TagsInput";
+import BaseModal from "@/components/BaseModal";
 
-import { Modal } from "bootstrap";
-
-import { getCurrentInstance, ref, computed, watch, onUnmounted, onMounted } from 'vue';
+import { getCurrentInstance, ref, computed, watch, onUnmounted, onMounted, useTemplateRef } from 'vue';
 
 import useAxiosRequest from "@/composables/axiosRequest";
 import usePaginatedList from "@/composables/usePaginatedList";
@@ -676,8 +608,8 @@ const { identifier } = defineProps({
 });
 
 // modals
-let cocoImportModal = null;
-let cocoExportModal = null;
+const cocoImport = useTemplateRef('cocoImport');
+const cocoExport = useTemplateRef('cocoExport');
 
 const generateLimit = ref(100);
 const categories = ref([]);
@@ -850,13 +782,11 @@ const exportModal = () => {
     router.push({ path: "/tasks", query: { id: exporting.value.id } });
     return;
   }
-  // $("#exportDataset").modal("show");
-  cocoExportModal.show();
+  cocoExport.value.showModal();
 };
 
 const exportCOCO = () => {
-  // $("#exportDataset").modal("hide");
-  cocoExportModal.hide();
+  cocoExport.value.hideModal();
 
   withProcess("Exporting COCO", () =>
     Dataset.exportingCOCO(
@@ -883,8 +813,7 @@ const importModal = () => {
     return;
   }
 
-  // $("#cocoUpload").modal("show");
-  cocoImportModal.show();
+  cocoImport.value.showModal();
 };
 
 const importCOCO = () => {
@@ -1075,12 +1004,6 @@ onMounted(() => {
       if (lorder !== null) order.value = lorder;
       dataset.value.id = parseInt(identifier);
       updatePage();
-
-      const importTag = document.getElementById("cocoUpload");
-      cocoImportModal = new Modal(importTag, { });
-
-      const exportTag = document.getElementById("exportDataset");
-      cocoExportModal = new Modal(exportTag, { });
 
       getCurrentInstance().ctx.sockets.subscribe('taskProgress', onTaskProgress);
       getCurrentInstance().ctx.sockets.subscribe('annotating', onAnnotating);

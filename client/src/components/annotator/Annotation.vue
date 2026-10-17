@@ -107,153 +107,110 @@
       </li>
     </ul>
 
-    <div
+    <BaseModal
       :id="'keypointSettings' + annotation.id"
-      class="modal fade"
-      tabindex="-1"
-      role="dialog"
+      :title="getKeypointLabel(currentKeypoint)"
     >
-      <div
-        class="modal-dialog"
-        role="document"
-      >
-        <div class="modal-content">
-          <div class="modal-header justify-content-between">
-            <h5 class="modal-title">
-              {{ getKeypointLabel(currentKeypoint) }}
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
+      <form>
+        <div class="form-group row">
+          <label class="col-sm-3 col-form-label">Visibility</label>
+          <div class="col-sm-8">
+            <select
+              v-model="keypoint.visibility"
+              class="form-control"
             >
-            </button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Visibility</label>
-                <div class="col-sm-8">
-                  <select
-                    v-model="keypoint.visibility"
-                    class="form-control"
-                  >
-                    <option
-                      v-for="(desc, label) in visibilityOptions"
-                      :key="label"
-                      :value="label"
-                      :selected="keypoint.visibility == label"
-                    >
-                      {{ desc }}
-                    </option>
-                  </select>
-                </div>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
+              <option
+                v-for="(desc, label) in visibilityOptions"
+                :key="label"
+                :value="label"
+                :selected="keypoint.visibility == label"
+              >
+                {{ desc }}
+              </option>
+            </select>
           </div>
         </div>
-      </div>
-    </div>
+      </form>
+      <template #footer>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Close
+        </button>
+      </template>
+    </BaseModal>
 
-    <div
+    <BaseModal
       :id="'annotationSettings' + annotation.id"
-      class="modal fade"
-      tabindex="-1"
-      role="dialog"
+      @hidden="onAnnotationSettingsHidden"
     >
-      <div
-        class="modal-dialog"
-        role="document"
-      >
-        <div class="modal-content">
-          <div class="modal-header justify-content-between">
-            <h5 class="modal-title">
-              {{ index + 1 }}
-              <i style="color: darkgray">(id: {{ annotation.id }})</i>
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
+      <template #title>
+        {{ index + 1 }}
+        <i style="color: darkgray">(id: {{ annotation.id }})</i>
+      </template>
+      <form>
+        <div class="form-group row">
+          <label class="col-sm-3 col-form-label">Color</label>
+          <div class="col-sm-8">
+            <input
+              v-model="color"
+              type="color"
+              class="form-control"
             >
-            </button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Color</label>
-                <div class="col-sm-8">
-                  <input
-                    v-model="color"
-                    type="color"
-                    class="form-control"
-                  >
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Name</label>
-                <div class="col-sm-8">
-                  <input
-                    v-model="name"
-                    class="form-control"
-                  >
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Category</label>
-                <div class="col-sm-8">
-                  <select
-                    class="form-control"
-                    @change="setCategory"
-                  >
-                    <option
-                      v-for="option in allCategories"
-                      :key="option.text"
-                      :selected="annotation.category_id === option.value"
-                    >
-                      {{ option.text }}
-                    </option>
-                  </select>
-                </div>
-              </div>
-              <MetaData
-                ref="metadata"
-                :metadata="annotation.metadata"
-                exclude="name"
-              />
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-danger"
-              data-bs-dismiss="modal"
-              @click="deleteAnnotation(index)"
-            >
-              Delete
-            </button>
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
           </div>
         </div>
-      </div>
-    </div>
+        <div class="form-group row">
+          <label class="col-sm-3 col-form-label">Name</label>
+          <div class="col-sm-8">
+            <input
+              v-model="name"
+              class="form-control"
+            >
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-3 col-form-label">Category</label>
+          <div class="col-sm-8">
+            <select
+              class="form-control"
+              @change="setCategory"
+            >
+              <option
+                v-for="option in allCategories"
+                :key="option.text"
+                :selected="annotation.category_id === option.value"
+              >
+                {{ option.text }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <MetaData
+          ref="metadata"
+          :metadata="annotation.metadata"
+          exclude="name"
+        />
+      </form>
+      <template #footer>
+        <button
+          type="button"
+          class="btn btn-danger"
+          data-bs-dismiss="modal"
+          @click="deleteAnnotation(index)"
+        >
+          Delete
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Close
+        </button>
+      </template>
+    </BaseModal>
   </div>
 </template>
 
@@ -261,8 +218,7 @@
 import paper from "paper";
 import axios from "axios";
 import simplifyjs from "simplify-js";
-import { Modal } from "bootstrap";
-
+import BaseModal from "@/components/BaseModal";
 import { Keypoint, Keypoints, VisibilityOptions } from "@/libs/keypoints";
 import UndoAction from "@/undo";
 
@@ -350,8 +306,8 @@ const session = ref({
 });
 const visibilityOptions = ref(VisibilityOptions);
 
-let annotationSettingsModal = null;
-let keypointSettingsModal = null;
+const annotationSettings = useTemplateRef('annotationSettings');
+const keypointSettings = useTemplateRef('keypointSettings');
 
 const cleanCompoundPath = () => {
     if (compoundPath.value !== null) {
@@ -427,7 +383,15 @@ const createNewCompoundPath = () => {
 
 const handleDoubleClick = () => {
   if (toolStore.activeTool !== 'Select') return;
-  annotationSettingsModal.show();
+  annotationSettings.value.showModal();
+};
+
+// Closing the settings resets the keypoint being edited and the shared
+// category panel state (previously wired with a raw 'hidden.bs.modal'
+// listener on the modal element).
+const onAnnotationSettingsHidden = () => {
+  currentKeypoint.value = null;
+  resetCategorySettings();
 };
 
 const initializeKeypoints = () => {
@@ -747,7 +711,7 @@ const handleKeypointDoubleClick = (event) => {
   keypoint.value.tag = indexLabel === -1 ? [] : [indexLabel.toString()];
   keypoint.value.visibility = currentKeypoint.value.visibility;
 
-  keypointSettingsModal.show();
+  keypointSettings.value.showModal();
 };
 
 const handleKeypointMouseDrag = (event) => {
@@ -846,7 +810,7 @@ const setCategory = (event) => {
         oldCategory,
         newCategoryName
       );
-      annotationSettingsModal.hide();
+      annotationSettings.value.hideModal();
 };
 
 
@@ -1182,27 +1146,11 @@ const onAnnotation = (data) => {
 onMounted( () => {
     initAnnotation();
 
-    const keypointTag = document.getElementById(`keypointSettings${annotation.id}`);
-    keypointSettingsModal = new Modal(keypointTag, { });
-
-    const modalTag = document.getElementById(`annotationSettings${annotation.id}`);
-    annotationSettingsModal = new Modal(modalTag, { });
-
-    // seem's to not work. should probably trigger category resetCategorySettings on @hidden when editing an annotation
-    // maybe we should directly invoke method?
-    modalTag.addEventListener('hidden.bs.modal', () => {
-        currentKeypoint.value = null;
-        resetCategorySettings();
-    });
-
     getCurrentInstance().ctx.sockets.subscribe('annotation', onAnnotation);
 });
 
 onUnmounted(() => {
     getCurrentInstance().ctx.sockets.unsubscribe('annotation');
-
-    annotationSettingsModal.hide();
-    keypointSettingsModal.hide();
 });
 
 defineExpose({annotation, keypoint, notUsedKeypointLabels, onAnnotationKeypointClick,

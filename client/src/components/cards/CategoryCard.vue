@@ -67,97 +67,74 @@
       </div>
     </div>
 
-    <div
+    <BaseModal
       :id="'categoryEdit' + category.id"
-      ref="category_settings"
-      class="modal fade"
-      role="dialog"
+      :title="'Category: ' + category.name"
       @hidden="resetCategorySettings"
     >
-      <div
-        class="modal-dialog"
-        role="document"
-      >
-        <div class="modal-content">
-          <div class="modal-header justify-content-between">
-            <h5 class="modal-title">
-              Category: {{ category.name }}
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            >
-            </button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="form-group">
-                <label>Name</label>
-                <input
-                  type="text"
-                  :value="name"
-                  required="true"
-                  class="form-control"
-                  :class="{ 'is-invalid': name.length === 0 }"
-                  @input="name = $event.target.value"
-                >
-              </div>
+      <form>
+        <div class="form-group">
+          <label>Name</label>
+          <input
+            type="text"
+            :value="name"
+            required="true"
+            class="form-control"
+            :class="{ 'is-invalid': name.length === 0 }"
+            @input="name = $event.target.value"
+          >
+        </div>
 
-              <div class="form-group">
-                <label>Supercategory</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  :value="category.supercategory"
-                  @input="supercategory = $event.target.value"
-                >
-              </div>
+        <div class="form-group">
+          <label>Supercategory</label>
+          <input
+            type="text"
+            class="form-control"
+            :value="category.supercategory"
+            @input="supercategory = $event.target.value"
+          >
+        </div>
 
-              <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Color</label>
-                <div class="col-sm-9">
-                  <input
-                    v-model="color"
-                    type="color"
-                    class="form-control"
-                  >
-                </div>
-              </div>
-
-              <div class="form-group">
-                <KeypointsDefinition
-                  ref="keypoints"
-                  v-model:keypoints-def="keypoint"
-                  :element-id="`keypoints-${category.id}`"
-                  placeholder="Add a keypoint"
-                />
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-success"
-              :disabled="!isFormValid"
-              :class="{ disabled: !isFormValid }"
-              data-bs-dismiss="modal"
-              @click="onUpdateClick"
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label">Color</label>
+          <div class="col-sm-9">
+            <input
+              v-model="color"
+              type="color"
+              class="form-control"
             >
-              Update
-            </button>
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
           </div>
         </div>
-      </div>
-    </div>
+
+        <div class="form-group">
+          <KeypointsDefinition
+            ref="keypoints"
+            v-model:keypoints-def="keypoint"
+            :element-id="`keypoints-${category.id}`"
+            placeholder="Add a keypoint"
+          />
+        </div>
+      </form>
+      <template #footer>
+        <button
+          type="button"
+          class="btn btn-success"
+          :disabled="!isFormValid"
+          :class="{ disabled: !isFormValid }"
+          data-bs-dismiss="modal"
+          @click="onUpdateClick"
+        >
+          Update
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Close
+        </button>
+      </template>
+    </BaseModal>
   </div>
 </template>
 
@@ -167,6 +144,7 @@ import { ref, toRefs, reactive, onMounted, computed, useTemplateRef} from "vue";
 
 import axios from "axios";
 import KeypointsDefinition from "@/components/KeypointsDefinition";
+import BaseModal from "@/components/BaseModal";
 import useAxiosRequest from "@/composables/axiosRequest";
 
 import { useAuthStore } from "@/store/user";

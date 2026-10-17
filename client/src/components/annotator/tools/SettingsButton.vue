@@ -10,120 +10,89 @@
 
     <br>
     <!-- Modal -->
-    <div
+    <BaseModal
       id="settings"
-      class="modal fade"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="settingsLabel"
-      aria-hidden="true"
+      title="Image Settings"
     >
-      <div
-        class="modal-dialog"
-        role="document"
-      >
-        <div class="modal-content">
-          <div class="modal-header justify-content-between">
-            <h5
-              id="settingsLabel"
-              class="modal-title"
-            >
-              Image Settings
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            >
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="form-group row">
-              <label class="col-sm-2 col-form-label">Simplify</label>
-              <div class="col-sm-9">
-                <input
-                  v-model.number="$parent.simplify"
-                  type="number"
-                  class="form-control"
-                >
-              </div>
-            </div>
-
-            <div class="form-group row">
-              <label class="col-sm-2 col-form-label">Annotate API</label>
-              <div class="col-sm-9">
-                <input
-                  v-model.number="$parent.dataset.annotate_url"
-                  type="string"
-                  class="form-control"
-                >
-              </div>
-            </div>
-
-            <MetaData
-              ref="metadata"
-              :metadata="metadata"
-            />
-
-            <p style="margin: 30px 0 0 0">
-              Keyboard Shortcuts
-            </p>
-
-            <div class="row">
-              <div class="col-sm">
-                <p class="subtitle">
-                  Operation
-                </p>
-              </div>
-              <div class="col-sm">
-                <p class="subtitle">
-                  Shortcut
-                </p>
-              </div>
-            </div>
-
-            <ul
-              class="list-group"
-              style="height: 50%"
-            >
-              <CustomShortcut
-                v-for="(command, index) in commands"
-                :key="index"
-                ref="shortcuts"
-                :shortcut="command"
-              />
-            </ul>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-          </div>
+      <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Simplify</label>
+        <div class="col-sm-9">
+          <input
+            v-model.number="$parent.simplify"
+            type="number"
+            class="form-control"
+          >
         </div>
       </div>
-    </div>
+
+      <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Annotate API</label>
+        <div class="col-sm-9">
+          <input
+            v-model.number="$parent.dataset.annotate_url"
+            type="string"
+            class="form-control"
+          >
+        </div>
+      </div>
+
+      <MetaData
+        ref="metadata"
+        :metadata="metadata"
+      />
+
+      <p style="margin: 30px 0 0 0">
+        Keyboard Shortcuts
+      </p>
+
+      <div class="row">
+        <div class="col-sm">
+          <p class="subtitle">
+            Operation
+          </p>
+        </div>
+        <div class="col-sm">
+          <p class="subtitle">
+            Shortcut
+          </p>
+        </div>
+      </div>
+
+      <ul
+        class="list-group"
+        style="height: 50%"
+      >
+        <CustomShortcut
+          v-for="(command, index) in commands"
+          :key="index"
+          ref="shortcuts"
+          :shortcut="command"
+        />
+      </ul>
+      <template #footer>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Close
+        </button>
+      </template>
+    </BaseModal>
   </div>
 </template>
 
 <script setup>
-import { Modal } from "bootstrap";
-
 import MetaData from "@/components/MetaData.vue";
 import CustomShortcut from "@/components/annotator/CustomShortcut.vue";
-import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
+import BaseModal from "@/components/BaseModal";
+import { ref, useTemplateRef } from 'vue';
 
 const metadata = defineModel('metadata', { type: Object, required: true });
 const commands = defineModel('commands', { type: Array, required: true });
 
 const name = ref("Image Settings");
 const shortcuts = useTemplateRef('shortcuts');
-
-let settingsModal = null;
 
 const exportMetadata = () => {
     // return props.$refs.metadata.export();
@@ -150,15 +119,6 @@ const exportSettings = () => {
       });
       return data;
 };
-
-onMounted( () => {
-    const settingsTag = document.getElementById('settings');
-    settingsModal = new Modal(settingsTag, { });
-});
-
-onUnmounted(() => {
-    settingsModal.hide();
-});
 
 defineExpose({exportSettings, exportMetadata, setPreferences});
 
