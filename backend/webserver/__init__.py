@@ -105,12 +105,19 @@ def proxy_request(path):
     json_data=None
     data=None
     image=None
-    
+
     print('try to proxy', flush=True)
+
+    # Reject path traversal / unexpected segments so the proxy cannot be used
+    # to reach internal endpoints outside of /api/model/<path>
+    normalized_path = os.path.normpath('/' + path).lstrip('/')
+    if path != normalized_path or normalized_path.startswith('..') or normalized_path.split('/')[0] in ('..', '.'):
+        return jsonify({'error': 'invalid path'}), 400
+
     target_proxy =  os.getenv('TARGET_PROXY', 'http://annotator_ia:6000')
 
     # Prepare the URL for the target server using the extracted host, port, and path
-    target_url = f'{target_proxy}/api/model/{path}'
+    target_url = f'{target_proxy}/api/model/{normalized_path}'
 
     print('proxy target url:', target_url, request.method, flush=True)
 
