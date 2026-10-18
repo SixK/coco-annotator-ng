@@ -110,6 +110,7 @@
     <BaseModal
       :id="'keypointSettings' + annotation.id"
       :title="getKeypointLabel(currentKeypoint)"
+      @hidden="onKeypointSettingsHidden"
     >
       <form>
         <div class="form-group row">
@@ -384,6 +385,10 @@ const createNewCompoundPath = () => {
 const handleDoubleClick = () => {
   if (toolStore.activeTool !== 'Select') return;
   annotationSettings.value.showModal();
+};
+
+const onKeypointSettingsHidden = () => {
+  currentKeypoint.value = null;
 };
 
 // Closing the settings resets the keypoint being edited and the shared
