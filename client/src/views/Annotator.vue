@@ -282,10 +282,6 @@ const { save } = useDataHandling(image, categories, dataset,
                                   categorylist, toolspanel,
                                   settings, procStore, mode, current, refsForTemplate.zoom);
 
-const getHover = () => {
-    return hover.value;
-};
-
 const handleFetchError = () => {
   axiosRequestError(
     "Could not find requested image",
@@ -331,12 +327,10 @@ const getCategoryByIndex = (index) => {
 }
 
 const {
-    activateTools,
     currentKeypoint,
     currentCategoryFromList,
     currentAnnotationFromList,
     uniteCurrentAnnotation,
-    subtractCurrentAnnotation,
     getCurrentCategory,
     getCurrentAnnotation,
     currentAnnotationLength,
@@ -477,14 +471,13 @@ const onRemoveAnnotation = (catIndex, annIndex) => {
 };
 
 const ctx = {
- setCursor, updateCurrentAnnotation, save, getData, activateTools, current, 
+ setCursor, updateCurrentAnnotation, save, getData, current, 
  uniteCurrentAnnotation, getCurrentAnnotation, getCurrentCategory, getImageRaster, 
- getCategoryByIndex, getPaper, getHover, getImageId, addAnnotation, showAll, hideAll, fit, scrollToElement,
+ getPaper, getImageId, addAnnotation, showAll, hideAll, fit, scrollToElement,
  updateAnnotationCategory,
 }
 
 provide('annotator', ctx)
-provide('imageRaster', image.value.raster);
 
 const {commands, undo, annotator} = useShortcuts(moveUp, moveDown, stepIn, stepOut, 
                                                                                                       createAnnotation, deleteAnnotation,

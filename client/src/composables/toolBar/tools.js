@@ -1,4 +1,4 @@
-import { ref, watch, onMounted, reactive,computed, inject, watchEffect } from 'vue';
+import { ref, watch, onMounted, shallowReactive,computed, inject, watchEffect } from 'vue';
 import paper from 'paper';
 
 import { useToolStore } from '@/store/toolStore';
@@ -8,7 +8,7 @@ export  function useTools() {
 
   const { setCursor,  current } = inject('annotator');
 
-  const state = reactive({
+  const state = shallowReactive({
       isActive: false,
       isDisabled: true,
       tool: null,

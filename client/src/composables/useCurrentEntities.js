@@ -13,10 +13,6 @@ export default function useCurrentEntities(current, getCategoryByIndex) {
     currentAnnotationFromList.value.unite(compound, simplify, undoable, isBBox);
   };
 
-  const subtractCurrentAnnotation = (compound, simplify = true, undoable = true) => {
-    if (currentCategoryFromList.value == null) return;
-    currentAnnotationFromList.value.subtract(compound, simplify, undoable);
-  };
 
 
   const getCurrentCategory = () => {
@@ -63,17 +59,11 @@ export default function useCurrentEntities(current, getCategoryByIndex) {
     return currentCategoryFromList.value.category.annotations.length||0;
   });
 
-  const activateTools = computed(() => {
-    return current.value.annotation !== -1;
-  });
-
   return {
-    activateTools,
     currentKeypoint,
     currentCategoryFromList,
     currentAnnotationFromList,
     uniteCurrentAnnotation,
-    subtractCurrentAnnotation,
     getCurrentCategory,
     getCurrentAnnotation,
     currentAnnotationLength,

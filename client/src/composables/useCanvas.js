@@ -1,13 +1,12 @@
 // composables/useCanvas.js
 
-import { ref } from 'vue';
+import { ref, shallowRef } from 'vue';
 import paper from 'paper';
 import { useProcess } from "./useProcess";
 
 export default function useCanvas(image, current, procStore) {
-  const canvas = ref(null);
   const zoomLevel = ref(0.2);
-  const imageRaster = ref(null);
+  const imageRaster = shallowRef(null);
 
   const { withProcess } = useProcess(procStore);
 
