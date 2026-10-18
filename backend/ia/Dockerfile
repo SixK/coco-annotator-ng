@@ -79,8 +79,11 @@ RUN if [ "$SAM" = "1" ]; then \
     fi
 
 # RUN pip install zim_anything
+# onnxruntime must match Pytorch and Cuda version see matching tables here
+# https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html
 RUN if [ "$ZIM" = "1" ]; then \
              apt update && apt install libcudnn9-cuda-12 && \
+             pip install onnxruntime-gpu==1.20.0 && \
              pip --no-cache-dir install zim_anything easydict; \
     fi
 
