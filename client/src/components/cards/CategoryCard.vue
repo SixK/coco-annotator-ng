@@ -18,7 +18,7 @@
         </span>
 
         <i
-          :id="'dropdownCategory' + category.id"
+          :id="dropdownId"
           class="card-text fa fa-ellipsis-v fa-x icon-more"
           data-bs-toggle="dropdown"
           aria-haspopup="true"
@@ -40,7 +40,7 @@
 
         <div
           class="dropdown-menu"
-          :aria-labelledby="'dropdownCategory' + category.id"
+          :aria-labelledby="dropdownId"
         >
           <a
             class="dropdown-item"
@@ -52,7 +52,7 @@
           <button
             class="dropdown-item"
             data-bs-toggle="modal"
-            :data-bs-target="'#categoryEdit' + category.id"
+            :data-bs-target="'#' + editId"
           >
             Edit
           </button>
@@ -68,7 +68,7 @@
     </div>
 
     <BaseModal
-      :id="'categoryEdit' + category.id"
+      :id="editId"
       :title="'Category: ' + category.name"
       @hidden="resetCategorySettings"
     >
@@ -161,6 +161,9 @@ const { category } = defineProps({
     required: true,
   },
 });
+
+const dropdownId = computed(() => 'dropdownCategory' + category.id);
+const editId = computed(() => 'categoryEdit' + category.id);
 
 const state = reactive({
   group: null,

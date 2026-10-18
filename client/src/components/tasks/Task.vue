@@ -1,6 +1,6 @@
 <template>
   <div
-    :id="'task-' + task.id"
+    :id="taskId"
     class="card text-left"
     :style="{ 'background-color': highlight ? 'lightgreen' : 'white' }"
   >
@@ -71,6 +71,8 @@ import { getCurrentInstance, ref, computed, watch, inject, onMounted, onUnmounte
 const tasksUpdatePage = inject('tasksUpdatePage');
 
 const task = defineModel('task', { type: Object, required: true });
+
+const taskId = computed(() => 'task-' + task.value.id);
 
 
 const logs = ref(["Loading logs"]);
@@ -163,7 +165,7 @@ onMounted( () => {
         if (show) {
           setTimeout(() => {
             highlight.value = true;
-            let el = document.querySelector('#task-' + task.value.id);
+            let el = document.querySelector('#' + taskId.value);
             if (el) {
                 el.scrollIntoView({
                   behavior: 'smooth',

@@ -21,7 +21,7 @@
         </span>
 
         <i
-          :id="'dropdownDataset' + dataset.id"
+          :id="dropdownId"
           class="card-text fa fa-ellipsis-v fa-x icon-more"
           data-bs-toggle="dropdown"
           aria-haspopup="true"
@@ -59,12 +59,12 @@
 
         <div
           class="dropdown-menu"
-          :aria-labelledby="'dropdownDataset' + dataset.id"
+          :aria-labelledby="dropdownId"
         >
           <button
             class="dropdown-item"
             data-bs-toggle="modal"
-            :data-bs-target="'#datasetEdit' + dataset.id"
+            :data-bs-target="'#' + editId"
           >
             Edit
           </button>
@@ -72,7 +72,7 @@
             v-if="dataset.permissions.owner"
             class="dropdown-item"
             data-bs-toggle="modal"
-            :data-bs-target="'#datasetShare' + dataset.id"
+            :data-bs-target="'#' + shareId"
           >
             Share
           </button>
@@ -104,7 +104,7 @@
 
     <!-- Edit Dataset -->
     <BaseModal
-      :id="'datasetEdit' + dataset.id"
+      :id="editId"
       :title="dataset.name"
     >
       <form>
@@ -148,7 +148,7 @@
 
     <!-- Share Dataset -->
     <BaseModal
-      :id="'datasetShare' + dataset.id"
+      :id="shareId"
       :title="dataset.name"
     >
       <form>
@@ -209,6 +209,10 @@ const getUsers = inject('getUsers');
 
 const dataset = defineModel('dataset', { type: Object, required: true });
 const categories = defineModel('categories', { type: Array, required: true });
+
+const dropdownId = computed(() => 'dropdownDataset' + dataset.value.id);
+const editId = computed(() => 'datasetEdit' + dataset.value.id);
+const shareId = computed(() => 'datasetShare' + dataset.value.id);
 
 const imageError = ref(false);
 const selectedCategories = ref([]);

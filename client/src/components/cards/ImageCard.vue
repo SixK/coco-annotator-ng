@@ -43,7 +43,7 @@
           </span>
 
           <i
-            :id="'dropdownImage' + image.id"
+            :id="dropdownId"
             class="card-text fa fa-ellipsis-v fa-x icon-more"
             data-bs-toggle="dropdown"
             aria-haspopup="true"
@@ -53,7 +53,7 @@
 
           <div
             class="dropdown-menu"
-            :aria-labelledby="'dropdownImage' + image.id"
+            :aria-labelledby="dropdownId"
             style="min-width: fit-content"
           >
             <button
@@ -122,6 +122,8 @@ const router = useRouter();
 const emit = defineEmits(['updatePage']);
 
 const image = defineModel('image', { type: Object, required: true });
+
+const dropdownId = computed(() => 'dropdownImage' + image.value.id);
 
 const hover = ref(false);
 const showAnnotations = ref(true);
