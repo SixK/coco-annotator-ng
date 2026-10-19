@@ -129,6 +129,22 @@ def proxy_request(path):
         # Handle form data request
         data = request.form.get('data')
         image = request.files.get('image')
+
+        if image is not None:
+            # Only allow genuine, size-limited images to be forwarded to
+            # internal AI services so arbitrary executables/scripts cannot
+            # be uploaded through this proxy.
+            allowed_mimetypes = {'image/jpeg', 'image/png', 'image/gif', 'image/bmp', 'image/webp'}
+            allowed_extensions = ('.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp')
+            filename = (image.filename or '').lower()
+            if image.mimetype not in allowed_mimetypes or not filename.endswith(allowed_extensions):
+                return jsonify({'error': 'unsupported image type'}), 400
+
+            image.stream.seek(0, os.SEEK_END)
+            image_size = image.stream.tell()
+            image.stream.seek(0)
+            if image_size > 10 * 1024 * 1024:
+                return jsonify({'error': 'image too large'}), 400
     
     # Forward the request to the target server
     if request.method == 'GET':
