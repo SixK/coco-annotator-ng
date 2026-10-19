@@ -108,6 +108,7 @@
     </ul>
 
     <BaseModal
+      ref="keypointSettings"
       :id="'keypointSettings' + annotation.id"
       :title="getKeypointLabel(currentKeypoint)"
       @hidden="onKeypointSettingsHidden"
@@ -144,6 +145,7 @@
     </BaseModal>
 
     <BaseModal
+      ref="annotationSettings"
       :id="'annotationSettings' + annotation.id"
       @hidden="onAnnotationSettingsHidden"
     >
