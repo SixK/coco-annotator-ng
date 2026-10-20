@@ -66,7 +66,8 @@ const hitOptions = ref({
   fill: false,
   tolerance: 10,
   match: (hit) => {
-    return !hit.item.hasOwnProperty("indicator")
+    if (hit.item instanceof paper.Group) return false;
+    return !hit.item.hasOwnProperty("indicator");
   },
 });
 
