@@ -29,41 +29,21 @@
     "vue3-touch-events": "^4.2.0"
   },
   "devDependencies": {
-    "@babel/core": "8.0.1",
-    "@babel/eslint-parser": "^8.0.1",
     "@vitejs/plugin-vue": "^6.0.8",
     "@vue/test-utils": "^2.5.0",
-    "babel-jest": "^30.5.1",
     "eslint": "^10.9.1",
     "eslint-plugin-vue": "^10.10.0",
     "vite": "^8.2.2",
     "vue-eslint-parser": "^10.4.1"
   },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "browser": true,
-      "es6": true,
-      "node": true,
-      "jest": true
-    },
-    "extends": [
-      "plugin:vue/strongly-recommended",
-      "plugin:prettier/recommended",
-      "@vue/prettier",
-      "prettier"
-    ],
-    "parserOptions": {
-      "parser": "@babel/eslint-parser"
-    },
-    "rules": {
-      "vue/multi-word-component-names": 0,
-      "vue/no-v-model-argument": 0
-    }
-  },
   "browserslist": [
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "overrides": {
+    "vue-eslint-parser": {
+      "eslint-scope": "^9.1.2"
+    }
+  }
 }
