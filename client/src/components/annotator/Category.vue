@@ -379,7 +379,7 @@ const createAnnotation = () => {
           annotation: response.data
         });
 
-        category.annotations.push(response.data);
+        emit('add-annotation', index, response.data);
 
         selectedAnnotation.value = annotationId;
         nextTick(() => {

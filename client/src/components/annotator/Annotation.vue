@@ -897,7 +897,9 @@ const exportSessions = (annotationData) => {
 
 const emitModify = () => {
   const uuid = Math.random().toString(36).replace(/[^a-z]+/g, "");
-  annotation.paper_object = compoundPath.value.exportJSON({ asString: false, precision: 1 });
+  emit('patch-annotation', index, {
+    paper_object: compoundPath.value.exportJSON({ asString: false, precision: 1 }),
+  });
   socket.io.emit("annotation", {
     uuid: uuid,
     action: "modify",
