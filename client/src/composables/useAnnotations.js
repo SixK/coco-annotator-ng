@@ -79,13 +79,18 @@ export default function useAnnotations(options = {}) {
     if (!newCategory || !annotation) return;
 
     try {
-      // Delete from old category
-      currentAnnotationFromList.value.deleteAnnot(annotation.id);
-      
-      // Update via API
+      // Update via API FIRST: nothing local is touched before the server accepted,
+      // otherwise a failure leaves the canvas (paths already cleared) and the data
+      // (annotation still listed) out of sync.
       const response = await Annotations.update(annotation.id, { 
         category_id: newCategory.id 
       });
+
+      // Delete from old category: clears the paper.js paths of the annotation.
+      // Must run BEFORE the array rewrite below — that rewrite unmounts the
+      // Annotation component, and its onUnmounted does not clean paper.js
+      // (only unsubscribes the socket) → orphan paths. Order 1-2-3 is required.
+      currentAnnotationFromList.value.deleteAnnot(annotation.id);
       
       // Update local state
       const newAnnotation = {
