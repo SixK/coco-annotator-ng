@@ -36,6 +36,8 @@
       <ModeButton v-model:mode="mode" />
       <SettingsButton
         ref="settings"
+        v-model:simplify="simplify"
+        v-model:annotate-url="dataset.annotate_url"
         :metadata="image.metadata"
         :commands="commands"
       />

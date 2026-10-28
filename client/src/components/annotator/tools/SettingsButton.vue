@@ -18,7 +18,7 @@
         <label class="col-sm-2 col-form-label">Simplify</label>
         <div class="col-sm-9">
           <input
-            v-model.number="$parent.simplify"
+            v-model.number="simplify"
             type="number"
             class="form-control"
           >
@@ -29,7 +29,7 @@
         <label class="col-sm-2 col-form-label">Annotate API</label>
         <div class="col-sm-9">
           <input
-            v-model.number="$parent.dataset.annotate_url"
+            v-model.number="annotateUrl"
             type="string"
             class="form-control"
           >
@@ -90,6 +90,8 @@ import { ref, useTemplateRef } from 'vue';
 
 const metadata = defineModel('metadata', { type: Object, required: true });
 const commands = defineModel('commands', { type: Array, required: true });
+const simplify = defineModel('simplify', { type: null });
+const annotateUrl = defineModel('annotateUrl', { type: null });
 
 const name = ref("Image Settings");
 const shortcuts = useTemplateRef('shortcuts');
