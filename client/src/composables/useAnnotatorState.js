@@ -1,5 +1,26 @@
-import { ref, computed, reactive } from 'vue';
+import { ref, computed, reactive, watch } from 'vue';
 import { useAuthStore } from '@/store/user';
+
+const SIMPLIFY_KEY = 'annotator/simplify';
+
+const readSimplify = () => {
+  try {
+    const raw = localStorage.getItem(SIMPLIFY_KEY);
+    if (raw === null || raw.trim() === '') return 1;
+    const value = Number(raw);
+    return Number.isFinite(value) ? value : 1;
+  } catch {
+    return 1;
+  }
+};
+
+const persistSimplify = (value) => {
+  if (typeof value !== 'number' || !Number.isFinite(value)) return;
+  try {
+    localStorage.setItem(SIMPLIFY_KEY, String(value));
+  } catch {
+  }
+};
 
 export default function useAnnotatorState(image) {
   // stores
@@ -20,7 +41,8 @@ export default function useAnnotatorState(image) {
   const annotating = ref([]);
   const search = ref('');
   const shapeOpacity = ref(0.6);
-  const simplify = ref(1);
+  const simplify = ref(readSimplify());
+  watch(simplify, persistSimplify);
   const cursor = ref('move');
 
   // zoom is the only ref owned here; every template ref is declared in

@@ -90,7 +90,7 @@ import { ref, useTemplateRef } from 'vue';
 
 const metadata = defineModel('metadata', { type: Object, required: true });
 const commands = defineModel('commands', { type: Array, required: true });
-const simplify = defineModel('simplify', { type: null });
+const simplify = defineModel('simplify', { type: Number });
 const annotateUrl = defineModel('annotateUrl', { type: null });
 
 const name = ref("Image Settings");
