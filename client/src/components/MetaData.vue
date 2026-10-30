@@ -72,9 +72,8 @@
 
 import { ref, watchEffect, onMounted } from 'vue';
 
-const metadata = defineModel('metadata', { type: Object, required: true });
-
-const { title, keyTitle, valueTitle, exclude } = defineProps({
+const { metadata, title, keyTitle, valueTitle, exclude } = defineProps({
+  metadata: { type: Object, required: true },
   title: { type: String, default: "Metadata" },
   keyTitle: { type: String, default: "Keys" },
   valueTitle: { type: String, default: "Values" },
@@ -120,18 +119,18 @@ const createMetadata = () => {
 };
 
 function loadMetadata() {
-    if (metadata.value != null && metadata.value['metadata'] == null) {
-      for (let key in metadata.value) {
-        if (!Object.prototype.hasOwnProperty.call(metadata.value, key)) {
+    if (metadata != null && metadata['metadata'] == null) {
+      for (let key in metadata) {
+        if (!Object.prototype.hasOwnProperty.call(metadata, key)) {
           continue;
         }
-        if (typeof metadata.value[key] === 'function' 
-               || typeof metadata.value[key] === 'object') {
+        if (typeof metadata[key] === 'function' 
+               || typeof metadata[key] === 'object') {
             continue;
         }
         
         if (key === exclude) continue;
-        let value = metadata.value[key];
+        let value = metadata[key];
         if (value == null) value = '';
         else value = value.toString();
         metadataList.value.push({ key: key, value: value });

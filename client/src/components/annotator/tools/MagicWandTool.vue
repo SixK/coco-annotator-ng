@@ -12,12 +12,14 @@ import { useTools } from "@/composables/toolBar/tools";
 
 const { getCurrentAnnotation } = inject('annotator');
 
-const { width, height } = defineProps({
+const { width, height, imageData } = defineProps({
   width: { type: Number, default: 0 },
   height: { type: Number, default: 0 },
+  imageData: {
+    required: true,
+    validator: prop => typeof prop === "object" || prop === null,
+  },
 });
-const imageData = defineModel('imageData', { required: true, 
-                                                                           validator: prop => typeof prop === "object" || prop === null });
 
 
 const {
@@ -67,10 +69,10 @@ const setPreferences = (pref) => {
  * @returns {paper.CompoundPath} create selection
  */
 const flood = (x, y, thr, rad) => {
-  if (imageData.value == null) return;
+  if (imageData == null) return;
 
   const image = {
-    data: imageData.value.data,
+    data: imageData.data,
     width: width,
     height: height,
     bytes: 4,

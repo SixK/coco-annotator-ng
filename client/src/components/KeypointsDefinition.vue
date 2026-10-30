@@ -144,10 +144,12 @@ const DISTINCT_COLORS = [
 ];
 
 const keypointsDef = defineModel('keypointsDef', { type: Object, required: true });
-const title = defineModel('title', { type: String, default: "Keypoints" });
-const keyTitle = defineModel('keyTitle', { type: String, default: "Label" });
-const valueTitle = defineModel('valueTitle', { type: String, default: "Connects to" });
-const exclude = defineModel('exclude', { type: String, default: "" });
+const { title, keyTitle, valueTitle, exclude } = defineProps({
+  title: { type: String, default: "Keypoints" },
+  keyTitle: { type: String, default: "Label" },
+  valueTitle: { type: String, default: "Connects to" },
+  exclude: { type: String, default: "" },
+});
 
 
 const keypoints = ref([]);
