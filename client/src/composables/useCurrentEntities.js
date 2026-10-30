@@ -56,7 +56,7 @@ export default function useCurrentEntities(current, getCategoryByIndex) {
   });
 
   const currentAnnotationLength = computed(() => {
-    return currentCategoryFromList.value.category.annotations.length||0;
+    return currentCategoryFromList.value?.category?.annotations?.length || 0;
   });
 
   return {
