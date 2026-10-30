@@ -91,7 +91,7 @@
           <span> {{ kp.label }} </span>
         </a>
         <i
-          v-if="kp.visibility !== 0"
+          v-if="kp.placed"
           class="fa fa-gear annotation-icon"
           style="float: right; color: lightgray"
           data-bs-toggle="modal"
@@ -99,7 +99,7 @@
           @click="onAnnotationKeypointSettingsClick(index)"
         />
         <i
-          v-if="kp.visibility !== 0"
+          v-if="kp.placed"
           class="fa fa-trash-o annotation-icon"
           style="float: right; color: lightgray"
           @click="onDeleteKeypointClick(index)"
@@ -645,7 +645,7 @@ const addKeypoint = (point, visibility, label) => {
    console.log('keypoint:', keypoint.value);
 
   // Set default visibility and label if not provided
-  visibility = visibility || parseInt(keypoint.value.next.visibility);
+  visibility = visibility ?? parseInt(keypoint.value.next.visibility);
   label = label || parseInt(keypoint.value.next.label);
 
   if (label == -1 ) label = 1; // fix case adding keypoint without selecting a keypoint first.
@@ -971,6 +971,7 @@ const keypointListView = computed(() =>
   keypointLabels.map((label, i) => ({
     label,
     visibility: getKeypointVisibility(i),
+    placed: isKeypointLabeled(i),
     iconColor: getKeypointIconColor(getKeypointVisibility(i), i),
     backgroundColor: getKeypointBackgroundColor(i),
   }))
