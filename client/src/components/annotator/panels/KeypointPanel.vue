@@ -13,7 +13,6 @@
       v-model:value="visibility"
       name="Visibility"
       :values="visibilityOptions"
-      @update-order="updateOrder"
     />
   </div>
 </template>
@@ -30,12 +29,7 @@ const { getCurrentAnnotation } = inject('annotator');
 const localCurrentAnnotation = computed(() => getCurrentAnnotation());
 
 const visibility = ref(2);
-const label = ref(-1);
 const visibilityOptions = ref(VisibilityOptions);
-
-const updateOrder = (newOrder) => {
-    visibility.value = newOrder;
-};
 
 const keypointLabel = computed(() => {
   const localAnnot = localCurrentAnnotation.value;
