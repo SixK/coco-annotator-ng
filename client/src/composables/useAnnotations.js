@@ -9,7 +9,7 @@ export default function useAnnotations(options = {}) {
     categorylist,
     current,
     axiosRequestError,
-    procStore,
+    // procStore,
     router,
     currentCategoryFromList,
    currentAnnotationFromList,
@@ -42,7 +42,7 @@ export default function useAnnotations(options = {}) {
       });
       
       category.annotations.push(response.data);
-      procStore.setTaskProgress(null); // Reset progress
+      // procStore.setTaskProgress(null); // Reset progress
     } catch (error) {
       axiosRequestError("Failed to create annotation", error.message);
     }

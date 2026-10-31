@@ -372,7 +372,7 @@ const {
         categorylist,
         current,
         axiosRequestError,
-        procStore,
+        // procStore,
         router,
         currentCategoryFromList,
         currentAnnotationFromList,
