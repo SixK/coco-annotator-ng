@@ -74,7 +74,6 @@
                 <th
                   class="text-center"
                   scope="col"
-                  @click="deleteUser(user)"
                 >
                   Delete
                 </th>
