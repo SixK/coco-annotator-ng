@@ -47,13 +47,12 @@ const { shortcut } = defineProps({
   },
 });
 
+const emit = defineEmits(['update-shortcut']);
+
 const uid = useId();
 const keys = computed({
   get: () => shortcut.default,
-  /* eslint-disable-next-line vue/no-mutating-props -- same write as the former
-     toRef(props.shortcut, 'default'); the compiler rejects toRef() on a
-     destructured prop. Replace with an emit in phase 3. */
-  set: (value) => { shortcut.default = value; },
+  set: (value) => { emit('update-shortcut', value); },
 });
 
 const keysDown = ref([]);

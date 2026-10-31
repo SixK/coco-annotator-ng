@@ -67,6 +67,7 @@
           :key="index"
           ref="shortcuts"
           :shortcut="command"
+          @update-shortcut="onShortcutUpdate(command, $event)"
         />
       </ul>
       <template #footer>
@@ -95,6 +96,12 @@ const annotateUrl = defineModel('annotateUrl', { type: null });
 
 const name = ref("Image Settings");
 const shortcuts = useTemplateRef('shortcuts');
+
+const emit = defineEmits(['update-shortcut']);
+
+const onShortcutUpdate = (command, value) => {
+  emit('update-shortcut', command, value);
+};
 
 const exportMetadata = () => {
     // return props.$refs.metadata.export();

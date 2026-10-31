@@ -152,7 +152,7 @@ const authStore = useAuthStore();
 
 const {axiosRequestError, axiosRequestSuccess} = useAxiosRequest();
 
-const emit = defineEmits(['updatePage']);
+const emit = defineEmits(['updatePage', 'patch-category']);
 const keypoints = useTemplateRef('keypoints');
 
 const { category } = defineProps({
@@ -231,17 +231,15 @@ const onUpdateClick = () => {
           'Category successfully updated'
         );
 
-        /* eslint-disable vue/no-mutating-props -- pre-existing behaviour: the edits are
-           mirrored into the shared category object (was hidden behind ref(props.category)).
-           Replace with emitted events in phase 3. */
-        category.name = name.value;
-        category.supercategory = supercategory.value;
-        category.color = color.value;
-        // category.metadata = { ...metadata.value };
-        category.keypoint_edges = [...keypoint.value.edges];
-        category.keypoint_labels = [...keypoint.value.labels];
-        category.keypoint_colors = [...keypoint.value.colors];
-        /* eslint-enable vue/no-mutating-props */
+        emit('patch-category', {
+          name: name.value,
+          color: color.value,
+          supercategory: supercategory.value,
+          // metadata: metadata.value,
+          keypoint_edges: [...keypoint.value.edges],
+          keypoint_labels: [...keypoint.value.labels],
+          keypoint_colors: [...keypoint.value.colors],
+        });
         emit('updatePage');
       } catch (error) {
           console.error('Error updating category:',    error.message);

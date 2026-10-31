@@ -40,6 +40,7 @@
         v-model:annotate-url="dataset.annotate_url"
         :metadata="image.metadata"
         :commands="commands"
+        @update-shortcut="onShortcutUpdate"
       />
 
       <hr>
@@ -457,6 +458,10 @@ onUnmounted(() => {
 const onPatchCategory = (catIndex, patch) => {
   const cat = categories.value[catIndex];
   if (cat) Object.assign(cat, patch);
+};
+
+const onShortcutUpdate = (command, value) => {
+  if (command) command.default = value;
 };
 
 const onPatchAnnotation = (catIndex, annIndex, patch) => {

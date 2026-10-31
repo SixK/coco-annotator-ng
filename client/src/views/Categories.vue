@@ -64,6 +64,7 @@
               v-for="category in categories"
               :key="category.id"
               :category="category"
+              @patch-category="onPatchCategory(category, $event)"
               @update-page="updatePage"
             />
           </div>
@@ -212,6 +213,10 @@ const { page, pages, total, updatePage } = usePaginatedList({
     categories.value = data.categories;
   },
 });
+
+const onPatchCategory = (cat, patch) => {
+  if (cat) Object.assign(cat, patch);
+};
 
 const createCategory = () => {
   if (newCategoryName.value.length < 1) return;
