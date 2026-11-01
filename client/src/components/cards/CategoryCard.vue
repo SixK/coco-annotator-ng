@@ -215,9 +215,9 @@ const resetCategorySettings = () => {
 };
 
 
-const onUpdateClick = () => {
+const onUpdateClick = async () => {
       try {
-        axios.put('/api/category/' + category.id, {
+        await axios.put('/api/category/' + category.id, {
           name: name.value,
           color: color.value,
           supercategory: supercategory.value,
