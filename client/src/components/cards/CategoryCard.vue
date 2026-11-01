@@ -210,8 +210,12 @@ const resetCategorySettings = () => {
     const onCardClick = () => {};
     const onDownloadClick = () => {};
     const onDeleteClick = async () => {
-      await axios.delete("/api/category/" + category.id);
-      emit('updatePage');
+      try {
+        await axios.delete("/api/category/" + category.id);
+        emit('updatePage');
+      } catch (error) {
+        axiosRequestError('Deleting Category', error.response?.data?.message || error.message);
+      }
 };
 
 

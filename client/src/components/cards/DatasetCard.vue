@@ -202,6 +202,9 @@ const { withProcess } = useProcess(proc);
 
 import { fetchAndDownloadJson } from "@/libs/download";
 
+import useAxiosRequest from "@/composables/axiosRequest";
+const { axiosRequestError } = useAxiosRequest();
+
 const router = useRouter();
 const emit = defineEmits(['updatePage']);
 
@@ -263,12 +266,12 @@ const onCocoDownloadClick = () => {
   });
 };
 
-const onDeleteClick = () => {
+const onDeleteClick = async () => {
   try {
-    axios.delete(`/api/dataset/${dataset.value.id}`);
+    await axios.delete(`/api/dataset/${dataset.value.id}`);
     emit('updatePage');
   } catch (error) {
-    console.error(error);
+    axiosRequestError('Deleting Dataset', error.response?.data?.message || error.message);
   }
 };
 

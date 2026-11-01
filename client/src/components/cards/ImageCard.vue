@@ -118,6 +118,9 @@ import { ref, computed} from "vue";
 import { useRouter } from 'vue-router';
 import { downloadURI, fetchAndDownloadJson } from "@/libs/download";
 
+import useAxiosRequest from "@/composables/axiosRequest";
+const { axiosRequestError } = useAxiosRequest();
+
 const router = useRouter();
 const emit = defineEmits(['updatePage']);
 
@@ -164,9 +167,13 @@ const onDownloadSegmentedClick = () => {
   downloadURI("/api/image/segmented/" + image.value.id + "?asAttachment=true", image.value.file_name);
 }
 
-const onDeleteClick = () => {
-  axios.delete(`/api/image/${image.value.id}`);
-  emit('updatePage');
+const onDeleteClick = async () => {
+  try {
+    await axios.delete(`/api/image/${image.value.id}`);
+    emit('updatePage');
+  } catch (error) {
+    axiosRequestError('Deleting Image', error.response?.data?.message || error.message);
+  }
 };
 
 </script>
