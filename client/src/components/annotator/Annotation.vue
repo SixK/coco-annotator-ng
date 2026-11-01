@@ -896,12 +896,12 @@ const exportSessions = (annotationData) => {
 /* end - exportAnnotation */
 
 const emitModify = () => {
-  const uuid = Math.random().toString(36).replace(/[^a-z]+/g, "");
+  uuid.value = Math.random().toString(36).replace(/[^a-z]+/g, "");
   emit('patch-annotation', index, {
     paper_object: compoundPath.value.exportJSON({ asString: false, precision: 1 }),
   });
   socket.io.emit("annotation", {
-    uuid: uuid,
+    uuid: uuid.value,
     action: "modify",
     annotation: annotation
   });
@@ -1167,7 +1167,7 @@ defineExpose({annotation, keypoint, notUsedKeypointLabels, onAnnotationKeypointC
                               unite, createUndoAction, keypoints, keypointLabels,
                               subtract, simplifyPath, exportAnnotation,
                               compoundPath, setColor, isVisible, showKeypoints, 
-                              color, metadata, isEmpty, name, uuid, pervious,
+                              color, metadata, isEmpty, name, pervious,
                               count, currentKeypoint, sessions, session, 
                               addKeypoint, getKeypointVisibility,
                               deleteKeypoint, deleteAnnotation, deleteAnnot});
