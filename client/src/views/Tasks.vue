@@ -48,6 +48,7 @@ const updatePage = () => {
   return withProcess("Loading tasks", () =>
     Tasks.all().then((response) => {
       tasks.value = response.data;
+      total.value =  tasks.value.filter((t) => t.progress < 100).length; 
       if (taskToShow.value !== null) {
         showTask(taskToShow.value);
       }
