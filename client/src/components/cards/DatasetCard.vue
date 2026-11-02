@@ -271,7 +271,7 @@ const onDeleteClick = async () => {
     await axios.delete(`/api/dataset/${dataset.value.id}`);
     emit('updatePage');
   } catch (error) {
-    axiosRequestError('Deleting Dataset', error.response?.data?.message || error.message);
+    axiosRequestError('Deleting Dataset', error);
   }
 };
 

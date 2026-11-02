@@ -87,7 +87,7 @@ export const useAuthStore = defineStore('auth', () => {
     } catch (error) {
       _setError(error);
 
-      axiosRequestError("User Registration", error.response?.data?.message || error.message);
+      axiosRequestError("User Registration", error);
 
       return { success: false, error };
     }
@@ -107,7 +107,7 @@ export const useAuthStore = defineStore('auth', () => {
     } catch (error) {
       _setError(error);
 
-      axiosRequestError("User Login", error.response?.data?.message || error.message);
+      axiosRequestError("User Login", error);
 
       return { success: false, error };
     }
@@ -152,7 +152,7 @@ export const useAuthStore = defineStore('auth', () => {
 
       axiosRequestError(
             "Changing Password",
-            error.response?.data?.message || error.message
+            error
        );
 
       return { success: false, error };

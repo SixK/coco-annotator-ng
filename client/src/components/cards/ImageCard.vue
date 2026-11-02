@@ -172,7 +172,7 @@ const onDeleteClick = async () => {
     await axios.delete(`/api/image/${image.value.id}`);
     emit('updatePage');
   } catch (error) {
-    axiosRequestError('Deleting Image', error.response?.data?.message || error.message);
+    axiosRequestError('Deleting Image', error);
   }
 };
 

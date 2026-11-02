@@ -129,7 +129,7 @@ const copyAnnotations = () => {
   // passing it a callback used to skip the copy entirely. Save first, then copy.
   save()
     .catch((error) => {
-      axiosRequestError('Saving', error.response?.data?.message || error.message);
+      axiosRequestError('Saving', error);
       return false; // stop here: don't copy onto unsaved annotations
     })
     .then((saved) => {
@@ -142,7 +142,7 @@ const copyAnnotations = () => {
       })
         .then(() => getData())
         .catch((error) => {
-          axiosRequestError('Copying Annotations', error.response?.data?.message);
+          axiosRequestError('Copying Annotations', error);
         });
     });
 };

@@ -44,7 +44,7 @@ export default function useAnnotations(options = {}) {
       category.annotations.push(response.data);
       // procStore.setTaskProgress(null); // Reset progress
     } catch (error) {
-      axiosRequestError("Failed to create annotation", error.message);
+      axiosRequestError("Failed to create annotation", error);
     }
   };
 
@@ -107,7 +107,7 @@ export default function useAnnotations(options = {}) {
         newCategory.annotations.push(newAnnotation);
       }
     } catch (error) {
-      axiosRequestError("Failed to update annotation category", error.message);
+      axiosRequestError("Failed to update annotation category", error);
     }
   };
 

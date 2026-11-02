@@ -214,7 +214,7 @@ const resetCategorySettings = () => {
         await axios.delete("/api/category/" + category.id);
         emit('updatePage');
       } catch (error) {
-        axiosRequestError('Deleting Category', error.response?.data?.message || error.message);
+        axiosRequestError('Deleting Category', error);
       }
 };
 
@@ -249,7 +249,7 @@ const onUpdateClick = async () => {
           console.error('Error updating category:',    error.message);
           axiosRequestError(
             'Updating Category',
-            error.message
+            error
           );
           emit('updatePage');
       }
