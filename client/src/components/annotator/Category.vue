@@ -341,11 +341,6 @@ watch(
 });
 */
 
-const show = (index) => {
-  if (search.value.length === 0) return true;
-  return filterFound.value.indexOf(index) > -1;
-};
-
 
 const resetCategorySettings = () => {
   supercategory.value = category.supercategory;
@@ -594,12 +589,8 @@ onUnmounted(() => {
 });
     
 
-defineExpose({category, setColor, getAnnotationFromIndex,
-                              showAnnotations, exportCategory, 
-                              createAnnotation, selectedAnnotation,
-                              isVisible,  isHover, color, supercategory, search,
-                              categoryIsCurrent, addKeypointEdge, removeKeypointEdge,
-                              index, name});
+defineExpose({category, getAnnotationFromIndex, showAnnotations, exportCategory,
+              createAnnotation, isVisible});
 
 const ctx = { addKeypointEdge, removeKeypointEdge, categoryIsCurrent, getCategoryIndex,
                          resetCategorySettings, getShowAnnotations, getAnnotationFromIndex };
