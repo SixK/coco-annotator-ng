@@ -179,7 +179,7 @@
                   <input
                     v-model="registerForm.confirmPassword"
                     :class="{
-                      'is-valid': isValidRegister()
+                      'is-valid': passwordsMatch
                     }"
                     type="password"
                     class="form-control"
@@ -237,30 +237,34 @@ const loginForm = ref({
 });
 
 const handleRegister = async () => {
+  if (!registerValid.value) return;
   const result = await auth.register(registerForm.value);
   if (result.success) {
     router.push({ name: 'datasets' });
   }
 };
 
-const isValidRegister = () => {
+const passwordsMatch = computed(() => {
     return registerForm.value.confirmPassword?.length > 0 &&
-                        registerForm.value.confirmPassword === registerForm.value.password
-}
+                        registerForm.value.confirmPassword === registerForm.value.password;
+});
 
 const handleLogin = async () => {
+  if (!loginValid.value) return;
   const result = await auth.login(loginForm.value);
   if (result.success) {
     router.push({ name: 'datasets' });
   }
 };
 
+const PASSWORD_MIN_LENGTH = 5;
+
 const validUsername = (username) => {
       return /^[0-9a-zA-Z_.-]+$/.test(username);
 };
 
 const validPassword = (password) => {
-      return password.length > 5;
+      return password.length >= PASSWORD_MIN_LENGTH;
 };
 
 const inputUsernameClasses = (username) => {
@@ -273,7 +277,7 @@ const inputUsernameClasses = (username) => {
 };
 
 const inputPasswordClasses = (password) => {
-      const isValid = password.length > 4;
+      const isValid = validPassword(password);
 
       return {
         "is-invalid": !isValid && password.length != 0,
@@ -299,8 +303,8 @@ const isAuthenticatePending = computed(() => {
 
 const registerValid = computed(() => {
     if (!validUsername(registerForm.value.username)) return false;
-    if (registerForm.value.password.length < 5) return false;
-    if (registerForm.value.password !== registerForm.value.confirmPassword) return false;
+    if (!validPassword(registerForm.value.password)) return false;
+    if (!passwordsMatch.value) return false;
     return true;
 });
   
