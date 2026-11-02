@@ -220,6 +220,7 @@ import useAnnotatorMoves from '@/composables/useAnnotatorMoves';
 import useCurrentEntities from '@/composables/useCurrentEntities';
 import useToolPanel from '@/composables/useToolPanel';
 import useAnnotations from '@/composables/useAnnotations';
+import useSocketSubscription from '@/composables/useSocketSubscription';
 
 import { useProcStore } from "@/store/index";
 const procStore = useProcStore();
@@ -425,6 +426,8 @@ const onAnnotating = (data) => {
       }
 };
 
+useSocketSubscription('annotating', onAnnotating);
+
 onBeforeRouteLeave(async (to, from) => {
   current.value.annotation = -1;
   socket.io.emit("annotating", { image_id: image.value.id, active: false });
@@ -446,12 +449,10 @@ onMounted(() => {
 
     console.log('socket:', socket, getCurrentInstance());
     socket.emit("annotating", {image_id: image.value.id, active: true });
-    getCurrentInstance().ctx.sockets.subscribe('annotating', onAnnotating);
 });
 
 onUnmounted(() => {
   socket.emit("annotating", { image_id: image.value.id, active: false });
-  getCurrentInstance().ctx.sockets.unsubscribe('annotating');
 });
 
 

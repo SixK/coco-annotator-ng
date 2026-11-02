@@ -66,7 +66,9 @@
 
 <script setup>
 import Tasks from "@/models/tasks";
-import { getCurrentInstance, ref, computed, watch, inject, onMounted, onUnmounted } from 'vue';
+import { ref, computed, watch, inject, onMounted } from 'vue';
+
+import useSocketSubscription from "@/composables/useSocketSubscription";
 
 const tasksUpdatePage = inject('tasksUpdatePage');
 
@@ -156,9 +158,9 @@ const onTaskProgress = (data) => {
       task.value.errors = data.errors;
 };
 
-onMounted( () => {
-    getCurrentInstance().ctx.sockets.subscribe('taskProgress', onTaskProgress);
+useSocketSubscription('taskProgress', onTaskProgress);
 
+onMounted( () => {
     const show = task.value.show;
     if (show !== null) {
         showLogs.value = show;
@@ -175,10 +177,6 @@ onMounted( () => {
           }, 200);
         }
     }
-});
-
-onUnmounted(() => {
-    getCurrentInstance().ctx.sockets.unsubscribe('taskProgress');
 });
 
 defineExpose({logs, showLogs, highlight, onlyErrors, onlyWarnings});

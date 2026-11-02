@@ -168,8 +168,10 @@ import BaseModal from "@/components/BaseModal";
 
 import { nextTick } from 'vue';
 
-import { getCurrentInstance, provide, inject, watch,  
-                 ref, computed, onMounted, onUnmounted, toRef, onBeforeUpdate, useTemplateRef } from 'vue';
+import { provide, inject, watch,  
+                 ref, computed, onMounted, toRef, onBeforeUpdate, useTemplateRef } from 'vue';
+
+import useSocketSubscription from "@/composables/useSocketSubscription";
 
 const socket = inject('socket');
 
@@ -573,6 +575,7 @@ const onAnnotation = (data) => {
       }
 };
 
+useSocketSubscription('annotation', onAnnotation);
 
 onBeforeUpdate(() => {
       annotationlist.value = [];
@@ -580,14 +583,8 @@ onBeforeUpdate(() => {
 
 onMounted( () => {
     initCategory();
-    getCurrentInstance().ctx.sockets.subscribe('annotation', onAnnotation);
     isMounted.value = true;
 });
-
-onUnmounted(() => {
-    getCurrentInstance().ctx.sockets.unsubscribe('annotation');
-});
-    
 
 defineExpose({category, getAnnotationFromIndex, showAnnotations, exportCategory,
               createAnnotation, isVisible});

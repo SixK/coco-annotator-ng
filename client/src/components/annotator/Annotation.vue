@@ -233,7 +233,9 @@ const toolStore = useToolStore();
 
 import MetaData from "@/components/MetaData";
 
-import { getCurrentInstance, inject, watch, ref, computed, onMounted, onUnmounted, toRef, useTemplateRef } from 'vue';
+import { inject, watch, ref, computed, onMounted, toRef, useTemplateRef } from 'vue';
+
+import useSocketSubscription from "@/composables/useSocketSubscription";
 
 const { removeKeypointEdge,  addKeypointEdge, categoryIsCurrent, getCategoryIndex, 
                getShowAnnotations, resetCategorySettings } = inject('category');
@@ -1153,14 +1155,10 @@ const onAnnotation = (data) => {
   }
 };
 
+useSocketSubscription('annotation', onAnnotation);
+
 onMounted( () => {
     initAnnotation();
-
-    getCurrentInstance().ctx.sockets.subscribe('annotation', onAnnotation);
-});
-
-onUnmounted(() => {
-    getCurrentInstance().ctx.sockets.unsubscribe('annotation');
 });
 
 defineExpose({annotation, keypoint, notUsedKeypointLabels, onAnnotationKeypointClick,

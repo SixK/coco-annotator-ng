@@ -588,11 +588,12 @@ import PanelDropdown from "@/components/PanelInputDropdown";
 import TagsInput from "@/components/TagsInput";
 import BaseModal from "@/components/BaseModal";
 
-import { getCurrentInstance, ref, computed, watch, onUnmounted, onMounted, useTemplateRef } from 'vue';
+import { ref, computed, watch, onUnmounted, onMounted, useTemplateRef } from 'vue';
 
 import useAxiosRequest from "@/composables/axiosRequest";
 import usePaginatedList from "@/composables/usePaginatedList";
 import { useProcess } from "@/composables/useProcess";
+import useSocketSubscription from "@/composables/useSocketSubscription";
 const {axiosRequestError, axiosRequestSuccess} = useAxiosRequest();
 const { withProcess } = useProcess();
 
@@ -895,6 +896,9 @@ const onAnnotating = (data) => {
   }
 };
 
+useSocketSubscription('taskProgress', onTaskProgress);
+useSocketSubscription('annotating', onAnnotating);
+
 watch(
     tab,
     (newtab) => {
@@ -1005,15 +1009,9 @@ onMounted(() => {
       dataset.value.id = parseInt(identifier);
       updatePage();
 
-      getCurrentInstance().ctx.sockets.subscribe('taskProgress', onTaskProgress);
-      getCurrentInstance().ctx.sockets.subscribe('annotating', onAnnotating);
-
 });
 
 onUnmounted(() => {
-      getCurrentInstance().ctx.sockets.unsubscribe('taskProgress');
-      getCurrentInstance().ctx.sockets.unsubscribe('annotating');
-
       window.removeEventListener('mouseup', stopDrag);
       window.removeEventListener('mousedown', startDrag);
 });
