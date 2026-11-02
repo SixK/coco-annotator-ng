@@ -725,7 +725,7 @@ const { page, pages, total, updatePage } = usePaginatedList({
     subdirectories.value = data.subdirectories;
   },
   onError: (error) => {
-    axiosRequestError("Loading Dataset", error.response.data.message);
+    axiosRequestError("Loading Dataset", error.response?.data?.message || error.message);
   },
 });
 
@@ -773,7 +773,7 @@ const createScanTask = () => {
       scan.value.id = response.data.id;
     })
   ).catch((error) => {
-    axiosRequestError("Scanning Dataset", error.response.data.message);
+    axiosRequestError("Scanning Dataset", error.response?.data?.message || error.message);
   });
 };
 
@@ -797,7 +797,7 @@ const exportCOCO = () => {
       exporting.value.id = response.data.id;
     })
   ).catch((error) => {
-    axiosRequestError("Exporting COCO", error.response.data.message);
+    axiosRequestError("Exporting COCO", error.response?.data?.message || error.message);
   });
 };
 
@@ -823,7 +823,7 @@ const importCOCO = () => {
       importing.value.id = response.data.id;
     })
   ).catch((error) => {
-    axiosRequestError("Importing COCO", error.response.data.message);
+    axiosRequestError("Importing COCO", error.response?.data?.message || error.message);
   });
 };
 

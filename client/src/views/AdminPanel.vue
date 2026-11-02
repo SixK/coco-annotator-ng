@@ -216,7 +216,7 @@ const createUser = (event) => {
   AdminPanel.createUser(create.value)
     .then(updatePage)
     .catch((error) => {
-      axiosRequestError("Create User", error.response?.data?.message);
+      axiosRequestError("Create User", error.response?.data?.message || error.message);
     });
 };
 

@@ -233,7 +233,7 @@ const createDataset = () => {
         .catch((error) => {
           axiosRequestError(
             "Creating Dataset",
-            error.response.data.message
+            error.response?.data?.message || error.message
           );
         });
 };

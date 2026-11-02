@@ -237,7 +237,7 @@ const createCategory = () => {
       updatePage();
     })
     .catch((error) => {
-      axiosRequestError("Creating Category", error.response.data.message);
+     axiosRequestError("Creating Category", error.response?.data?.message || error.message);
     });
 };
 
