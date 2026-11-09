@@ -1,5 +1,6 @@
 import { ref, computed, reactive, watch } from 'vue';
 import { useAuthStore } from '@/store/user';
+import { removeAnnotating } from '@/composables/useAnnotating';
 
 const SIMPLIFY_KEY = 'annotator/simplify';
 
@@ -53,10 +54,7 @@ export default function useAnnotatorState(image) {
 
   const helpers = {
     removeFromAnnotatingList: () => {
-      const user = authStore.user;
-      if (!user) return;
-      const idx = annotating.value.indexOf(user.username);
-      if (idx > -1) annotating.value.splice(idx, 1);
+      removeAnnotating(annotating.value, authStore.user?.username);
     },
 
     onCategoryClick: (indices) => {

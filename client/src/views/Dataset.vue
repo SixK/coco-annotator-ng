@@ -594,6 +594,7 @@ import useAxiosRequest from "@/composables/axiosRequest";
 import usePaginatedList from "@/composables/usePaginatedList";
 import { useProcess } from "@/composables/useProcess";
 import useSocketSubscription from "@/composables/useSocketSubscription";
+import { onAnnotatingForList } from "@/composables/useAnnotating";
 const {axiosRequestError, axiosRequestSuccess} = useAxiosRequest();
 const { withProcess } = useProcess();
 
@@ -883,18 +884,7 @@ const onTaskProgress = (data) => {
 };
 
 // socket
-const onAnnotating = (data) => {
-  const image = images.value.find((i) => i.id == data.image_id);
-  if (image == null) return;
-  if (data.active) {
-    const found = image.annotating.indexOf(data.username);
-    if (found < 0) {
-      image.annotating.push(data.username);
-    }
-  } else {
-    image.annotating.splice(image.annotating.indexOf(data.username), 1);
-  }
-};
+const onAnnotating = (data) => onAnnotatingForList(images, data);
 
 useSocketSubscription('taskProgress', onTaskProgress);
 useSocketSubscription('annotating', onAnnotating);

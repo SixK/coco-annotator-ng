@@ -221,6 +221,7 @@ import useCurrentEntities from '@/composables/useCurrentEntities';
 import useToolPanel from '@/composables/useToolPanel';
 import useAnnotations from '@/composables/useAnnotations';
 import useSocketSubscription from '@/composables/useSocketSubscription';
+import { onAnnotatingForImage, removeAnnotating } from '@/composables/useAnnotating';
 
 import { useProcStore } from "@/store/index";
 const procStore = useProcStore();
@@ -380,14 +381,7 @@ const {
 });
 
 
-const removeFromAnnotatingList = () => {
-  if (user.value == null) return;
-  const index = annotating.value.indexOf(user.value.username);
-  //Remove self from list
-  if (index > -1) {
-    annotating.value.splice(index, 1);
-  }
-}
+const removeFromAnnotatingList = () => removeAnnotating(annotating.value, user.value?.username);
 
 
 
@@ -413,18 +407,7 @@ watch(
     removeFromAnnotatingList();
 });
 
-const onAnnotating = (data) => {
-      if (data.image_id !== image.value.id) return;
-
-      if (data.active) {
-        const found = annotating.value.indexOf(data.username);
-        if (found < 0) {
-          annotating.value.push(data.username);
-        }
-      } else {
-        annotating.value.splice(annotating.value.indexOf(data.username), 1);
-      }
-};
+const onAnnotating = (data) => onAnnotatingForImage(image, annotating, data);
 
 useSocketSubscription('annotating', onAnnotating);
 
