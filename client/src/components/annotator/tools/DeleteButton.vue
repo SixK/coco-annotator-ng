@@ -1,25 +1,32 @@
 <template>
   <div>
-    <i v-tooltip.right="name" class="fa fa-x" :class="icon" :style="{ color: iconColor }" @click="click(execute, disabled)" />
+    <i v-tooltip.right="name" class="fa fa-x" :class="icon" :style="{ color: iconColor }" @click="click(execute)" />
     <br>
   </div>
 </template>
+
 <script setup>
 import axios from "axios";
-import { ref, inject } from 'vue'
+import { ref } from "vue";
+import { useRouter } from "vue-router";
 import { useButton } from "@/composables/toolBar/button";
+import useAxiosRequest from "@/composables/axiosRequest";
 
 const { iconColor, click } = useButton();
+const { axiosRequestError } = useAxiosRequest();
+const router = useRouter();
 
-const { save } = inject('annotator');
+const image = defineModel("image", { type: Object, required: true });
 
-const image = defineModel('image', { type: Object, required: true });
-
-const name =  ref("Delete Image");
+const name = ref("Delete Image");
 const icon = ref("fa-trash-o");
 
-const execute = () => {
-    axios.delete("/api/image/" + image.value.id).then(() => {});
-}
-
+const execute = async () => {
+  try {
+    await axios.delete("/api/image/" + image.value.id);
+    router.go(-1);
+  } catch (error) {
+    axiosRequestError("Deleting Image", error);
+  }
+};
 </script>
