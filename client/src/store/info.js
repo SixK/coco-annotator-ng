@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import axios from 'axios';
+import Info from '@/models/info';
 
 import { ref } from 'vue';
 
@@ -23,7 +23,7 @@ export const useInfoStore = defineStore('info', () => {
     async function getServerInfo() {
       loading.value = true;
       try {
-        const response = await axios.get('/api/info/');
+        const response = await Info.get();
         const data = response.data;
         loading.value = false;
         success.value = true;
