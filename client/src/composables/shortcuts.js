@@ -1,14 +1,14 @@
 import { ref, onMounted } from "vue";
 import { useRoute } from 'vue-router';
-import { useRouter } from 'vue-router';
-import { useProcStore } from "@/store/index";
+import { useProcStore } from "@/store/index";
+import { useSaveAndReload } from "@/composables/useSave";
 
 export default function useShortcuts(moveUp, moveDown, stepIn, stepOut, 
                                                                                 createAnnotation, deleteAnnotation,
                                                                                 setActiveTool, nextImage, previousImage,
                                                                                 fit, save, getTool){
   const route = useRoute();
-  const router = useRouter();
+  const saveAndReload = useSaveAndReload();
   const commands = ref([]);
 
   const procStore = useProcStore();
@@ -27,20 +27,7 @@ export default function useShortcuts(moveUp, moveDown, stepIn, stepOut,
   };
   const doShortcutAction = action => (actions[action] || (() => {}))();
   
-  const safeSave = async () => {
-      try {
-        if (typeof save === 'function') {
-          await save();
-        }
-        // Force reload after successful save.
-        setTimeout(() => {
-            router.go(0);
-        }, 200); // need to wait axios has finished :(
-      } catch (err) {
-        console.error('Error saving:', err);
-        // Optionally show a notification to user
-      }
-  }
+  const safeSave = () => saveAndReload(save);
 
   const annotator = (() =>  {
     return [

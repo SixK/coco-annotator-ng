@@ -7,29 +7,17 @@
 <script setup>
 import { ref, inject } from 'vue'
 import { useButton } from "@/composables/toolBar/button";
-import { useRouter } from 'vue-router';
-const router = useRouter();
+import { useSaveAndReload } from "@/composables/useSave";
 
 const { iconColor, click } = useButton();
 
-const { save } = inject('annotator');
+const { save } = inject('annotator');
+
+const saveAndReload = useSaveAndReload();
 
 const name =  ref("Save");
 const icon = ref("fa-save");
 
-const execute = async () => {
-  try {
-    if (typeof save === 'function') {
-      await save();
-    }
-    // Force reload after successful save.
-    setTimeout(() => {
-        router.go(0);
-    }, 200); // need to wait axios has finished :(
-  } catch (err) {
-    console.error('Error saving:', err);
-    // Optionally show a notification to user
-  }
-}
+const execute = () => saveAndReload(save);
 
 </script>
