@@ -179,7 +179,6 @@ import useAxiosRequest from "@/composables/axiosRequest";
 import usePaginatedList from "@/composables/usePaginatedList";
 const {axiosRequestError, axiosRequestSuccess} = useAxiosRequest();
 
-const range = ref(11);
 const newCategoryName = ref("");
 const newCategorySupercategory = ref("");
 // <input type="color"> displays black when its value is empty/invalid, but the
@@ -193,9 +192,6 @@ const newCategoryKeypoint = ref({
   colors: []
 });
 const categories = ref([]);
-const status = ref({
-  data: { state: true, message: "Loading categories" }
-});
 const keypoints = useTemplateRef('keypoints');
 
 const isFormValid = computed(() => {
@@ -239,22 +235,6 @@ const createCategory = () => {
     .catch((error) => {
      axiosRequestError("Creating Category", error);
     });
-};
-
-const previousPage = () => {
-  page.value -= 1;
-  if (page.value < 1) {
-    page.value = 1;
-  }
-  updatePage();
-};
-
-const nextPage = () => {
-  page.value += 1;
-  if (page.value > pages.value) {
-    page.value = pages.value;
-  }
-  updatePage();
 };
 
 onMounted(() => {
