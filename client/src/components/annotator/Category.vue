@@ -158,9 +158,8 @@
 </template>
 
 <script setup>
-import paper from "paper";
-
 import { useToolStore } from '@/store/toolStore';
+import { toDarkHSL } from "@/libs/colors";
 import Annotations from "@/models/annotations";
 import Annotation from "@/components/annotator/Annotation";
 import KeypointsDefinition from "@/components/KeypointsDefinition";
@@ -273,13 +272,7 @@ const borderColor = computed(() => {
   return "#404552";
 });
 
-const darkHSL = computed(() => {
-  const localcolor = new paper.Color(color.value);
-  const h = Math.round(localcolor.hue);
-  const l = Math.round(localcolor.lightness * 50);
-  const s = Math.round(localcolor.saturation * 100);
-  return "hsl(" + h + "," + s + "%," + l + "%)";
-});
+const darkHSL = computed(() => toDarkHSL(color.value));
 
 const isFormValid = computed(() => {
   return (

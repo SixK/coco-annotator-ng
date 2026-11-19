@@ -223,6 +223,7 @@ import axios from "axios";
 import simplifyjs from "simplify-js";
 import BaseModal from "@/components/BaseModal";
 import { Keypoint, Keypoints, VisibilityOptions } from "@/libs/keypoints";
+import { toDarkHSL } from "@/libs/colors";
 import UndoAction from "@/undo";
 
 import { useProcStore } from "@/store/index";
@@ -679,8 +680,13 @@ const createKeypoint = (point, visibility, label) => {
   });
 };
 
+// Keypoint handlers are only live while the Select or Keypoint tool is active.
+const isKeypointToolActive = computed(() =>
+  ['Select', 'Keypoint'].includes(toolStore.activeTool)
+);
+
 const handleKeypointClick = (event) => {
-  if (!['Select', 'Keypoint'].includes(toolStore.activeTool)) return;
+  if (!isKeypointToolActive.value) return;
 
   const targetKeypoint = event.target.keypoint;
 
@@ -712,7 +718,7 @@ const handleKeypointClick = (event) => {
 
 const handleKeypointDoubleClick = (event) => {
   if (!categoryIsCurrent.value) return;
-  if (!['Select', 'Keypoint'].includes(toolStore.activeTool)) return;
+  if (!isKeypointToolActive.value) return;
 
   currentKeypoint.value = event.target.keypoint;
 
@@ -724,7 +730,7 @@ const handleKeypointDoubleClick = (event) => {
 };
 
 const handleKeypointMouseDrag = (event) => {
-  if (!['Select', 'Keypoint'].includes(toolStore.activeTool)) return;
+  if (!isKeypointToolActive.value) return;
 
   const targetKeypoint = event.target.keypoint;
   keypoints.value.moveKeypoint(event.point, targetKeypoint);
@@ -997,13 +1003,7 @@ const showSideMenu = computed(() => {
       return name.value.toLowerCase().includes(search);
 });
 
-const darkHSL = computed(() => {
-      const tmpcolor = new paper.Color(color.value);
-      const h = Math.round(tmpcolor.hue);
-      const l = Math.round(tmpcolor.lightness * 50);
-      const s = Math.round(tmpcolor.saturation * 100);
-      return "hsl(" + h + "," + s + "%," + l + "%)";
-});
+const darkHSL = computed(() => toDarkHSL(color.value));
 
 const notUsedKeypointLabels = computed(() => {
   const tags = {};

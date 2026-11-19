@@ -1,3 +1,24 @@
+import paper from "paper";
+
+/**
+ * Convert a colour to its dark HSL representation.
+ *
+ * The conversion is delegated to `paper` so that the result stays identical to
+ * the two computeds it replaces (Annotation.vue / Category.vue): paper has its
+ * own hue/lightness/saturation model, and re-implementing it here would risk
+ * changing the rendered colours.
+ *
+ * @param {string} hex  colour to convert (e.g. "#aabbcc")
+ * @returns {string}    the equivalent `hsl(h,s%,l%)` string
+ */
+export function toDarkHSL(hex) {
+  const tmpcolor = new paper.Color(hex);
+  const h = Math.round(tmpcolor.hue);
+  const l = Math.round(tmpcolor.lightness * 50);
+  const s = Math.round(tmpcolor.saturation * 100);
+  return "hsl(" + h + "," + s + "%," + l + "%)";
+}
+
 export function invertColor(hex, bw) {
   if (hex.indexOf("#") === 0) {
     hex = hex.slice(1);
