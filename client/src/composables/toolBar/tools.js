@@ -53,7 +53,8 @@ export  function useTools() {
              toolStore.setActiveTool('Select');
          }
 
-         let tool = localStorage.getItem("editorTool") || "Select";
+         // Read-only: the toolStore owns the persistence of `editorTool`.
+         let tool = toolStore.getPersistedTool();
          if (!disabled && name.value === tool) {
              state.isActive = true;
              setCursor(cursor.value);
@@ -77,7 +78,9 @@ export  function useTools() {
 
 
   const click = () => {
-      if (name.value === 'Select') localStorage.setItem('editorTool', name.value);
+      // No direct localStorage write here: `update()` -> `setActiveTool()` is
+      // the store's job when the tool can be activated, and the disabled-tool
+      // watcher above already persists 'Select' otherwise.
       update()
   };
 
