@@ -1,7 +1,7 @@
 // useAnnotatorData.js
 
 import { nextTick } from 'vue';
-import axios from "axios";
+import Annotator from "@/models/annotator";
 import { useProcess } from "./useProcess";
 
 export default function useAnnotatorData({ state, router, axiosRequestError, toolspanel, settings, categorylist,image, updateImageName, procStore }) {
@@ -53,7 +53,7 @@ export default function useAnnotatorData({ state, router, axiosRequestError, too
   const fetchData = async () => {
     state.loading.data = true;
     try {
-      const response = await axios.get('/api/annotator/data/' + state.image.value.id);
+      const response = await Annotator.getData(state.image.value.id);
       return response.data;
     } finally {
       state.loading.data = false;

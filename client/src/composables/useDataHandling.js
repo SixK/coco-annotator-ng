@@ -1,4 +1,4 @@
-import axios from "axios";
+import Annotator from "@/models/annotator";
 // import { useProcStore } from "@/store/index";
 import { useToolStore } from '@/store/toolStore';
 import { useProcess } from "./useProcess";
@@ -71,10 +71,7 @@ export default function useDataHandling(image, categories, dataset, categorylist
 
   // helper: send data to server (returns a Promise)
   const sendDataToServer = async (data) => {
-    // Adjust endpoint/path to match backend route used previously.
-    // If your previous implementation used a different endpoint or headers,
-    // restore them here. This is a generic axios POST.
-    return axios.post("/api/annotator/data", data);
+    return Annotator.save(data);
   };
 
   return { save };
