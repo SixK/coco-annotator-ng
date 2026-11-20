@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import axios from "axios";
+import Images from "@/models/images";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useButton } from "@/composables/toolBar/button";
@@ -23,7 +23,7 @@ const icon = ref("fa-trash-o");
 
 const execute = async () => {
   try {
-    await axios.delete("/api/image/" + image.value.id);
+    await Images.delete(image.value.id);
     router.go(-1);
   } catch (error) {
     axiosRequestError("Deleting Image", error);

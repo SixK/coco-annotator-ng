@@ -113,7 +113,7 @@
 </template>
 
 <script setup>
-import axios from "axios";
+import Images from "@/models/images";
 import { ref, computed} from "vue";
 import { useRouter } from 'vue-router';
 import { downloadURI, fetchAndDownloadJson } from "@/libs/download";
@@ -169,7 +169,7 @@ const onDownloadSegmentedClick = () => {
 
 const onDeleteClick = async () => {
   try {
-    await axios.delete(`/api/image/${image.value.id}`);
+    await Images.delete(image.value.id);
     emit('updatePage');
   } catch (error) {
     axiosRequestError('Deleting Image', error);

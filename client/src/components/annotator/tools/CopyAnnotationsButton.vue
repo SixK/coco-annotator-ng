@@ -81,7 +81,7 @@
 </template>
 
 <script setup>
-import axios from "axios";
+import Images from "@/models/images";
 import TagsInput from "@/components/TagsInput";
 import BaseModal from "@/components/BaseModal";
 import { watch, computed, ref, inject, watchEffect, useTemplateRef } from 'vue'
@@ -136,9 +136,7 @@ const copyAnnotations = () => {
       if (saved === false) return;
 
       return withProcess(process, () => {
-        return axios.post(`/api/image/copy/${fromId.value}/${imageId.value}/annotations`, {
-          category_ids: scategories,
-        });
+        return Images.copyAnnotations(fromId.value, imageId.value, scategories);
       })
         .then(() => getData())
         .catch((error) => {
