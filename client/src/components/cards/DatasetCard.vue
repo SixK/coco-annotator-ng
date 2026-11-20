@@ -186,7 +186,7 @@
 </template>
 
 <script setup>
-import axios from "axios";
+import Datasets from "@/models/datasets";
 import MetaData from "@/components/MetaData";
 import TagsInput from "@/components/TagsInput";
 import BaseModal from "@/components/BaseModal";
@@ -245,10 +245,8 @@ const onImageClick = () => {
 const onShare = () => {
   dataset.value.users = sharedUsers.value;
 
-  axios
-    .post('/api/dataset/' + dataset.value.id + '/share', {
-      users: sharedUsers.value,
-    })
+  Datasets
+    .share(dataset.value.id, sharedUsers.value)
     .then(() => {
           emit('updatePage');
     });
@@ -268,7 +266,7 @@ const onCocoDownloadClick = () => {
 
 const onDeleteClick = async () => {
   try {
-    await axios.delete(`/api/dataset/${dataset.value.id}`);
+    await Datasets.delete(dataset.value.id);
     emit('updatePage');
   } catch (error) {
     axiosRequestError('Deleting Dataset', error);
@@ -278,11 +276,10 @@ const onDeleteClick = async () => {
 const onSave = () => {
   dataset.value.categories = selectedCategories.value;
 
-  axios
-    .post("/api/dataset/" + dataset.value.id, {
-      categories: selectedCategories.value,
-      default_annotation_metadata: defaultAnnotation.value.exportMetadata(),
-    })
+  Datasets.update(dataset.value.id, {
+    categories: selectedCategories.value,
+    default_annotation_metadata: defaultAnnotation.value.exportMetadata(),
+  })
     .then(() => {
         emit('updatePage');
     });

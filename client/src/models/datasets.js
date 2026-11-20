@@ -62,5 +62,14 @@ export default {
   },
   resetMetadata(id) {
     return axios.get(`${baseURL}/${id}/reset/metadata`);
+  },
+  update(id, params) {
+    return axios.post(`${baseURL}/${id}`, params);
+  },
+  share(id, users) {
+    return axios.post(`${baseURL}/${id}/share`, { users });
+  },
+  delete(id) {
+    return axios.delete(`${baseURL}/${id}`);
   }
 };
