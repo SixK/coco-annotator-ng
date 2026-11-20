@@ -302,90 +302,37 @@
         displayed on <strong style="color: white">{{ pages }}</strong> pages.
       </p>
       <div class="row justify-content-md-center sidebar-section-buttons">
-        <button
-          type="button"
-          class="btn btn-success btn-block"
-          data-bs-toggle="modal"
-          data-bs-target="#generateDataset"
-        >
-          <div
-            v-if="generate.id != null"
-            class="progress"
-          >
-            <div
-              class="progress-bar bg-success"
-              :style="{ width: `${generate.progress}%` }"
-            >
-              Generating
-            </div>
-          </div>
-          <div v-else>
-            Generate
-          </div>
-        </button>
+        <TaskButton
+          variant="success"
+          label="Generate"
+          progress-label="Generating"
+          :task="generate"
+          modal-target="#generateDataset"
+        />
 
-        <button
-          type="button"
-          class="btn btn-secondary btn-block"
+        <TaskButton
+          variant="secondary"
+          label="Scan"
+          progress-label="Scanning"
+          :task="scan"
           @click="createScanTask"
-        >
-          <div
-            v-if="scan.id != null"
-            class="progress"
-          >
-            <div
-              class="progress-bar bg-secondary"
-              :style="{ width: `${scan.progress}%` }"
-            >
-              Scanning
-            </div>
-          </div>
-          <div v-else>
-            Scan
-          </div>
-        </button>
+        />
 
-        <button
-          type="button"
-          class="btn btn-primary btn-block"
+        <TaskButton
+          variant="primary"
+          label="Import COCO"
+          progress-label="Importing"
+          :task="importing"
           @click="importModal"
-        >
-          <div
-            v-if="importing.id != null"
-            class="progress"
-          >
-            <div
-              class="progress-bar bg-primary"
-              :style="{ width: `${importing.progress}%` }"
-            >
-              Importing
-            </div>
-          </div>
-          <div v-else>
-            Import COCO
-          </div>
-        </button>
+        />
 
-        <button
-          type="button"
-          class="btn btn-dark btn-block"
+        <TaskButton
+          variant="dark"
+          label="Export COCO"
+          progress-label="Exporting"
+          :task="exporting"
           @click="exportModal"
-        >
-          <div
-            v-if="exporting.id != null"
-            class="progress"
-          >
-            <div
-              class="progress-bar bg-dark"
-              :style="{ width: `${exporting.progress}%` }"
-            >
-              Exporting
-            </div>
-          </div>
-          <div v-else>
-            Export COCO
-          </div>
-        </button>
+        />
       </div>
       <hr>
       <h6 class="sidebar-title text-center">
@@ -587,6 +534,7 @@ import PanelToggle from "@/components/PanelToggle";
 import PanelDropdown from "@/components/PanelInputDropdown";
 import TagsInput from "@/components/TagsInput";
 import BaseModal from "@/components/BaseModal";
+import TaskButton from "@/components/tasks/TaskButton";
 
 import { ref, computed, watch, onUnmounted, onMounted, useTemplateRef } from 'vue';
 
@@ -594,6 +542,7 @@ import useAxiosRequest from "@/composables/axiosRequest";
 import usePaginatedList from "@/composables/usePaginatedList";
 import { useProcess } from "@/composables/useProcess";
 import useSocketSubscription from "@/composables/useSocketSubscription";
+import { useTaskProgress } from "@/composables/useTaskProgress";
 import { onAnnotatingForList } from "@/composables/useAnnotating";
 const {axiosRequestError, axiosRequestSuccess} = useAxiosRequest();
 const { withProcess } = useProcess();
@@ -633,27 +582,14 @@ const sidebar = ref({
       canResize: false
 });
 
-const scan = ref({
-  progress: 0,
-  id: null
-});
-
-const generate = ref({
-  progress: 0,
-  id: null
-});
-
-const importing = ref({
-  progress: 0,
-  id: null
-});
-
-const exporting = ref({
-  categories: [],
-  progress: 0,
-  with_empty_images: false,
-  id: null
-});
+const scan = useTaskProgress();
+const generate = useTaskProgress();
+const importing = useTaskProgress();
+// the export list has to be refreshed once an export completes
+const exporting = useTaskProgress(
+  { categories: [], with_empty_images: false },
+  () => getExports()
+);
 const selected = ref({
   categories: []
 });
@@ -941,44 +877,6 @@ watch(
       }
     }
 );
-
-watch(
-  () => scan.value.progress,
-  (scanProgress) => {
-        if (scanProgress >= 100) {
-            setTimeout(() => {
-              scan.value.progress = 0;
-              scan.value.id = null;
-            }, 1000);
-          }
-    }
-);
-
-watch(
-  () => importing.value.progress,
-  (importingProgress) => {
-    if (importingProgress >= 100) {
-        setTimeout(() => {
-            importing.value.progress = 0;
-            importing.value.id = null;
-        }, 1000);
-    }
-  }
-);
-
-watch(
-  () => exporting.value.progress,
-  (exportingProgress) => {
-    if (exportingProgress >= 100) {
-        setTimeout(() => {
-            exporting.value.progress = 0;
-            exporting.value.id = null;
-            getExports();
-        }, 1000);
-    }
-  }
-);
-
 
 onBeforeRouteUpdate ((to, from, next) => {
     dataset.value.id = parseInt(identifier);
