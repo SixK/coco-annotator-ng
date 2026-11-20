@@ -219,7 +219,7 @@
 
 <script setup>
 import paper from "paper";
-import axios from "axios";
+import Annotations from "@/models/annotations";
 import simplifyjs from "simplify-js";
 import BaseModal from "@/components/BaseModal";
 import { Keypoint, Keypoints, VisibilityOptions } from "@/libs/keypoints";
@@ -472,7 +472,7 @@ const configureCompoundPath = () => {
 /* end - createCompoundPath */
 
 const deleteAnnotation = (id) => {
-  axios.delete("/api/annotation/" + annotation.id).then(() => {
+  Annotations.delete(annotation.id).then(() => {
     socket.io.emit("annotation", {
       action: "delete",
       annotation: annotation,
