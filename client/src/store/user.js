@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import axios from 'axios';
+import User from '@/models/user';
 import useAxiosRequest from "@/composables/axiosRequest";
 const { axiosRequestError, axiosRequestSuccess } = useAxiosRequest();
 import { ref, computed } from 'vue';
@@ -64,7 +64,7 @@ export const useAuthStore = defineStore('auth', () => {
   const initializeAuth = async () => {
     _setLoggingIn();
     try {
-      const response = await axios.get('/api/user/');
+      const response = await User.get();
       _setLoggedIn(response.data.user);
       return true;
     } catch (error) {
@@ -81,7 +81,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     _setLoggingIn();
     try {
-      const response = await axios.post('/api/user/register', credentials);
+      const response = await User.register(credentials);
       _setLoggedIn(response.data.user);
       return { success: true, data: response.data };
     } catch (error) {
@@ -101,7 +101,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     _setLoggingIn();
     try {
-      const response = await axios.post('/api/user/login', credentials);
+      const response = await User.login(credentials);
       _setLoggedIn(response.data.user);
       return { success: true, data: response.data };
     } catch (error) {
@@ -121,7 +121,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     _setLoggingOut();
     try {
-      await axios.get('/api/user/logout');
+      await User.logout();
       _setLoggedOut();
       return true;
     } catch (error) {
@@ -135,7 +135,7 @@ export const useAuthStore = defineStore('auth', () => {
    */
   const changePassword = async (currentPassword, newPassword, confirmPassword) => {
     try {
-      const response = await axios.post('/api/user/password', {
+      const response = await User.changePassword({
         password: currentPassword,
         new_password: newPassword,
         confirm_password: confirmPassword
