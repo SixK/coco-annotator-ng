@@ -12,5 +12,11 @@ export default {
   },
   create(create) {
     return axios.post(baseURL, { ...create });
+  },
+  update(id, params) {
+    return axios.put(baseURL + id, params);
+  },
+  delete(id) {
+    return axios.delete(baseURL + id);
   }
 };

@@ -142,7 +142,7 @@
 
 import { ref, toRefs, reactive, onMounted, computed, useTemplateRef} from "vue";
 
-import axios from "axios";
+import Category from "@/models/categories";
 import KeypointsDefinition from "@/components/KeypointsDefinition";
 import BaseModal from "@/components/BaseModal";
 import useAxiosRequest from "@/composables/axiosRequest";
@@ -211,7 +211,7 @@ const resetCategorySettings = () => {
     const onDownloadClick = () => {};
     const onDeleteClick = async () => {
       try {
-        await axios.delete("/api/category/" + category.id);
+        await Category.delete(category.id);
         emit('updatePage');
       } catch (error) {
         axiosRequestError('Deleting Category', error);
@@ -221,7 +221,7 @@ const resetCategorySettings = () => {
 
 const onUpdateClick = async () => {
       try {
-        await axios.put('/api/category/' + category.id, {
+        await Category.update(category.id, {
           name: name.value,
           color: color.value,
           supercategory: supercategory.value,
