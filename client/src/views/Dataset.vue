@@ -536,14 +536,14 @@ import TagsInput from "@/components/TagsInput";
 import BaseModal from "@/components/BaseModal";
 import TaskButton from "@/components/tasks/TaskButton";
 
-import { ref, computed, watch, onUnmounted, onMounted, useTemplateRef } from 'vue';
+import { ref, computed, watch, onMounted, useTemplateRef } from 'vue';
 
 import useAxiosRequest from "@/composables/axiosRequest";
 import usePaginatedList from "@/composables/usePaginatedList";
 import { useProcess } from "@/composables/useProcess";
 import useSocketSubscription from "@/composables/useSocketSubscription";
 import { useTaskProgress } from "@/composables/useTaskProgress";
-import { SURFACE_DARK } from "@/libs/theme";
+import useSidebarResize from "@/composables/useSidebarResize";
 import { onAnnotatingForList } from "@/composables/useAnnotating";
 const {axiosRequestError, axiosRequestSuccess} = useAxiosRequest();
 const { withProcess } = useProcess();
@@ -576,12 +576,7 @@ const status = ref({
       data: { state: true, message: "Loading data" }
 });
 const keyword = ref("");
-const mouseDown = ref(false);
-const sidebar = ref({
-      drag: false,
-      width: window.innerWidth * 0.2,
-      canResize: false
-});
+const { sidebar, mouseMove, startDrag, stopDrag } = useSidebarResize();
 
 const scan = useTaskProgress();
 const generate = useTaskProgress();
@@ -766,30 +761,6 @@ const importCOCO = () => {
   });
 };
 
-const mouseMove = (event) => {
-      const element = document.querySelector('.sidebar');
-      const sidebarWidth = element.offsetWidth;
-      const clickWidth = event.x;
-      const pixelsFromSide = Math.abs(sidebarWidth - clickWidth);      
-      sidebar.value.drag = pixelsFromSide < 4;
-      if (sidebar.value.canResize) {
-        event.preventDefault();
-        const max = window.innerWidth * 0.5;
-        sidebar.value.width = Math.min(Math.max(event.x, 150), max);
-        localStorage.setItem("dataset/sideWidth", sidebar.value.width);
-      }
-};
-
-const startDrag = () => {
-      mouseDown.value = true;
-      sidebar.value.canResize = sidebar.value.drag;
-};
-
-const stopDrag = () => {
-      mouseDown.value = false;
-      sidebar.value.canResize = false;
-};
-
 const queryAnnotated = computed(() => {
   const showAnnotated = panel.value.showAnnotated;
   const showNotAnnotated = panel.value.showNotAnnotated;
@@ -865,44 +836,20 @@ watch(
     () => updatePage()
 );
 
-watch(
-    () => sidebar.value.drag,
-    (canDrag) => {
-      const el = document.querySelector('.sidebar');
-      if (canDrag) {
-        document.body.style.cursor = 'ew-resize';
-        el.style.borderRight = `4px solid ${SURFACE_DARK}`;
-      } else {
-        document.body.style.cursor = 'default';
-        el.style.borderRight = '';
-      }
-    }
-);
-
 onBeforeRouteUpdate ((to, from, next) => {
     dataset.value.id = parseInt(identifier);
     updatePage();
 });
 
 onMounted(() => {
-      window.addEventListener('mouseup', stopDrag);
-      window.addEventListener('mousedown', startDrag);
-
       const ltab = localStorage.getItem("dataset/tab");
       const lorder = localStorage.getItem("dataset/order");
-      const sideWidth = localStorage.getItem("dataset/sideWidth");
 
-      if (sideWidth !== null) sidebar.value.width = parseInt(sideWidth);
       if (ltab !== null) tab.value = ltab;
       if (lorder !== null) order.value = lorder;
       dataset.value.id = parseInt(identifier);
       updatePage();
 
-});
-
-onUnmounted(() => {
-      window.removeEventListener('mouseup', stopDrag);
-      window.removeEventListener('mousedown', startDrag);
 });
 
 </script>
