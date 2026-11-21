@@ -37,7 +37,7 @@
       </div>
 
       <MetaData
-        ref="metadata"
+        ref="metadataRef"
         :metadata="metadata"
       />
 
@@ -96,6 +96,7 @@ const annotateUrl = defineModel('annotateUrl', { type: null });
 
 const name = ref("Image Settings");
 const shortcuts = useTemplateRef('shortcuts');
+const metadataRef = useTemplateRef('metadataRef');
 
 const emit = defineEmits(['update-shortcut']);
 
@@ -104,9 +105,7 @@ const onShortcutUpdate = (command, value) => {
 };
 
 const exportMetadata = () => {
-    // return props.$refs.metadata.export();
-    // return {};
-    return metadata.value.exportMetadata();
+    return metadataRef.value?.exportMetadata();
 };
 
 const setPreferences = (preferences) => {   

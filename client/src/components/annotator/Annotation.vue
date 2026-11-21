@@ -224,7 +224,9 @@ import simplifyjs from "simplify-js";
 import BaseModal from "@/components/BaseModal";
 import { Keypoint, Keypoints, VisibilityOptions } from "@/libs/keypoints";
 import { toDarkHSL } from "@/libs/colors";
-import { SURFACE_DARK, SURFACE_HOVER } from "@/libs/theme";
+import { SURFACE_HOVER } from "@/libs/theme";
+import useAnnotationExport from "@/composables/useAnnotationExport";
+import useAnnotationKeypointView from "@/composables/useAnnotationKeypointView";
 import UndoAction from "@/undo";
 
 import { useProcStore } from "@/store/index";
@@ -830,80 +832,6 @@ const setCategory = (event) => {
 };
 
 
-/* exportAnnotation */
-const exportAnnotation = () => {
-  ensureCompoundPathExists();
-  const localMetadata = prepareMetadata();
-  const annotationData = createBaseAnnotationData(localMetadata);
-
-  simplifyAndPrepareCompoundPath(annotationData);
-  addKeypointsToAnnotationData(annotationData);
-  restoreCompoundPathState();
-
-  exportSessions(annotationData);
-
-  return annotationData;
-};
-
-// Helper Functions
-
-const ensureCompoundPathExists = () => {
-  if (compoundPath.value == null) {
-    createCompoundPath();
-  }
-};
-
-const prepareMetadata = () => {
-  const localMetadata = metadata.value.exportMetadata();
-  if (name.value.length > 0) {
-    localMetadata.name = name.value;
-  }
-  return localMetadata;
-};
-
-const createBaseAnnotationData = (localMetadata) => {
-  return {
-    id: annotation.id,
-    isbbox: annotation.isbbox,
-    color: color.value,
-    metadata: localMetadata,
-  };
-};
-
-const simplifyAndPrepareCompoundPath = (annotationData) => {
-  simplifyPath();
-  compoundPath.value.fullySelected = false;
-
-  const json = compoundPath.value.exportJSON({
-    asString: false,
-    precision: 1,
-  });
-
-  if (annotation.paper_object !== json) {
-    annotationData.compoundPath = json;
-  }
-};
-
-const addKeypointsToAnnotationData = (annotationData) => {
-  if (!keypoints.value.isEmpty()) {
-    annotationData.keypoints = keypoints.value.exportJSON(
-      keypointLabels,
-      annotation.width,
-      annotation.height
-    );
-  }
-};
-
-const restoreCompoundPathState = () => {
-  compoundPath.value.fullySelected = isCurrent.value;
-};
-
-const exportSessions = (annotationData) => {
-  annotationData.sessions = sessions.value;
-  sessions.value = [];
-};
-/* end - exportAnnotation */
-
 const emitModify = () => {
   uuid.value = Math.random().toString(36).replace(/[^a-z]+/g, "");
   emit('patch-annotation', index, {
@@ -914,41 +842,6 @@ const emitModify = () => {
     action: "modify",
     annotation: annotation
   });
-};
-
-const getKeypointLabel = (keypoint) => {
-  return keypoint && keypoint.keypoints.labels[keypoint.indexLabel - 1];
-};
-
-const isKeypointSelected = (tag, index) => {
-  return tag == (index + 1);
-};
-
-const isKeypointLabeled = (index) => {
-  return keypoints.value && !!keypoints.value._labelled[index + 1];
-};
-
-const getKeypointVisibility = (index) => {
-    let visibility = 0;
-    if (keypoints.value?._labelled) {
-      const labelled = keypoints.value._labelled[index + 1];
-      if (labelled) {
-        visibility = labelled.visibility;
-      }
-    }
-    return visibility;
-};
-
-const getKeypointBackgroundColor = (index) => {
-    if (isHover.value && isHoverCategory) return SURFACE_HOVER;
-    // if (keypoint.tag == index + 1) return "#4b624c";
-    let activeIndex = keypoint.value.next.label;
-
-    if (toolStore.activeTool === "Select") {
-      activeIndex = keypoint.value.tag[0];
-    }
-    if (isCurrent.value && activeIndex == index + 1) return "rgb(30, 86, 36)";
-    return SURFACE_DARK;
 };
 
 const categoryIndex = computed(() => {
@@ -968,27 +861,42 @@ watch(isCurrent, (isNowCurrent) => {
   }
 });
 
-const getKeypointIconColor = (visibility, index) => {
-  switch (visibility) {
-    case 2: return keypointColors[index];
-    case 1: return "lightgray";
-    default: return "rgb(40, 42, 49)";
-  }
-};
-
-const keypointListView = computed(() => 
-  keypointLabels.map((label, i) => ({
-    label,
-    visibility: getKeypointVisibility(i),
-    placed: isKeypointLabeled(i),
-    iconColor: getKeypointIconColor(getKeypointVisibility(i), i),
-    backgroundColor: getKeypointBackgroundColor(i),
-  }))
-);
-
 const isHover = computed(() => {
   return index === hover;
 });
+
+const {
+  getKeypointLabel,
+  isKeypointSelected,
+  isKeypointLabeled,
+  getKeypointVisibility,
+  keypointListView,
+} = useAnnotationKeypointView({
+  keypoints,
+  keypoint,
+  isHover,
+  isCurrent,
+  getKeypointLabels: () => keypointLabels,
+  getKeypointColors: () => keypointColors,
+  getIsHoverCategory: () => isHoverCategory,
+  getActiveTool: () => toolStore.activeTool,
+});
+
+/* exportAnnotation */
+const { exportAnnotation, ensureCompoundPathExists } = useAnnotationExport({
+  annotation,
+  compoundPath,
+  keypoints,
+  color,
+  metadata,
+  name,
+  sessions,
+  isCurrent,
+  getKeypointLabels: () => keypointLabels,
+  createCompoundPath,
+  simplifyPath,
+});
+/* end - exportAnnotation */
 
 const backgroundColor = computed(() => {
       if (isHover.value && isHoverCategory) return SURFACE_HOVER;
