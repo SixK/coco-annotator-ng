@@ -406,121 +406,25 @@
       </div>
     </div>
 
-    <BaseModal
-      id="generateDataset"
-      title="Generate a Dataset"
-    >
-      <form>
-        <div class="form-group">
-          <label>Keyword</label>
-          <input
-            v-model="keyword"
-            class="form-control"
-          >
-        </div>
-        <div class="form-group">
-          <label>Limit</label>
-          <input
-            v-model="generateLimit"
-            class="form-control"
-            type="number"
-          >
-        </div>
-      </form>
-      <template #footer>
-        <button
-          type="button"
-          class="btn btn-primary"
-          @click="generateDataset"
-        >
-          Generate
-        </button>
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-        >
-          Close
-        </button>
-      </template>
-    </BaseModal>
+    <GenerateDatasetModal
+      v-model:keyword="keyword"
+      v-model:limit="generateLimit"
+      @generate="generateDataset"
+    />
 
-    <BaseModal
-      id="cocoUpload"
+    <UploadCocoModal
       ref="cocoImport"
-      title="Upload COCO Annotaitons"
-    >
-      <form>
-        <div class="form-group">
-          <label for="coco">COCO Annotation file (.json)</label>
-          <input
-            id="coco"
-            type="file"
-            class="form-control-file"
-          >
-        </div>
-      </form>
-      <template #footer>
-        <button
-          type="button"
-          class="btn btn-primary"
-          data-bs-dismiss="modal"
-          @click="importCOCO"
-        >
-          Upload
-        </button>
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-        >
-          Close
-        </button>
-      </template>
-    </BaseModal>
+      @upload="importCOCO"
+    />
 
-    <BaseModal
-      id="exportDataset"
+    <ExportDatasetModal
       ref="cocoExport"
+      v-model:categories="exporting.categories"
+      v-model:with-empty-images="exporting.with_empty_images"
       :title="'Export ' + dataset.name"
-    >
-      <form>
-        <div class="form-group">
-          <label>Categories (Empty export all)</label>
-          <TagsInput
-            v-model:selectedItems="exporting.categories"
-            element-id="exportCategories"
-            :existing-tags="categoryTags"
-            :typeahead="true"
-            :typeahead-activation-threshold="0"
-          />
-        </div>
-        <div>
-          <input
-            v-model="exporting.with_empty_images"
-            type="checkbox"
-            class="form-check-input"
-          >
-          <label class="form-check-label">export with not annotated images</label>
-        </div>
-      </form>
-      <template #footer>
-        <button
-          type="button"
-          class="btn btn-primary"
-          @click="exportCOCO"
-        >
-          Export
-        </button>
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-        >
-          Close
-        </button>
-      </template>
-    </BaseModal>
+      :category-tags="categoryTags"
+      @export="exportCOCO"
+    />
   </div>
 </template>
 
@@ -533,7 +437,9 @@ import PanelString from "@/components/PanelInputString";
 import PanelToggle from "@/components/PanelToggle";
 import PanelDropdown from "@/components/PanelInputDropdown";
 import TagsInput from "@/components/TagsInput";
-import BaseModal from "@/components/BaseModal";
+import GenerateDatasetModal from "@/components/dataset/GenerateDatasetModal";
+import UploadCocoModal from "@/components/dataset/UploadCocoModal";
+import ExportDatasetModal from "@/components/dataset/ExportDatasetModal";
 import TaskButton from "@/components/tasks/TaskButton";
 
 import { ref, computed, watch, onMounted, useTemplateRef } from 'vue';

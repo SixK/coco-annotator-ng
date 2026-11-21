@@ -107,113 +107,26 @@
       </li>
     </ul>
 
-    <BaseModal
+    <KeypointSettingsModal
       ref="keypointSettings"
+      v-model:visibility="keypoint.visibility"
       :id="'keypointSettings' + annotation.id"
       :title="getKeypointLabel(currentKeypoint)"
       @hidden="onKeypointSettingsHidden"
-    >
-      <form>
-        <div class="form-group row">
-          <label class="col-sm-3 col-form-label">Visibility</label>
-          <div class="col-sm-8">
-            <select
-              v-model="keypoint.visibility"
-              class="form-control"
-            >
-              <option
-                v-for="(desc, label) in visibilityOptions"
-                :key="label"
-                :value="label"
-                :selected="keypoint.visibility == label"
-              >
-                {{ desc }}
-              </option>
-            </select>
-          </div>
-        </div>
-      </form>
-      <template #footer>
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-        >
-          Close
-        </button>
-      </template>
-    </BaseModal>
+    />
 
-    <BaseModal
+    <AnnotationSettingsModal
       ref="annotationSettings"
+      v-model:color="color"
+      v-model:name="name"
       :id="'annotationSettings' + annotation.id"
+      :annotation="annotation"
+      :index="index"
+      :all-categories="allCategories"
       @hidden="onAnnotationSettingsHidden"
-    >
-      <template #title>
-        {{ index + 1 }}
-        <i style="color: darkgray">(id: {{ annotation.id }})</i>
-      </template>
-      <form>
-        <div class="form-group row">
-          <label class="col-sm-3 col-form-label">Color</label>
-          <div class="col-sm-8">
-            <input
-              v-model="color"
-              type="color"
-              class="form-control"
-            >
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm-3 col-form-label">Name</label>
-          <div class="col-sm-8">
-            <input
-              v-model="name"
-              class="form-control"
-            >
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm-3 col-form-label">Category</label>
-          <div class="col-sm-8">
-            <select
-              class="form-control"
-              @change="setCategory"
-            >
-              <option
-                v-for="option in allCategories"
-                :key="option.text"
-                :selected="annotation.category_id === option.value"
-              >
-                {{ option.text }}
-              </option>
-            </select>
-          </div>
-        </div>
-        <MetaData
-          ref="metadata"
-          :metadata="annotation.metadata"
-          exclude="name"
-        />
-      </form>
-      <template #footer>
-        <button
-          type="button"
-          class="btn btn-danger"
-          data-bs-dismiss="modal"
-          @click="deleteAnnotation(index)"
-        >
-          Delete
-        </button>
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-        >
-          Close
-        </button>
-      </template>
-    </BaseModal>
+      @delete="deleteAnnotation(index)"
+      @change-category="setCategory"
+    />
   </div>
 </template>
 
@@ -221,8 +134,7 @@
 import paper from "paper";
 import Annotations from "@/models/annotations";
 import simplifyjs from "simplify-js";
-import BaseModal from "@/components/BaseModal";
-import { Keypoint, Keypoints, VisibilityOptions } from "@/libs/keypoints";
+import { Keypoint, Keypoints } from "@/libs/keypoints";
 import { toDarkHSL } from "@/libs/colors";
 import { SURFACE_HOVER } from "@/libs/theme";
 import useAnnotationExport from "@/composables/useAnnotationExport";
@@ -235,7 +147,8 @@ const procStore = useProcStore();
 import { useToolStore } from '@/store/toolStore';
 const toolStore = useToolStore();
 
-import MetaData from "@/components/MetaData";
+import KeypointSettingsModal from "@/components/annotator/KeypointSettingsModal";
+import AnnotationSettingsModal from "@/components/annotator/AnnotationSettingsModal";
 
 import { inject, watch, ref, computed, onMounted, toRef, useTemplateRef } from 'vue';
 
@@ -292,7 +205,6 @@ const showKeypoints = ref(false);
 const color = ref(annotation.color);
 const compoundPath = ref(null);
 const keypoints = ref(null);
-const metadata = useTemplateRef('metadata');
 const isEmpty = ref(true);
 const name = ref("");
 const uuid = ref("");
@@ -313,10 +225,11 @@ const session = ref({
     tools: [],
     milliseconds: 0
 });
-const visibilityOptions = ref(VisibilityOptions);
-
 const annotationSettings = useTemplateRef('annotationSettings');
 const keypointSettings = useTemplateRef('keypointSettings');
+// The metadata editor now lives inside <AnnotationSettingsModal>, which
+// exposes exportMetadata(); `metadata` keeps the same call surface.
+const metadata = annotationSettings;
 
 const cleanCompoundPath = () => {
     if (compoundPath.value !== null) {
