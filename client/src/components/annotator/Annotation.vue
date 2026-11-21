@@ -224,6 +224,7 @@ import simplifyjs from "simplify-js";
 import BaseModal from "@/components/BaseModal";
 import { Keypoint, Keypoints, VisibilityOptions } from "@/libs/keypoints";
 import { toDarkHSL } from "@/libs/colors";
+import { SURFACE_DARK, SURFACE_HOVER } from "@/libs/theme";
 import UndoAction from "@/undo";
 
 import { useProcStore } from "@/store/index";
@@ -939,7 +940,7 @@ const getKeypointVisibility = (index) => {
 };
 
 const getKeypointBackgroundColor = (index) => {
-    if (isHover.value && isHoverCategory) return "#646c82";
+    if (isHover.value && isHoverCategory) return SURFACE_HOVER;
     // if (keypoint.tag == index + 1) return "#4b624c";
     let activeIndex = keypoint.value.next.label;
 
@@ -947,7 +948,7 @@ const getKeypointBackgroundColor = (index) => {
       activeIndex = keypoint.value.tag[0];
     }
     if (isCurrent.value && activeIndex == index + 1) return "rgb(30, 86, 36)";
-    return "#383c4a";
+    return SURFACE_DARK;
 };
 
 const categoryIndex = computed(() => {
@@ -990,7 +991,7 @@ const isHover = computed(() => {
 });
 
 const backgroundColor = computed(() => {
-      if (isHover.value && isHoverCategory) return "#646c82";
+      if (isHover.value && isHoverCategory) return SURFACE_HOVER;
       if (isCurrent.value) return "#4b624c";
       return "inherit";
 });
@@ -1177,7 +1178,7 @@ defineExpose({annotation, keypoint, notUsedKeypointLabels, onAnnotationKeypointC
   height: 22px;
   font-size: 13px;
   padding: 2px;
-  background-color: #4b5162;
+  background-color: var(--app-surface);
 }
 
 .annotation-text {
@@ -1194,7 +1195,7 @@ defineExpose({annotation, keypoint, notUsedKeypointLabels, onAnnotationKeypointC
 }
 
 .keypoint-item {
-  background-color: #383c4a;
+  background-color: var(--app-surface-dark);
   cursor: pointer;
 }
 

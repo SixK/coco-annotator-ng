@@ -1,6 +1,6 @@
 <template>
   <div class="bg-light">
-    <div style="padding-top: 55px" />
+    <div class="page-top-offset" />
     <div
       class="album py-5 container"
       style="overflow: auto; height: calc(100vh - 55px)"

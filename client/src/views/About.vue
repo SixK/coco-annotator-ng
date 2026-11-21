@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="padding-top: 55px" />
+    <div class="page-top-offset" />
 
     <h1>Web-based Image Annotaiton Tool</h1>
   </div>

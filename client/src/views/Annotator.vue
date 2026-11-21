@@ -513,7 +513,7 @@ defineExpose({simplify, dataset, category});
 }
 
 .left-panel {
-  background-color: #4b5162;
+  background-color: var(--app-surface);
   width: 40px;
   padding-top: 40px;
   float: left;
@@ -523,7 +523,7 @@ defineExpose({simplify, dataset, category});
 
 .right-panel {
   padding-top: 40px;
-  background-color: #4b5162;
+  background-color: var(--app-surface);
   width: 250px;
   height: inherit;
   float: right;
@@ -569,7 +569,7 @@ defineExpose({simplify, dataset, category});
 .tool-section {
   margin: 5px;
   border-radius: 5px;
-  background-color: #383c4a;
+  background-color: var(--app-surface-dark);
   padding: 0 5px 5px 5px;
   overflow: auto;
 }

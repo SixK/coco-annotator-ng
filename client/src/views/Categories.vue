@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="padding-top: 55px" />
+    <div class="page-top-offset" />
     <div
       class="album py-5 bg-light"
       style="overflow: auto; height: calc(100vh - 55px)"
@@ -254,11 +254,5 @@ onMounted(() => {
   padding: 0;
   float: right;
   color: black;
-}
-
-.help-icon {
-  color: darkblue;
-  font-size: 20px;
-  display: inline;
 }
 </style>

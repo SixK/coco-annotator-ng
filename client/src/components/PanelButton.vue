@@ -17,7 +17,7 @@ const emit = defineEmits(['click'])
 <style scoped>
 .tool-input-button {
   height: 20px;
-  border-color: #4b5162;
+  border-color: var(--app-surface);
   padding: 0 0 0 11px;
   font-size: 12px;
   width: 100%;

@@ -170,7 +170,7 @@ watch(socket, (connected) => {
 }
 
 .navbar {
-  background-color: #383c4a;
+  background-color: var(--app-surface-dark);
 }
 
 .left {

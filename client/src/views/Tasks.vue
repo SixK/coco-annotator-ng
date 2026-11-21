@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="padding-top: 55px" />
+    <div class="page-top-offset" />
     <div
       class="album py-5 bg-light shadow-sm"
       style="overflow: auto; height: calc(100vh - 55px)"
@@ -111,11 +111,3 @@ provide('tasksUpdatePage', updatePage);
 
 
 </script>
-
-<style scoped>
-.help-icon {
-  color: darkblue;
-  font-size: 20px;
-  display: inline;
-}
-</style>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="padding-top: 55px" />
+    <div class="page-top-offset" />
     <div
       class="album py-5 bg-light"
       style="overflow: auto; height: calc(100vh - 55px)"
@@ -121,10 +121,6 @@ const displayName = computed(() => {
 </script>
 
 <style scoped>
-.remove-top-border {
-  border: none !important;
-}
-
 .fa {
   margin: 0;
   padding: 2px;

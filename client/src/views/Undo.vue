@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="padding-top: 55px" />
+    <div class="page-top-offset" />
     <div
       class="album py-5 bg-light"
       style="overflow: auto; height: calc(100vh - 55px)"
@@ -156,6 +156,7 @@
 
 <script setup>
 import Undo from "@/models/undos";
+import { SURFACE_DARK } from "@/libs/theme";
 import { ref, watch, onMounted } from 'vue';
 import {useLoading} from 'vue-loading-overlay'
 
@@ -173,7 +174,7 @@ const isLoading = ref("false");
 const updatePage = () => {
   // isLoading.value = true;
   const loader = $loading.show({
-    color: "#383c4a"
+    color: SURFACE_DARK
   });
 
   return withProcess(`Loading undo for ${type.value} instance type`, () =>
@@ -206,10 +207,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.remove-top-border {
-  border: none !important;
-}
-
 .fa {
   margin: 0;
   padding: 2px;

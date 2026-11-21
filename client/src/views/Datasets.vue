@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="padding-top: 55px" />
+    <div class="page-top-offset" />
 
     <div
       class="album py-5 bg-light"
@@ -274,11 +274,3 @@ onMounted(() => {
 provide('getUsers', getUsers);
 
 </script>
-
-<style scoped>
-.help-icon {
-  color: darkblue;
-  font-size: 20px;
-  display: inline;
-}
-</style>

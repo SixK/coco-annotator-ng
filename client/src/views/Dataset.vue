@@ -1,6 +1,6 @@
 <template>
   <div @mousemove="mouseMove">
-    <div style="padding-top: 55px" />
+    <div class="page-top-offset" />
 
     <div
       class="bg-light"
@@ -8,7 +8,7 @@
     >
       <nav
         class="nav border-bottom shadow-sm"
-        style="background-color: #4b5162"
+        style="background-color: var(--app-surface)"
       >
         <a
           class="btn tab"
@@ -543,6 +543,7 @@ import usePaginatedList from "@/composables/usePaginatedList";
 import { useProcess } from "@/composables/useProcess";
 import useSocketSubscription from "@/composables/useSocketSubscription";
 import { useTaskProgress } from "@/composables/useTaskProgress";
+import { SURFACE_DARK } from "@/libs/theme";
 import { onAnnotatingForList } from "@/composables/useAnnotating";
 const {axiosRequestError, axiosRequestSuccess} = useAxiosRequest();
 const { withProcess } = useProcess();
@@ -870,7 +871,7 @@ watch(
       const el = document.querySelector('.sidebar');
       if (canDrag) {
         document.body.style.cursor = 'ew-resize';
-        el.style.borderRight = '4px solid #383c4a';
+        el.style.borderRight = `4px solid ${SURFACE_DARK}`;
       } else {
         document.body.style.cursor = 'default';
         el.style.borderRight = '';
@@ -932,7 +933,7 @@ onUnmounted(() => {
   z-index: 1;
   top: 0;
   left: 0;
-  background-color: #4b5162;
+  background-color: var(--app-surface);
   overflow-x: hidden;
   padding-top: 60px;
 }
@@ -956,7 +957,7 @@ onUnmounted(() => {
 .sidebar-section {
   margin: 5px;
   border-radius: 5px;
-  background-color: #383c4a;
+  background-color: var(--app-surface-dark);
   padding: 0 5px 2px 5px;
   overflow: auto;
 }

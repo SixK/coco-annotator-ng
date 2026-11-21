@@ -55,7 +55,7 @@ defineExpose({showTasks});
 
 .card-header {
   color: white;
-  background-color: #383c4a;
+  background-color: var(--app-surface-dark);
 }
 
 .card-body {

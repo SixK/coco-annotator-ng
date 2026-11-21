@@ -90,6 +90,6 @@ const click = () => {
 }
 
 .card {
-  background-color: #4b5162;
+  background-color: var(--app-surface);
 }
 </style>

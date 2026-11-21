@@ -1,0 +1,31 @@
+/*
+ * Shared palette and utilities.
+ *
+ * The three `--app-*` colours used to be repeated as raw hex values in ~20
+ * SFCs (plus a few inline styles / JS expressions). CSS consumers use the
+ * variables below; the JS-only consumers (paper.js path colours, the loading
+ * overlay spinner) import the same values from `src/libs/theme.js` — keep the
+ * two files in sync.
+ */
+:root {
+  --app-surface: #4b5162;
+  --app-surface-dark: #383c4a;
+  --app-surface-hover: #646c82;
+}
+
+/* Spacer that pushes page content below the fixed navbar. */
+.page-top-offset {
+  padding-top: 55px;
+}
+
+/* Small "?" icon next to a section title. */
+.help-icon {
+  color: darkblue;
+  font-size: 20px;
+  display: inline;
+}
+
+/* Table head without the Bootstrap top border. */
+.remove-top-border {
+  border: none !important;
+}

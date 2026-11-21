@@ -204,7 +204,7 @@ p {
   height: 21px;
   font-size: 13px;
   padding: 2px;
-  background-color: #4b5162;
+  background-color: var(--app-surface);
 }
 
 .icon-more::before{

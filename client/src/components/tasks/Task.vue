@@ -207,7 +207,7 @@ defineExpose({logs, showLogs, highlight, onlyErrors, onlyWarnings});
 }
 
 .logs {
-  background-color: #4b5162;
+  background-color: var(--app-surface);
   border-radius: 5px;
   max-height: 250px;
   overflow-y: auto;

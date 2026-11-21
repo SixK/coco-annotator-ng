@@ -11,8 +11,8 @@ const { name } = defineProps({ name: { type: String, required: true } });
 
 <style scoped>
 .tool-option-font {
-  border-color: #4b5162;
-  background-color: #383c4a;
+  border-color: var(--app-surface);
+  background-color: var(--app-surface-dark);
   color: white;
   font-size: 12px;
   height: 20px;

@@ -160,6 +160,7 @@
 <script setup>
 import { useToolStore } from '@/store/toolStore';
 import { toDarkHSL } from "@/libs/colors";
+import { SURFACE_HOVER } from "@/libs/theme";
 import Annotations from "@/models/annotations";
 import Annotation from "@/components/annotator/Annotation";
 import KeypointsDefinition from "@/components/KeypointsDefinition";
@@ -262,7 +263,7 @@ const isHover = computed(() => {
 
 const backgroundColor = computed(() => {
   if (isHover.value && !showAnnotations.value) {
-    return "#646c82";
+    return SURFACE_HOVER;
   }
   return "inherit";
 });
@@ -593,7 +594,7 @@ provide('category', ctx);
   height: 22px;
   font-size: 13px;
   padding: 2px;
-  background-color: #4b5162;
+  background-color: var(--app-surface);
 }
 
 .category-icon {

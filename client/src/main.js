@@ -14,6 +14,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import 'vue-toast-notification/dist/theme-bootstrap.css';
 import 'vue-loading-overlay/dist/css/index.css';
 import 'floating-vue/dist/style.css';
+import "@/assets/theme.css";
 
 
 const socketio = new VueSocketIO({
