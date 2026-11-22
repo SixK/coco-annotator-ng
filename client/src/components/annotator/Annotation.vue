@@ -925,9 +925,14 @@ watch(
         currentKeypoint.value = null;
       }
       if (wasCurrent) {
-        // Close session
+        // Close session. Push a snapshot: `session` is reused for the next
+        // session, so storing the reference would make every saved session
+        // show the last session's start/duration/tools.
         session.value.milliseconds = Date.now() - session.value.start;
-        sessions.value.push(session.value);
+        sessions.value.push({
+          ...session.value,
+          tools: [...session.value.tools],
+        });
       }
       if (compoundPath.value == null) return;
       compoundPath.value.fullySelected = newcurrent;
