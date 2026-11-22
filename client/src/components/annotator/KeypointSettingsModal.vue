@@ -38,6 +38,8 @@
 </template>
 
 <script setup>
+import { useTemplateRef } from "vue";
+
 import BaseModal from "@/components/BaseModal";
 import { VisibilityOptions } from "@/libs/keypoints";
 
@@ -55,4 +57,11 @@ const visibility = defineModel("visibility", {
 });
 
 const visibilityOptions = VisibilityOptions;
+
+const modal = useTemplateRef("modal");
+
+defineExpose({
+  showModal: () => modal.value.showModal(),
+  hideModal: () => modal.value.hideModal(),
+});
 </script>
