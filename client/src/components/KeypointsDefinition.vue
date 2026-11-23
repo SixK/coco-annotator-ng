@@ -101,7 +101,7 @@
 
 <script setup>
 import TagsInput from '@/components/TagsInput.vue';
-import { nextTick, ref, onMounted, computed, watch, useId } from 'vue';
+import { ref, onMounted, computed, watch, useId } from 'vue';
 
 // Unique per component instance: two <KeypointsDefinition> rendered on the same
 // page used to both generate `index0`, `index1`, ... for their hidden inputs.
@@ -164,23 +164,8 @@ const valid = computed(() => {
   return keypoints.value.every(({ label_error }) => label_error.length === 0);
 });
 
-watch(
-      hiddenValue, 
-      () => {
-          if (hiddenValue.value !== keypointsDef.value) {
-            hiddenValue.value = keypointsDef.value;
-            nextTick(() => {
-                keypoints.value = keypointsFromProp();
-                nextDistinct.value = keypoints.value.length;
-            });
-          }
-});
-
 
 onMounted(() => {
-      keypoints.value = keypointsFromProp();
-      // Skip colors already used by the keypoints loaded from the prop.
-      nextDistinct.value = keypoints.value.length;
       isMounted.value = true;
 });
 
@@ -223,6 +208,24 @@ const keypointsFromProp = () => {
 
       return keypointsArr;
 };
+
+// Watch the prop itself: the previous watch on `hiddenValue` only fired on the
+// component's own edits, so a parent replacing `keypointsDef`
+// (`resetCategorySettings`, category switch, ...) never refreshed the list.
+watch(
+  keypointsDef,
+  (newDef) => {
+    // Ignore our own updates: the component writes the same object to both
+    // `hiddenValue` and `keypointsDef`, so re-deriving here would be a no-op
+    // round-trip on every keystroke.
+    if (newDef === hiddenValue.value) return;
+
+    hiddenValue.value = newDef;
+    keypoints.value = keypointsFromProp();
+    nextDistinct.value = keypoints.value.length;
+  },
+  { immediate: true, deep: true  }
+);
 
 const getColor = (index) => {
     // Optional chaining: a parent resetting keypointsDef to a partial object

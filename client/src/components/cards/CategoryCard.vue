@@ -220,38 +220,47 @@ const resetCategorySettings = () => {
 
 
 const onUpdateClick = async () => {
+      const patch = {
+        name: name.value,
+        color: color.value,
+        supercategory: supercategory.value,
+        // metadata: metadata.value,
+        keypoint_edges: [...keypoint.value.edges],
+        keypoint_labels: [...keypoint.value.labels],
+        keypoint_colors: [...keypoint.value.colors],
+      };
+      const previous = {
+        name: category.name,
+        color: category.color,
+        supercategory: category.supercategory,
+        keypoint_edges: [...category.keypoint_edges],
+        keypoint_labels: [...category.keypoint_labels],
+        keypoint_colors: [...category.keypoint_colors],
+      };
+
+      // Apply the patch before awaiting the request: the modal closes on click
+      // (`data-bs-dismiss`), and `resetCategorySettings` runs ~300 ms later on
+      // `hidden.bs.modal`. Waiting for the API made the first reopen show the
+      // pre-update values.
+      emit('patch-category', patch);
+
       try {
-        await Category.update(category.id, {
-          name: name.value,
-          color: color.value,
-          supercategory: supercategory.value,
-          // metadata: metadata.value,
-          keypoint_edges: keypoint.value.edges,
-          keypoint_labels: keypoint.value.labels,
-          keypoint_colors: keypoint.value.colors,
-        });
+        await Category.update(category.id, patch);
         axiosRequestSuccess(
           'Updating Category',
           'Category successfully updated'
         );
-
-        emit('patch-category', {
-          name: name.value,
-          color: color.value,
-          supercategory: supercategory.value,
-          // metadata: metadata.value,
-          keypoint_edges: [...keypoint.value.edges],
-          keypoint_labels: [...keypoint.value.labels],
-          keypoint_colors: [...keypoint.value.colors],
-        });
-        emit('updatePage');
       } catch (error) {
           console.error('Error updating category:',    error.message);
+          // Roll the optimistic update back and resync the form state.
+          emit('patch-category', previous);
+          resetCategorySettings();
           axiosRequestError(
             'Updating Category',
             error
           );
-          emit('updatePage');
+      } finally {
+        emit('updatePage');
       }
 };
 </script>

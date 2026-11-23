@@ -5,7 +5,6 @@
     tabindex="-1"
     role="dialog"
     :aria-labelledby="titleId"
-    @hidden="$emit('hidden')"
   >
     <div
       class="modal-dialog"
@@ -45,16 +44,26 @@
 </template>
 
 <script setup>
-import { onUnmounted, ref, useId, useSlots } from "vue";
+import { onMounted, onUnmounted, ref, useId, useSlots } from "vue";
 import { Modal } from "bootstrap";
 
 defineProps({ title: { type: String, default: "" } });
-defineEmits(["hidden"]);
+const emit = defineEmits(["hidden"]);
 
 const slots = useSlots();
 const root = ref(null);
 // unique per instance: a category or annotation list renders one modal per row
 const titleId = useId();
+
+// Bootstrap dispatches a namespaced native event ("hidden.bs.modal"), which
+// `@hidden` in the template does not match: listening explicitly is required
+// for the reset handlers (`resetCategorySettings`, ...) to run on close.
+const HIDDEN_EVENT = "hidden.bs.modal";
+const onHidden = () => emit("hidden");
+
+onMounted(() => {
+  root.value?.addEventListener(HIDDEN_EVENT, onHidden);
+});
 
 // Created on demand: Bootstrap itself instantiates the modal when it is
 // opened through data-bs-toggle / data-bs-target, both end up on the same
@@ -65,6 +74,8 @@ const showModal = () => instance().show();
 const hideModal = () => instance().hide();
 
 onUnmounted(() => {
+  root.value?.removeEventListener(HIDDEN_EVENT, onHidden);
+
   const modal = Modal.getInstance(root.value);
   if (!modal) return;
 
