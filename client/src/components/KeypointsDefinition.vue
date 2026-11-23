@@ -154,7 +154,7 @@ const { title, keyTitle, valueTitle } = defineProps({
 const keypoints = ref([]);
 const hiddenValue = ref({ edges: [], labels: [], colors: [] });
 const isMounted = ref(false);
-const nextDistinct = ref(-1);
+const nextDistinct = ref(0);
 
 
 const valid = computed(() => {
@@ -171,6 +171,7 @@ watch(
             hiddenValue.value = keypointsDef.value;
             nextTick(() => {
                 keypoints.value = keypointsFromProp();
+                nextDistinct.value = keypoints.value.length;
             });
           }
 });
@@ -178,6 +179,8 @@ watch(
 
 onMounted(() => {
       keypoints.value = keypointsFromProp();
+      // Skip colors already used by the keypoints loaded from the prop.
+      nextDistinct.value = keypoints.value.length;
       isMounted.value = true;
 });
 
@@ -350,9 +353,9 @@ const clearKeypoints = (keypoints) => {
 };
 
 const nextDistinctColor = () => {
-  const nextDistinct = ref(0);
+  const color = DISTINCT_COLORS[nextDistinct.value % DISTINCT_COLORS.length];
   nextDistinct.value++;
-  return DISTINCT_COLORS[nextDistinct.value];
+  return color;
 };
 
 defineExpose({valid, keypoints});
