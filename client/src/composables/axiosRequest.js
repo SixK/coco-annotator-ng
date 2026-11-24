@@ -4,7 +4,7 @@ import {useToast} from 'vue-toast-notification';
 // `error(message, options?: ToastProps)`) and renders `message` as innerHTML,
 // so the title is composed into the HTML below. Both parts are escaped: the
 // message often comes from the server.
-const escapeHtml = (value) =>
+export const escapeHtml = (value) =>
   String(value)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')

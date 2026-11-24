@@ -6,12 +6,14 @@
 </template>
 
 <script setup>
-import { computed, watch, onMounted, inject } from 'vue';
+import { computed, watch, onMounted, onUnmounted, inject } from 'vue';
 
 import NavBar from "@/components/NavBar";
 
 import {useToast} from 'vue-toast-notification';
 const $toast = useToast();
+
+import { escapeHtml } from "@/composables/axiosRequest";
 
 import { storeToRefs } from 'pinia';
 
@@ -66,13 +68,9 @@ watch(
       if (newVal) return;
       setTimeout(() => {
         if (socketConnection.value) return;
-        const options = {
-          positionClass: "toast-bottom-left"
-        };
         $toast.warning(
-          "Connection lost to the backend",
-          "Connection Lost",
-          options
+          `<strong>Connection Lost</strong><br>${escapeHtml("Connection lost to the backend")}`,
+          { position: 'bottom-left' }
         );
       }, 1000);
 });
@@ -95,8 +93,17 @@ onMounted(async () => {
     if(authed == false) toAuthPage();
     info.getServerInfo();
     
-    // dunno why, but app.__vue_app__ is undefined here, let's consider socket are alaways connected
-    info.setSocket(true);
+    // Track the real socket connection state through the store. The toast
+    // below fires only when the socket goes down.
+    const onSocketConnected = () => info.setSocket(true);
+    const onSocketDisconnected = () => info.setSocket(false);
+    localsocket.on('connect', onSocketConnected);
+    localsocket.on('disconnect', onSocketDisconnected);
+});
+
+onUnmounted(() => {
+  localsocket.off('connect', onSocketConnected);
+  localsocket.off('disconnect', onSocketDisconnected);
 });
 
 </script>
