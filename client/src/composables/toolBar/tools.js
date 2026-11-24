@@ -126,7 +126,8 @@ export  function useTools() {
         if (active) {
           if(state.tool)  {
               state.tool.activate();
-              localStorage.setItem('editorTool', name.value);
+              // No direct localStorage write here: `update()` -> `setActiveTool()`
+              // is the toolStore's job, which owns the persistence of `editorTool`.
           }
         }
   });
