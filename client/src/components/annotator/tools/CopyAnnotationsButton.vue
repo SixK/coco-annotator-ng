@@ -167,6 +167,9 @@ const categoryTags = computed(() => {
 
 // dunno if there is a better way to get Array toward props ?
 watchEffect(() => {
+    // Reset before refilling: re-running (e.g. after a copy triggers a reload)
+    // must not accumulate duplicates in localCategories.
+    localCategories.value.splice(0, localCategories.value.length);
     categories.value.forEach((category) => {
           localCategories.value.push(category);
       });
