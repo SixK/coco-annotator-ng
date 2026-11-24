@@ -121,6 +121,9 @@ const createMetadata = () => {
 };
 
 function loadMetadata() {
+    // Reset before refilling: the watchEffect re-runs whenever the `metadata`
+    // prop changes, and without clearing the list we would push duplicates.
+    metadataList.value = [];
     if (metadata != null && metadata['metadata'] == null) {
       for (let key in metadata) {
         if (!Object.prototype.hasOwnProperty.call(metadata, key)) {
