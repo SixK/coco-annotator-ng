@@ -208,17 +208,10 @@ import { useRouter } from 'vue-router';
 import {useLoading} from 'vue-loading-overlay'
 
 import { useStores } from "@/composables/useStores"
-const { auth, proc, info } = useStores();
+const { auth, info } = useStores();
 
 const router = useRouter();
 const $loading = useLoading({});
-
-const redirect = defineProps({
-  redirect: {
-    type: Object,
-    default: () => ({ name: "datasets" }),
-  },
-});
 
 const registerTab = ref(null);
 const tab = ref("login")
@@ -298,7 +291,8 @@ const showRegistrationForm = computed(() => {
 });
   
 const isAuthenticatePending = computed(() => {
-    return info.isAuthenticatePending;
+    // The pending flag lives in the `auth` store, not in `info`.
+    return auth.isAuthenticatePending;
 });
 
 const registerValid = computed(() => {
