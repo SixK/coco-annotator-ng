@@ -94,7 +94,7 @@ const handleChangePassword = async () => {
   );
 
   if (result.success) {     // Success
-    changePassword.value = { password: '', new_password: '', confirmPassword: '' };
+    changePassword.value = { password: '', new_password: '', confirm_password: '' };
   }
 };
 
