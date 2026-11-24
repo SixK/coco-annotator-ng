@@ -87,13 +87,15 @@ const exportMetadata = () => {
   let new_metadata = {};
   metadataList.value.forEach((object) => {
     if (object.key.length > 0) {
-      if (!isNaN(object.value))
-        new_metadata[object.key] = parseInt(object.value);
-      else if (
-        object.value.toLowerCase() === "true" ||
-        object.value.toLowerCase() === "false"
+      const value = String(object.value).trim();
+      if (value !== "" && !isNaN(value)) {
+        // Number() keeps decimals ("1.5"); parseInt used to truncate them.
+        new_metadata[object.key] = Number(value);
+      } else if (
+        value.toLowerCase() === "true" ||
+        value.toLowerCase() === "false"
       )
-        new_metadata[object.key] = object.value.toLowerCase() === "true";
+        new_metadata[object.key] = value.toLowerCase() === "true";
       else new_metadata[object.key] = object.value;
     }
   });
