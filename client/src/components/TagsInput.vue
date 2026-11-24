@@ -216,7 +216,11 @@ const addTag = (slug, text) => {
     return false;
   }
   if (!tagSelected(slug)) {
-    tagBadges.value.push(text.replace(/\s/g, "&nbsp;"));
+    // Store the raw text: the badge is rendered via text interpolation
+    // (`{{ badge }}`), which does not decode HTML entities, so replacing
+    // whitespace with `&nbsp;` displayed literally (e.g. "Default&nbsp;Category").
+    // Real spaces are handled by the badge CSS (`white-space: nowrap`).
+    tagBadges.value.push(text);
     tags.value.push(slug);
   }
   emit("tag-added", slug);
@@ -334,7 +338,8 @@ const tagSelected = (slug) => {
     return false;
   }
   const searchSlug = makeSlug(slug);
-  return tags.value.includes(searchSlug);
+  return tags.value.some((tag) => makeSlug(tag) === searchSlug);
+  // return tags.value.includes(searchSlug);
 };
 
 const onKeyDown = (e) => {
