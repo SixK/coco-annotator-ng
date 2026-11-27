@@ -10,7 +10,7 @@
         <UnLazyImage
           :src="imageUrl"
           :src-placeholder="loaderUrl"
-          loading="lazy"
+          loading="eager"
           class="card-img-top"
           style="width: 100%; display: block"
           :style="{ opacity: annotated ? 0.3 : 1 }"
