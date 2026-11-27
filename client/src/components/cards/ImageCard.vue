@@ -10,7 +10,7 @@
         <UnLazyImage
           :src="imageUrl"
           :src-placeholder="loaderUrl"
-          loading="eager"
+          loading="lazy"
           class="card-img-top"
           style="width: 100%; display: block"
           :style="{ opacity: annotated ? 0.3 : 1 }"
@@ -134,9 +134,8 @@ const showAnnotations = ref(true);
 import loaderUrl from "@/assets/loader.gif";
 
 const imageUrl = computed(() => {
-      const d = new Date();
       if (showAnnotations.value) {
-        return `/api/image/${image.value.id}?width=250&thumbnail=true&dummy=${d.getTime()}`;
+        return `/api/image/${image.value.id}?width=250&thumbnail=true`;
       } else {
         return "/api/image/" + image.value.id + "?width=250";
       }
