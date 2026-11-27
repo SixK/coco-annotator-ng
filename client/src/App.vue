@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <NavBar v-show="showNavBar" />
-    <RouterView :key="$route.fullPath" />
+    <RouterView :key="$route.path" />
   </div>
 </template>
 
