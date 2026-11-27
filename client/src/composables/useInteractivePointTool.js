@@ -11,6 +11,8 @@ import axios from "axios";
 import { ref, computed, inject, onMounted } from "vue";
 
 import { useTools } from "./toolBar/tools";
+import useAxiosRequest from "./axiosRequest";
+const { axiosRequestError } = useAxiosRequest();
 
 /**
  * @param {Object} config
@@ -103,6 +105,9 @@ export function useInteractivePointTool({
           // `segmentaiton` is the field name sent by the model backend
           const compoundPath = createPath(response.data.segmentaiton, width, height);
           currentAnnotation.unite(compoundPath);
+        })
+        .catch((error) => {
+          axiosRequestError(`${toolName} segmentation failed`, error);
         })
         .finally(() => {
           clearPoints();

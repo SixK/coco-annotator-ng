@@ -208,7 +208,7 @@ const updatePage = () => {
       users.value = response.data.users;
       total.value = response.data.total;
     })
-  );
+  ).catch((error) => axiosRequestError("Loading users", error));
 };
 
 const createUser = (event) => {

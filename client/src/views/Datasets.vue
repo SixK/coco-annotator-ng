@@ -214,9 +214,15 @@ const { page, pages, limit, updatePage } = usePaginatedList({
     subdirectories.value = data.subdirectories;
   },
   onLoaded: () => {
-    AdminPanel.getUsers(limit.value).then((response) => {
-      users.value = response.data.users;
-    });
+    AdminPanel.getUsers(limit.value)
+      .then((response) => {
+        users.value = response.data.users;
+      })
+      .catch((error) => {
+        // Best-effort call: a non-admin simply has no user list to offer for
+        // sharing yet — log instead of showing a toast.
+        console.error("Loading users for dataset share list failed:", error);
+      });
   },
 });
 

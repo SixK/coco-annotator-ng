@@ -162,6 +162,8 @@ import {useLoading} from 'vue-loading-overlay'
 
 import { useProcess } from "@/composables/useProcess";
 const { withProcess } = useProcess();
+import useAxiosRequest from "@/composables/axiosRequest";
+const { axiosRequestError } = useAxiosRequest();
 
 const $loading = useLoading({});
 
@@ -181,9 +183,11 @@ const updatePage = () => {
     Undo.all(limit.value, type.value).then((response) => {
       undos.value = response.data;
     })
-  ).finally(() => {
-    loader.hide();
-  });
+  )
+    .catch((error) => axiosRequestError("Loading undo", error))
+    .finally(() => {
+      loader.hide();
+    });
 };
 
 const undoModel = (id, instance) => {

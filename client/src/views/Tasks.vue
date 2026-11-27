@@ -38,6 +38,8 @@ const { auth } = useStores();
 
 import { useProcess } from "@/composables/useProcess"
 const { withProcess } = useProcess();
+import useAxiosRequest from "@/composables/axiosRequest";
+const { axiosRequestError } = useAxiosRequest();
 
 const route = useRoute();
 
@@ -53,7 +55,7 @@ const updatePage = () => {
         showTask(taskToShow.value);
       }
     })
-  );
+  ).catch((error) => axiosRequestError("Loading tasks", error));
 };
 
 const showTask = (taskId) => {
