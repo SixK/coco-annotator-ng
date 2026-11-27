@@ -14,7 +14,9 @@
         <div style="text-align: left">
           <h4>Change Password</h4>
           <br>
-          <form>
+          <form
+            @submit.prevent="handleChangePassword"
+          >
             <div class="form-group">
               <label>Current Password</label>
               <input
@@ -51,6 +53,7 @@
             <button
               type="submit"
               class="btn btn-primary btn-block"
+              :disabled="!validPassword(changePassword.new_password) || !validPassword(changePassword.confirm_password) || !isValidPassword()"
               @click.prevent="handleChangePassword"
             >
               Submit

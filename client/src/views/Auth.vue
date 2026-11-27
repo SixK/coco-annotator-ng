@@ -89,6 +89,7 @@
               <form
                 ref="loginFormContainer"
                 class="v1-parent"
+                @submit.prevent="handleLogin"
               >
                 <div class="form-group">
                   <label>Username</label>
@@ -113,6 +114,7 @@
                 <button
                   type="submit"
                   class="btn btn-primary btn-block"
+                  :disabled="!loginValid"
                   :class="{ disabled: !loginValid }"
                   @click.prevent="handleLogin"
                 >
@@ -133,6 +135,7 @@
                 v-else
                 ref="registerFormContainer"
                 class="vld-parent"
+                @submit.prevent="handleRegister"
               >
                 <div
                   class="form-group"
@@ -188,6 +191,7 @@
                 <button
                   type="submit"
                   class="btn btn-primary btn-block"
+                  :disabled="!registerValid"
                   :class="{ disabled: !registerValid }"
                   @click.prevent="handleRegister"
                 >
