@@ -46,7 +46,8 @@ export default function useSidebarResize() {
 
   const restoreWidth = () => {
     const sideWidth = localStorage.getItem(SIDEBAR_WIDTH_KEY);
-    if (sideWidth !== null) sidebar.value.width = parseInt(sideWidth);
+    const parsedWidth = sideWidth !== null ? parseFloat(sideWidth) : NaN;
+    if (!Number.isNaN(parsedWidth)) sidebar.value.width = parsedWidth;
   };
 
   watch(
